@@ -56,6 +56,8 @@
 " ;## katw tovos (for numerals)
 
 
+
+
 " All accents are supported. Even rho with < and > and Rho with <
 " Also :~i and :~u and macron and braxy a,i,u and their capitals.
 let b:keymap_name = "grkmac"
@@ -78,6 +80,8 @@ W	<char-0x0387>   " GREEK ANO TELEIA (Emacs standard)
 '	<char-0x1FBD>   " GREEK APOSTROFOS
 --	<char-0x2013>	" endash
 ---	<char-0x2014>	" emdash
+//  /
+
 "...     <char-0x2026>   " ellipsis
 "
 " GREEK DIACRITICS
@@ -96,7 +100,9 @@ W	<char-0x0387>   " GREEK ANO TELEIA (Emacs standard)
 /	<char-0x1FCE>	" PSILI OXIA
 ?	<char-0x1FDE>	" DASIA OXIA
 _	<char-0x1FDF>	" DASIA PERISPOMENI
--	<char-0x1FCF>	" PSILI PERISPOMENI
+"-	<char-0x1FCF>	" PSILI PERISPOMENI
+-   -
+\\-  -
 "For plain psili use apostrophe
 ;'	<char-0x1FFE>	" (Plain) dasia
 "
