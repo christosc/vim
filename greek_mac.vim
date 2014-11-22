@@ -77,7 +77,8 @@ Q	<char-0x003A>   " COLON [GREEK EPEXIGIMATIKA OR ANO & KATO TELEIA -
 q	<char-0x037E>   " GREEK QUESTION MARK (EROTIMATIKO)
 ;.	<char-0x0387>	" GREEK ANO TELEIA (KDE/kikbd/Xinput standard)
 W	<char-0x0387>   " GREEK ANO TELEIA (Emacs standard)
-'	<char-0x1FBD>   " GREEK APOSTROFOS
+"'	<char-0x1FBD>   " GREEK APOSTROFOS
+'	<char-0x2019>   " GREEK APOSTROFOS
 --	<char-0x2013>	" endash
 ---	<char-0x2014>	" emdash
 //  /
