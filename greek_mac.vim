@@ -91,7 +91,7 @@ W	<char-0x0387>   " GREEK ANO TELEIA (Emacs standard)
 :	<char-0x00A8>   " DIAERESIS [GREEK DIALYTIKA - DEFINITION MISSING FROM
 			" UNICODE]
 :;      <char-0x1FEE>   " DIALYTIKA OXIA
-:]      <char-0x1FD3>   " DIALYTIKA OXIA
+:]      <char-0x1FED>   " DIALYTIKA VARIA
 :[      <char-0x1FC1>   " DIALYTIKA PERISPOMENI
 ;	<char-0x0384>   " GREEK TONOS
 {;	<char-0x0385>	" GREEK DIALYTIKA Oxia
