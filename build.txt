@@ -1,0 +1,2 @@
+./configure --with-features=huge \ # enables keymap
+            --enable-256-color
