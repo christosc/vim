@@ -1,2 +1,2 @@
-./configure --with-features=huge \ # enables keymap
+./configure --with-features=huge \ # enables keymap, clipboard
             --enable-256-color
