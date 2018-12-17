@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+if [[  $# -eq 0 ]]; then 
+        echo 'Usage: note note_name...'
+        exit 1
+fi 
+
+if [[ "$@" != *.txt ]]; then
+        EXT='.txt'
+fi
+
+FILENAME="${NOTE_DIR}/${@}${EXT}"
+MODELINE='# vim: tw=81'
+
+if [ ! -f "$FILENAME" ]; then
+        echo "$MODELINE" > "$FILENAME"
+fi
+
+vim "$FILENAME"
+
+
