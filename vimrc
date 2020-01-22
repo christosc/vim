@@ -71,7 +71,7 @@ set path=$PWD/**
 "set path+=~/work/sw/**
 set wildignore+=*/build/*
 set wildignore+=*/.hg/*
-"set incsearch
+set incsearch
 "set hlsearch
 nnoremap <silent> <space> :set hls!<cr>
 let g:loaded_matchparen=1
