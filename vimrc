@@ -178,5 +178,17 @@ setglobal complete=.,w,b,u
 set mouse=a
 autocmd InsertEnter,InsertLeave * set cul!
 nnoremap <Leader>l :ls<CR>
-nnoremap <Leader>p :bp<CR>
-nnoremap <Leader>n :bn<CR>
+nnoremap <Leader>bp :bp<CR>
+nnoremap <Leader>bn :bn<CR>
+nnoremap <Leader>cn :cn<CR>
+nnoremap <Leader>cp :cp<CR>
+nnoremap <Leader>cw :cw<CR>
+nnoremap <Leader>cc :ccl<CR>
+
+"set cscopequickfix=s-,c-,d-,i-,t-,e-,a-
+
+augroup qf
+    autocmd!
+    autocmd QuickFixCmdPost * cwindow
+augroup END
+
