@@ -4,3 +4,4 @@
 "colorscheme desert256
 hi ColorColumn ctermbg=DarkGrey
 hi Todo		ctermfg=red ctermbg=yellow
+hi StatusLineNC ctermfg=darkgray
