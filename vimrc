@@ -192,3 +192,5 @@ nnoremap <Leader>cc :ccl<CR>
 "    autocmd QuickFixCmdPost * cwindow
 "augroup END
 
+" bind \ (backward slash) to grep shortcut
+command -nargs=1 Gr exec ':silent! grep'.<args>|redraw!
