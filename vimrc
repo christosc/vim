@@ -184,11 +184,12 @@ nnoremap <Leader>cn :cn<CR>
 nnoremap <Leader>cp :cp<CR>
 nnoremap <Leader>cw :cw<CR>
 nnoremap <Leader>cc :ccl<CR>
-
+nnoremap <Leader>r  :redraw!<CR>
 "set cscopequickfix=s-,c-,d-,i-,t-,e-,a-
 
-augroup qf
-    autocmd!
-    autocmd QuickFixCmdPost * cwindow
-augroup END
+" Open automatically the quickfix window every time we do a grep.
+"augroup qf
+"    autocmd!
+"    autocmd QuickFixCmdPost * cwindow
+"augroup END
 
