@@ -150,10 +150,10 @@ endif
 
 set ttymouse=xterm2
 
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+"nnoremap <C-J> <C-W><C-J>
+"nnoremap <C-K> <C-W><C-K>
+"nnoremap <C-L> <C-W><C-L>
+"nnoremap <C-H> <C-W><C-H>
 
 "set splitbelow
 "set splitright
@@ -184,7 +184,6 @@ nnoremap <Leader>cn :cn<CR>
 nnoremap <Leader>cp :cp<CR>
 nnoremap <Leader>cw :cw<CR>
 nnoremap <Leader>cc :ccl<CR>
-nnoremap <Leader>r  :redraw!<CR>
 "set cscopequickfix=s-,c-,d-,i-,t-,e-,a-
 
 " Open automatically the quickfix window every time we do a grep.
