@@ -194,5 +194,6 @@ nnoremap <Leader>cc :ccl<CR>
 
 " bind \ (backward slash) to grep shortcut
 command -nargs=1 Gr exec ':silent! grep'.<args>|redraw!
+command -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
 
 nnoremap K :grep! "\b<cword>\b"<CR>:cw<CR>
