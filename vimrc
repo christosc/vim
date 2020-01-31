@@ -176,7 +176,7 @@ cnoremap <F5> <C-c>:set list!<CR>
 "set notagrelative
 setglobal complete=.,w,b,u
 set mouse=a
-autocmd InsertEnter,InsertLeave * set cul!
+"autocmd InsertEnter,InsertLeave * set cul!
 nnoremap <Leader>l :ls<CR>
 nnoremap <Leader>bp :bp<CR>
 nnoremap <Leader>bn :bn<CR>
@@ -195,5 +195,9 @@ nnoremap <Leader>cc :ccl<CR>
 " bind \ (backward slash) to grep shortcut
 command -nargs=1 Gr exec ':silent! grep'.<args>|redraw!
 command -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
+command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
 nnoremap K :grep! "\b<cword>\b"<CR>:cw<CR>
+nnoremap T :silent! grep "::<cword>\b"<CR>:redraw!<CR>
+"nnoremap T :GrDef "<cword>\b"
+"nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
