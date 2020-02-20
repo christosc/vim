@@ -6,3 +6,4 @@ hi ColorColumn ctermbg=DarkGrey
 hi Todo		ctermfg=red ctermbg=yellow
 hi StatusLineNC ctermfg=darkgray
 highlight Pmenu ctermbg=gray guibg=gray
+highlight Constant ctermfg=75

@@ -31,6 +31,7 @@ filetype plugin indent on    " required
 "set runtimepath^=~/.vim/bundle/ctrlp.vim
 "colorscheme desert
 "colorscheme codedark
+"colorscheme desert256
 syntax on
 "syntax off
 "set t_Co=0 
@@ -60,7 +61,7 @@ inoremap jj <Esc>
 
 "let mapleader = ","
 " nnoremap <Space> <C-f>
-set background=light "dark
+set background=dark
 "colorscheme codedark
 "colorscheme morning
 noremap <Leader>a :call CurtineIncSw()<CR>
@@ -116,7 +117,7 @@ command! -nargs=1 FindFile call FindFiles(<q-args>)
 
 "set tags=./tags;
 set tags=tags;
-set grepprg=grep\ --exclude-dir={[uU]nittests,[tT]est,build,hg}\ --exclude=tags\ $*\ -rIn\ .
+set grepprg=grep\ --exclude-dir={[uU]nittests,[tT]est,build,hg}\ --exclude=tags\ -In
 
 " Count the occurrences of the word under cursor
 map ,* *<C-O>:%s///gn<CR>
@@ -182,8 +183,13 @@ nnoremap <Leader>bp :bp<CR>
 nnoremap <Leader>bn :bn<CR>
 nnoremap <Leader>cn :cn<CR>
 nnoremap <Leader>cp :cp<CR>
-nnoremap <Leader>cw :cw<CR>
+nnoremap <Leader>co :copen<CR>
 nnoremap <Leader>cc :ccl<CR>
+nnoremap <Leader>cf :cfirst<CR>
+
+nnoremap <Leader>tp :tabp<CR>
+nnoremap <Leader>tn :tabn<CR>
+
 "set cscopequickfix=s-,c-,d-,i-,t-,e-,a-
 
 " Open automatically the quickfix window every time we do a grep.
@@ -197,7 +203,10 @@ command -nargs=1 Gr exec ':silent! grep'.<args>|redraw!
 command -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
 command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
-nnoremap K :grep! "\b<cword>\b"<CR>:cw<CR>
-nnoremap T :silent! grep "::<cword>\b"<CR>:redraw!<CR>
+nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
+nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 "nnoremap T :GrDef "<cword>\b"
-"nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+"nnoremap K :grep! "\<<C-R><C-W>\>"<CR>:cw<CR>
+
+"set showtabline=2
+set nowrapscan
