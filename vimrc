@@ -57,7 +57,7 @@ command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=
 "let g:solarized_termcolors=256
 "colorscheme desert256
 highlight ColorColumn ctermbg=DarkGrey
-inoremap jj <Esc>
+"inoremap jj <Esc>
 
 "let mapleader = ","
 " nnoremap <Space> <C-f>
@@ -67,7 +67,7 @@ set background=dark
 noremap <Leader>a :call CurtineIncSw()<CR>
 "nnoremap <silent> <F5> :let _s=@/ <Bar> :%s/\s\+$//e <Bar> :let @/=_s <Bar> :nohl <Bar> :unlet _s <CR>
 noremap <F4> :set hlsearch!<CR>
-set path=$PWD/**
+set path=**
 "set path+=**
 "set path+=~/work/sw/**
 set wildignore+=*/build/*
@@ -209,4 +209,9 @@ nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 "nnoremap K :grep! "\<<C-R><C-W>\>"<CR>:cw<CR>
 
 "set showtabline=2
-set nowrapscan
+"set nowrapscan
+
+set keymap=greek_mac
+set iminsert=0
+set imsearch=-1
+inoremap <C-\> <C-^>
