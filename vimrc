@@ -215,3 +215,4 @@ set keymap=greek_mac
 set iminsert=0
 set imsearch=-1
 inoremap <C-\> <C-^>
+set visualbell  "silence the audible bell
