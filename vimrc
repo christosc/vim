@@ -51,6 +51,7 @@ function! g:ToggleColorColumn()
 endfunction
 
 
+let mapleader = ","
 nnoremap <silent> <leader>c :call g:ToggleColorColumn()<CR>
 set pastetoggle=<F2>
 nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
@@ -64,7 +65,6 @@ highlight ColorColumn ctermbg=DarkGrey
 inoremap jk <Esc>
 inoremap kj <Esc>
 
-"let mapleader = ","
 " nnoremap <Space> <C-f>
 set background=dark
 "colorscheme codedark
@@ -210,6 +210,7 @@ command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
 nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
+nnoremap L :lcd %:p:h<CR>
 "nnoremap T :GrDef "<cword>\b"
 "nnoremap K :grep! "\<<C-R><C-W>\>"<CR>:cw<CR>
 
