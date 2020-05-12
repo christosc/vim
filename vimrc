@@ -19,6 +19,9 @@ Plugin 'tomasr/molokai'
 Plugin 'nathanalderson/yang.vim'
 Plugin 'ericcurtin/CurtineIncSw.vim'
 Plugin 'ludovicchabant/vim-lawrencium'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-unimpaired'
+
 
 
 
@@ -58,6 +61,8 @@ command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=
 "colorscheme desert256
 highlight ColorColumn ctermbg=DarkGrey
 "inoremap jj <Esc>
+inoremap jk <Esc>
+inoremap kj <Esc>
 
 "let mapleader = ","
 " nnoremap <Space> <C-f>
