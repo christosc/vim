@@ -54,7 +54,7 @@ endfunction
 let mapleader = ","
 nnoremap <silent> <leader>c :call g:ToggleColorColumn()<CR>
 set pastetoggle=<F2>
-nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
+"nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
 command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=nofile | put! a
 "set stl+=%{expand('%:~:.')}
 "colorscheme zenburn
@@ -64,6 +64,7 @@ highlight ColorColumn ctermbg=DarkGrey
 "inoremap jj <Esc>
 inoremap jk <Esc>
 inoremap kj <Esc>
+inoremap jj <Esc>
 
 " nnoremap <Space> <C-f>
 set background=dark
@@ -79,7 +80,8 @@ set wildignore+=*/build/*
 set wildignore+=*/.hg/*
 set incsearch
 "set hlsearch
-nnoremap <silent> <space> :set hls!<cr>
+"nnoremap <silent> <space> :set hls!<cr>
+nnoremap <silent> <F3> :set hls!<cr>
 let g:loaded_matchparen=1
 set ignorecase
 set smartcase
@@ -105,7 +107,7 @@ set mouse=v
 set exrc
 set secure
 set laststatus=2
-set ruler
+"set ruler
 
 " find files and populate the quickfix list
 fun! FindFiles(filename)
@@ -164,7 +166,7 @@ set ttymouse=xterm2
 "set splitbelow
 "set splitright
 "set title
-set hidden
+set hidden " if set when doing :bd it will just hide the buffer...
 set et
 set ts=4
 set sw=4
@@ -210,7 +212,7 @@ command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
 nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
-nnoremap L :lcd %:p:h<CR>
+nnoremap <silent> L :lcd %:p:h<CR>
 "nnoremap T :GrDef "<cword>\b"
 "nnoremap K :grep! "\<<C-R><C-W>\>"<CR>:cw<CR>
 
@@ -223,3 +225,16 @@ set imsearch=-1
 inoremap <C-\> <C-^>
 set vb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
+
+"-------------- STATUSLINE -----------------------
+"
+" Default statusline with ruler (as given in :help statusline)
+" is the following:
+"      set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+"
+
+"set statusline=%t\ %h%m%r\ %14.((%l,%c%V%))\ %P
+"set statusline=%t\ %h%m%r\ %14.(%l,%c%V%)\ %P
+"set statusline=%t\ %h%m%r\ %14.P
+set statusline=%t\ %h%m%r
+"set statusline=%t\ %h%m%r
