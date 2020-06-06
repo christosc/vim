@@ -210,9 +210,12 @@ command -nargs=1 Gr exec ':silent! grep'.<args>|redraw!
 command -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
 command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
-nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
+"nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
+nnoremap <leader>g :grep! "\b<cword>\b" -r %:p:h<CR>:cw<CR>
+nnoremap <leader>p :grep! "\b<cword>\b" -r %:p:h:h<CR>:cw<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
-nnoremap <silent> L :lcd %:p:h<CR>
+nnoremap <silent><leader>l :lcd %:p:h<CR>
+nnoremap <silent><leader>L :lcd %:p:h:h<CR>
 "nnoremap T :GrDef "<cword>\b"
 "nnoremap K :grep! "\<<C-R><C-W>\>"<CR>:cw<CR>
 
@@ -234,7 +237,7 @@ nnoremap <Leader>b# :b#<CR>
 "
 
 "set statusline=%t\ %h%m%r\ %14.((%l,%c%V%))\ %P
-"set statusline=%t\ %h%m%r\ %14.(%l,%c%V%)\ %P
+set statusline=%t\ %h%m%r\ %14.(%l,%c%V%)\ %P
 "set statusline=%t\ %h%m%r\ %14.P
-set statusline=%t\ %h%m%r
+"set statusline=%t\ %h%m%r
 "set statusline=%t\ %h%m%r
