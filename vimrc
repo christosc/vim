@@ -237,7 +237,8 @@ nnoremap <Leader>b# :b#<CR>
 "
 
 "set statusline=%t\ %h%m%r\ %14.((%l,%c%V%))\ %P
-set statusline=%t\ %h%m%r\ %14.(%l,%c%V%)\ %P
+"set statusline=%t\ %h%m%r\ %14.(%l,%c%V%)\ %P
+set statusline=%t\ %h%m%r%=%14.(%l,%c%V%)\ %P
 "set statusline=%t\ %h%m%r\ %14.P
 "set statusline=%t\ %h%m%r
 "set statusline=%t\ %h%m%r
