@@ -7,3 +7,8 @@
 "hi StatusLineNC ctermfg=gray
 "highlight Pmenu ctermbg=gray guibg=gray
 "highlight Constant ctermfg=75
+"
+
+" Quickfix list highlight color
+" Dark grey 
+hi QuickFixLine term=reverse ctermbg=237 
