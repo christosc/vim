@@ -230,6 +230,8 @@ set imsearch=-1
 inoremap <C-\> <C-^>
 set vb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
+nnoremap <Leader>a :A<CR>
+
 
 "-------------- STATUSLINE -----------------------
 "
