@@ -17,7 +17,6 @@ Plugin 'jnurmine/Zenburn'
 Plugin 'nanotech/jellybeans.vim'
 Plugin 'tomasr/molokai'
 Plugin 'nathanalderson/yang.vim'
-Plugin 'ericcurtin/CurtineIncSw.vim'
 Plugin 'ludovicchabant/vim-lawrencium'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
@@ -62,9 +61,9 @@ command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=
 "colorscheme desert256
 highlight ColorColumn ctermbg=DarkGrey
 "inoremap jj <Esc>
-inoremap jk <Esc>
+"inoremap jk <Esc>
 inoremap kj <Esc>
-inoremap jj <Esc>
+"inoremap jj <Esc>
 
 " nnoremap <Space> <C-f>
 set background=dark
@@ -78,7 +77,7 @@ set path=**
 "set path+=~/work/sw/**
 set wildignore+=*/build/*
 set wildignore+=*/.hg/*
-set incsearch
+"set incsearch
 "set hlsearch
 "nnoremap <silent> <space> :set hls!<cr>
 nnoremap <silent> <F3> :set hls!<cr>
@@ -124,7 +123,8 @@ command! -nargs=1 FindFile call FindFiles(<q-args>)
 
 "set tags=./tags;
 set tags=tags;
-set grepprg=grep\ --exclude-dir={[uU]nittests,[tT]est,build,hg}\ --exclude=tags\ -In
+"set grepprg=grep\ --exclude-dir={[uU]nittests,[tT]est,build,hg}\ --exclude=tags\ -In
+set grepprg=grep\ -nI\ --exclude-dir={.hg,.git}\ $*\ /dev/null"
 
 " Count the occurrences of the word under cursor
 map ,* *<C-O>:%s///gn<CR>
@@ -214,8 +214,10 @@ command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 nnoremap <leader>g :grep! "\b<cword>\b" -r %:p:h<CR>:cw<CR>
 nnoremap <leader>p :grep! "\b<cword>\b" -r %:p:h:h<CR>:cw<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
-nnoremap <silent><leader>l :lcd %:p:h<CR>
-nnoremap <silent><leader>L :lcd %:p:h:h<CR>
+nnoremap <leader>l :lcd %:p:h<CR>
+nnoremap <leader>L :lcd %:p:h:h<CR>
+nnoremap <silent><leader>d /\w\s\+<c-r>=expand('<cword>')<CR>\><CR>
+nnoremap <leader>D :silent grep "\w\s\+<cword>\b" -r %:p:h<CR>:redraw!<CR>
 "nnoremap T :GrDef "<cword>\b"
 "nnoremap K :grep! "\<<C-R><C-W>\>"<CR>:cw<CR>
 
@@ -238,7 +240,9 @@ nnoremap <Leader>b# :b#<CR>
 
 "set statusline=%t\ %h%m%r\ %14.((%l,%c%V%))\ %P
 "set statusline=%t\ %h%m%r\ %14.(%l,%c%V%)\ %P
-set statusline=%<%t\ %h%m%r%=%14.(%l,%c%V%)\ %P
+
+"set statusline=%<%t\ %h%m%r%=%14.(%l,%c%V%)\ %P
+
 "set statusline=%t\ %h%m%r\ %14.P
 "set statusline=%t\ %h%m%r
 "set statusline=%t\ %h%m%r
