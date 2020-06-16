@@ -72,11 +72,11 @@ set background=dark
 noremap <Leader>a :call CurtineIncSw()<CR>
 "nnoremap <silent> <F5> :let _s=@/ <Bar> :%s/\s\+$//e <Bar> :let @/=_s <Bar> :nohl <Bar> :unlet _s <CR>
 noremap <F4> :set hlsearch!<CR>
-set path=**
+set path=.,**
 "set path+=**
 "set path+=~/work/sw/**
-set wildignore+=*/build/*
-set wildignore+=*/.hg/*
+"set wildignore+=*/build/*
+"set wildignore+=*/.hg/*
 "set incsearch
 "set hlsearch
 "nnoremap <silent> <space> :set hls!<cr>
