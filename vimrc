@@ -106,7 +106,7 @@ set mouse=v
 set exrc
 set secure
 set laststatus=2
-"set ruler
+set ruler
 
 " find files and populate the quickfix list
 fun! FindFiles(filename)
