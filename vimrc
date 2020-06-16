@@ -213,7 +213,7 @@ command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 "nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
 nnoremap <leader>g :grep! "\b<cword>\b" -r %:p:h<CR>:cw<CR>
 nnoremap <leader>p :grep! "\b<cword>\b" -r %:p:h:h<CR>:cw<CR>
-nnoremap <leader>o :vimg /\<<c-r>=expand('<cword>')<CR>\>/ %<CR>
+nnoremap <leader>o :vimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:cw<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
 nnoremap <leader>L :lcd %:p:h:h<CR>
