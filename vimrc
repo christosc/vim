@@ -62,7 +62,7 @@ command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=
 highlight ColorColumn ctermbg=DarkGrey
 "inoremap jj <Esc>
 "inoremap jk <Esc>
-inoremap kj <Esc>
+"inoremap kj <Esc>
 "inoremap jj <Esc>
 
 " nnoremap <Space> <C-f>
@@ -213,6 +213,7 @@ command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 "nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
 nnoremap <leader>g :grep! "\b<cword>\b" -r %:p:h<CR>:cw<CR>
 nnoremap <leader>p :grep! "\b<cword>\b" -r %:p:h:h<CR>:cw<CR>
+nnoremap <leader>o :vimg /\<<c-r>=expand('<cword>')<CR>\>/ %<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
 nnoremap <leader>L :lcd %:p:h:h<CR>
