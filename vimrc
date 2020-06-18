@@ -221,7 +221,7 @@ nnoremap <leader>o :lvimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
 nnoremap <leader>L :lcd %:p:h:h<CR>
-nnoremap <silent><leader>d /\w\(\s\\|\*\\|>\)\+<c-r>=expand('<cword>')<CR>\><CR>
+nnoremap <silent><leader>d /\w\(\s\\|\*\\|>\\|\(\s\w\+::\)\)\+<c-r>=expand('<cword>')<CR>\><CR>
 
 " If there are more than one matching lines select the last one, since the
 " first one might be just a forward declaration.
