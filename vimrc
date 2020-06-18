@@ -31,6 +31,8 @@ filetype plugin indent on    " required
 "filetype plugin on
 
 "set runtimepath^=~/.vim/bundle/ctrlp.vim
+
+set fo-=t
 "colorscheme desert
 "colorscheme codedark
 "colorscheme desert256
@@ -219,8 +221,11 @@ nnoremap <leader>o :lvimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
 nnoremap <leader>L :lcd %:p:h:h<CR>
-nnoremap <silent><leader>d /\w\(\s\\|\*\)\+<c-r>=expand('<cword>')<CR>\><CR>
-nnoremap <leader>D :silent grep "\w[[:space:]*]\+<cword>\b" -r %:p:h<CR>:redraw!<CR>
+nnoremap <silent><leader>d /\w\(\s\\|\*\\|>\)\+<c-r>=expand('<cword>')<CR>\><CR>
+
+" If there are more than one matching lines select the last one, since the
+" first one might be just a forward declaration.
+nnoremap <leader>D :silent lgrep "\w[[:space:]*>]\+<cword>\b" -r %:p:h<CR>:redraw!<CR>:llast<CR>
 "nnoremap T :GrDef "<cword>\b"
 "nnoremap K :grep! "\<<C-R><C-W>\>"<CR>:cw<CR>
 
