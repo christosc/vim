@@ -213,10 +213,10 @@ command -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
 command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
 "nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
-"nnoremap <leader>g :lgrep! "\b<cword>\b" -r %:p:h<CR>:lopen<CR>
-"nnoremap <leader>p :lgrep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR>
-nnoremap <leader>g :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR>
-nnoremap <leader>p :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR>
+nnoremap <leader>g :lgrep! "\b<cword>\b" -r %:p:h<CR>:lopen<CR>
+nnoremap <leader>p :lgrep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR>
+"nnoremap <leader>g :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR>
+"nnoremap <leader>p :lgrep! "\b<cword>\b" -r ..<CR>:lopen<CR>
 nnoremap <leader>o :lvimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
