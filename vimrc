@@ -229,6 +229,7 @@ nnoremap <leader>D :silent lgrep "\w[[:space:]*>]\+<cword>\b" -r %:p:h<CR>:redra
 "nnoremap T :GrDef "<cword>\b"
 "nnoremap K :grep! "\<<C-R><C-W>\>"<CR>:cw<CR>
 
+command! -nargs=1 Def /\w\(\s\|\*\|>\)\+<args>
 "set showtabline=2
 "set nowrapscan
 
