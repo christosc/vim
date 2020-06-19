@@ -222,7 +222,7 @@ nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
 nnoremap <leader>L :lcd %:p:h:h<CR>
 "nnoremap <silent><leader>d /\w\s\+<c-r>=expand('<cword>')<CR>(\\|\(\*\\|>\\|&\)\(\s*\\|\(\s\+\w\+::\)\)<c-r>=expand('<cword>')<CR>(<CR>
-nnoremap <silent><leader>d /\w\s\+\(\w\+::\)\{,1}<c-r>=expand('<cword>')<CR>(\\|\(\*\\|>\\|&\)\(\s*\\|\(\s\+\w\+::\)\)<c-r>=expand('<cword>')<CR>(<CR>
+nnoremap <silent><leader>d /\w\s\+\(\w\+::\)\{,1}<c-r>=expand('<cword>')<CR>(\\|\(\*\\|>\\|&\)\(\s*\\|\(\s*\w\+::\)\)<c-r>=expand('<cword>')<CR>(<CR>
 "nnoremap <silent><leader>d /\w\s\+\(\w\+::\)\{,1}<c-r>=expand('<cword>')<CR>(\|\(\*\|>\|&\)\(\s*\|\(\s\+\w\+::\)\)<c-r>=expand('<cword>')<CR>(<CR>
 
 " If there are more than one matching lines select the last one, since the
@@ -230,12 +230,21 @@ nnoremap <silent><leader>d /\w\s\+\(\w\+::\)\{,1}<c-r>=expand('<cword>')<CR>(\\|
 "nnoremap <leader>D :debug grep '\\w\\(\\s\\+\\\|\\*\\\|\\(\\s\\w\\+::\\)\\)'" . shellescape(expand("<cword>")) . "'\\b' -r " . expand("%:p:h")<CR>:redraw!<CR>
 "nnoremap <silent><leader>D :silent! lgrep! "\\w\\s\\+<cword>(\\\|\\(\\*\\\|>\\\|&\\)\\(\\s*\\\|\\(\\s\\+\\w\\+::\\)\\)<cword>(" -r %:p:h<CR>:redraw!<CR>:silent! llast<CR>
 "nnoremap <silent><leader>D :debug exe "grep '\\w\\s\\+'" . shellescape(expand('<cword>')) . "'(\\\|\\(\\*\\\|>\\)\\(\\s*\\\|\\(\\s\\+\\w\\+::\\)\\)'" . shellescape(expand('<cword>')). "'(' -r " . expand('%:p:h')<CR>
-nnoremap <silent><leader>D :silent! lgrep! "\\w\\s\\+\\(\\w\\+::\\)\\?<cword>(\\\|\\(\\*\\\|>\\\|&\\)\\(\\s*\\\|\\(\\s\\+\\w\\+::\\)\\)<cword>(" -r %:p:h<CR>:redraw!<CR>:silent! llast<CR>
+nnoremap <silent><leader>D :silent! lgrep! "\\w\\s\\+\\(\\w\\+::\\)\\?<cword>(\\\|\\(\\*\\\|>\\\|&\\)\\(\\s*\\\|\\(\\s*\\w\\+::\\)\\)<cword>(" -r %:p:h<CR>:redraw!<CR>:silent! llast<CR>
 "'\w\(\s\+\|\*\|>\|\(\s\w\+::\)\)
 "nnoremap T :GrDef "<cword>\b"
 "nnoremap K :grep! "\<<C-R><C-W>\>"<CR>:cw<CR>
 
-command! -nargs=1 Def /\w\s\+\(\w\+::\)\{,1}<args>(\|\(\*\|>\|&\)\(\s*\|\(\s\+\w\+::\)\)<args>(
+command! -nargs=1 Def /\w\s\+\(\w\+::\)\{,1}<args>(\|\(\*\|>\|&\)\(\s*\|\(\s*\w\+::\)\)<args>(
+
+function! GrepRec(pat)
+    silent! execute 'lgrep! "\\w\\s\\+\\(\\w\\+::\\)\\?' . a:pat . '(\\\|\\(\\*\\\|>\\\|&\\)\\(\\s*\\\|\\(\\s*\\w\\+::\\)\\)' . a:pat . '(" -r ' . expand("%:p:h")
+    redraw!
+    silent! llast
+endfunction
+
+"command! -nargs=1 Defr debug call GrepRec("<args>")
+command! -nargs=1 Defr call GrepRec("<args>")
 "set showtabline=2
 "set nowrapscan
 
