@@ -253,10 +253,11 @@ set iminsert=0
 set imsearch=-1
 "inoremap <C-\> <C-^>
 inoremap <C-l> <C-^>
-set vb t_vb=  "silence the audible bell
+set novb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
 nnoremap <Leader>a :A<CR>
-
+set encoding=utf-8
+setglobal fileencoding=utf-8
 
 "-------------- STATUSLINE -----------------------
 "
