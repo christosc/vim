@@ -87,8 +87,10 @@ let g:loaded_matchparen=1
 set ignorecase
 set smartcase
 set linebreak
-map <C-j> gj
-map <C-k> gk
+noremap j gj
+noremap k gk
+noremap 0 g0
+noremap $ g$
 "map j gj
 "map k gk
 "map <C-4> g$
@@ -253,7 +255,7 @@ set iminsert=0
 set imsearch=-1
 "inoremap <C-\> <C-^>
 inoremap <C-l> <C-^>
-set novb t_vb=  "silence the audible bell
+set noeb vb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
 nnoremap <Leader>a :A<CR>
 set encoding=utf-8
