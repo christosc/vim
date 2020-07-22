@@ -276,3 +276,4 @@ setglobal fileencoding=utf-8
 "set statusline=%t\ %h%m%r\ %14.P
 "set statusline=%t\ %h%m%r
 "set statusline=%t\ %h%m%r
+set noek
