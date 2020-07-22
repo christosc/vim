@@ -79,7 +79,7 @@ set path=.,**
 "set path+=~/work/sw/**
 "set wildignore+=*/build/*
 "set wildignore+=*/.hg/*
-"set incsearch
+set incsearch
 "set hlsearch
 "nnoremap <silent> <space> :set hls!<cr>
 nnoremap <silent> <F3> :set hls!<cr>
