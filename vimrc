@@ -258,6 +258,7 @@ inoremap <C-l> <C-^>
 set noeb vb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
 nnoremap <Leader>a :A<CR>
+nnoremap <Leader>e :e!<CR>
 set encoding=utf-8
 setglobal fileencoding=utf-8
 
