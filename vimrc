@@ -215,8 +215,9 @@ command -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
 command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
 "nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
-nnoremap <leader>g :lgrep! "\b<cword>\b" -r %:p:h<CR>:lopen<CR>
-nnoremap <leader>p :lgrep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR>
+nnoremap <leader>gf :lgrep! "\b<cword>\b" -r %:p:h<CR>:lopen<CR><C-W><C-W>
+nnoremap <leader>gp :lgrep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR><C-W><C-W>
+nnoremap <leader>g. :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR><C-W><C-W>
 "nnoremap <leader>g :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR>
 "nnoremap <leader>p :lgrep! "\b<cword>\b" -r ..<CR>:lopen<CR>
 nnoremap <leader>o :lvimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR>
@@ -268,6 +269,7 @@ setglobal fileencoding=utf-8
 " is the following:
 "      set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 "
+"set statusline=%<%{expand('%:~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
 "set statusline=%t\ %h%m%r\ %14.((%l,%c%V%))\ %P
 "set statusline=%t\ %h%m%r\ %14.(%l,%c%V%)\ %P
@@ -278,3 +280,5 @@ setglobal fileencoding=utf-8
 "set statusline=%t\ %h%m%r
 "set statusline=%t\ %h%m%r
 set noek
+
+autocmd BufRead,BufNewFile *.cpp,*.c,*.h,*.hpp setlocal tw=80
