@@ -85,6 +85,8 @@ set incsearch
 nnoremap <silent> <F3> :set hls!<cr>
 let g:loaded_matchparen=1
 set ignorecase
+" Ignore case for buffer names
+set wildignorecase
 set smartcase
 set linebreak
 noremap j gj
