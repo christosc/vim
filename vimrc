@@ -285,3 +285,4 @@ setglobal fileencoding=utf-8
 set noek
 
 autocmd BufRead,BufNewFile *.cpp,*.c,*.h,*.hpp setlocal tw=80
+autocmd! BufWinEnter quickfix setlocal nowinfixheight
