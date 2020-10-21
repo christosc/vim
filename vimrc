@@ -81,7 +81,7 @@ set path=.,**
 "set wildignore+=*/.hg/*
 set incsearch
 "set hlsearch
-"nnoremap <silent> <space> :set hls!<cr>
+nnoremap <silent> <space> :nohlsearch<cr>
 nnoremap <silent> <F3> :set hls!<cr>
 let g:loaded_matchparen=1
 set ignorecase
@@ -212,12 +212,12 @@ nnoremap <Leader>tn :tabn<CR>
 "augroup END
 
 " bind \ (backward slash) to grep shortcut
-command -nargs=1 Gr exec ':silent! grep'.<args>|redraw!
-command -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
-command -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
+command! -nargs=1 Gr exec ':silent! grep'.<args>|redraw!
+command! -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
+command! -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
 "nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
-nnoremap <leader>gf :lgrep! "\b<cword>\b" -r %:p:h<CR>:lopen<CR><C-W>k
+nnoremap <leader>gf :lgrep! "\b<cword>\b" -r %:h<CR>:lopen<CR><C-W>k
 nnoremap <leader>gp :lgrep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR><C-W>k
 nnoremap <leader>g. :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR><C-W>k
 "nnoremap <leader>g :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR>
@@ -286,3 +286,4 @@ set noek
 
 autocmd BufRead,BufNewFile *.cpp,*.c,*.h,*.hpp setlocal tw=80
 autocmd! BufWinEnter quickfix setlocal nowinfixheight
+nnoremap <silent> <F4> :lcl<CR>
