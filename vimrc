@@ -222,8 +222,8 @@ nnoremap <leader>gp :lgrep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR><C-W>k
 nnoremap <leader>g. :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR><C-W>k
 "nnoremap <leader>g :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR>
 "nnoremap <leader>p :lgrep! "\b<cword>\b" -r ..<CR>:lopen<CR>
-nnoremap <leader>o :lvimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR>
-nnoremap <leader>O :lvimg /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:lopen<CR>
+nnoremap <leader>o :lvimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR><C-W>k
+nnoremap <leader>O :lvimg /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:lopen<CR><C-W>k
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
 nnoremap <leader>L :lcd %:p:h:h<CR>
