@@ -286,5 +286,11 @@ set noek
 
 autocmd BufRead,BufNewFile *.cpp,*.c,*.h,*.hpp setlocal tw=80
 autocmd! BufWinEnter quickfix setlocal nowinfixheight
+
 nnoremap <silent> <F4> :lcl<CR>
 "windo if &ft == "qf" | lclose | endif
+
+" Don't take tags and included files into account in completing words.
+" I dont' use tags anyway.
+set complete-=t
+set complete-=i
