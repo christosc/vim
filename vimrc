@@ -73,7 +73,7 @@ set background=dark
 "colorscheme morning
 noremap <Leader>a :call CurtineIncSw()<CR>
 "nnoremap <silent> <F5> :let _s=@/ <Bar> :%s/\s\+$//e <Bar> :let @/=_s <Bar> :nohl <Bar> :unlet _s <CR>
-noremap <F4> :set hlsearch!<CR>
+"noremap <F4> :set hlsearch!<CR>
 set path=.,**
 "set path+=**
 "set path+=~/work/sw/**
@@ -81,7 +81,7 @@ set path=.,**
 "set wildignore+=*/.hg/*
 set incsearch
 "set hlsearch
-nnoremap <silent> <space> :nohlsearch<cr>
+nnoremap <silent> <space> :set hls!<cr>
 nnoremap <silent> <F3> :set hls!<cr>
 let g:loaded_matchparen=1
 set ignorecase
@@ -287,3 +287,4 @@ set noek
 autocmd BufRead,BufNewFile *.cpp,*.c,*.h,*.hpp setlocal tw=80
 autocmd! BufWinEnter quickfix setlocal nowinfixheight
 nnoremap <silent> <F4> :lcl<CR>
+"windo if &ft == "qf" | lclose | endif
