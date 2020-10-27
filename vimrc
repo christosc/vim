@@ -217,13 +217,23 @@ command! -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
 command! -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
 "nnoremap K :grep! "\b<cword>\b" -r .<CR>:cw<CR>
-nnoremap <leader>gf :lgrep! "\b<cword>\b" -r %:h<CR>:lopen<CR><C-W>k
-nnoremap <leader>gp :lgrep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR><C-W>k
-nnoremap <leader>g. :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR><C-W>k
+"nnoremap <leader>gf :lgrep! "\b<cword>\b" -r %:h<CR>:lopen<CR><C-W>k
+"nnoremap <leader>gp :lgrep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR><C-W>k
+"nnoremap <leader>g. :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR><C-W>k
+"nnoremap <leader>gf :grep! "\b<cword>\b" -r %:h<CR>:copen<CR><C-W>k
+"nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>:copen<CR><C-W>k
+"nnoremap <leader>g. :grep! "\b<cword>\b" -r .<CR>:copen<CR><C-W>k
+nnoremap <leader>gf :grep! "\b<cword>\b" -r %:h<CR>:copen<CR>
+nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>:copen<CR>
+nnoremap <leader>g. :grep! "\b<cword>\b" -r .<CR>:copen<CR>
 "nnoremap <leader>g :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR>
 "nnoremap <leader>p :lgrep! "\b<cword>\b" -r ..<CR>:lopen<CR>
-nnoremap <leader>o :lvimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR><C-W>k
-nnoremap <leader>O :lvimg /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:lopen<CR><C-W>k
+"nnoremap <leader>o :lvimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR><C-W>k
+"nnoremap <leader>O :lvimg /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:lopen<CR><C-W>k
+"nnoremap <leader>o :vimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:copen<CR><C-W>k
+"nnoremap <leader>O :vimg /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:copen<CR><C-W>k
+nnoremap <leader>o :vimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:copen<CR>
+nnoremap <leader>O :vimg /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:copen<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
 nnoremap <leader>L :lcd %:p:h:h<CR>
@@ -287,10 +297,21 @@ set noek
 autocmd BufRead,BufNewFile *.cpp,*.c,*.h,*.hpp setlocal tw=80
 autocmd! BufWinEnter quickfix setlocal nowinfixheight
 
-nnoremap <silent> <F4> :lcl<CR>
+"nnoremap <silent> <F4> :lcl<CR>
+"nnoremap <silent> <F4> :ccl<CR>
 "windo if &ft == "qf" | lclose | endif
 
 " Don't take tags and included files into account in completing words.
 " I dont' use tags anyway.
 set complete-=t
 set complete-=i
+
+function! ToggleQuickFix()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+
+nnoremap <silent> <F4> :call ToggleQuickFix()<cr>
