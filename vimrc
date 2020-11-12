@@ -40,7 +40,7 @@ set fo-=t
 "set t_Co=0 
 syntax on
 set t_Co=256 
-"set tags=./tags;,tags;/data/$USER 
+set tags=./tags,tags,~/work/tags
 
 let g:columnlimit=101
 function! g:ToggleColorColumn()
