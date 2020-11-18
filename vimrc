@@ -176,6 +176,7 @@ set hidden " if set when doing :bd it will just hide the buffer...
 set et
 set ts=4
 set sw=4
+set sts=4  " feels like if working with tabs!
 
 "nnoremap <Leader>oc :e %<.c<CR>
 "nnoremap <Leader>oC :e %<.cpp<CR>
