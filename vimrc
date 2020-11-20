@@ -62,7 +62,7 @@ command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=
 "let g:solarized_termcolors=256
 "colorscheme desert256
 highlight ColorColumn ctermbg=DarkGrey
-"inoremap jj <Esc>
+inoremap jj <Esc>
 "inoremap jk <Esc>
 "inoremap kj <Esc>
 "inoremap jj <Esc>
