@@ -172,7 +172,7 @@ set ttymouse=xterm2
 "set splitbelow
 "set splitright
 "set title
-set hidden " if set when doing :bd it will just hide the buffer...
+"set hidden " if set when doing :bd it will just hide the buffer...
 set et
 set ts=4
 set sw=4
