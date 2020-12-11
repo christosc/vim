@@ -180,7 +180,6 @@ command! -nargs=1 Defr call GrepRec("<args>")
 set keymap=greek_mac
 set iminsert=0
 set imsearch=-1
-"inoremap <C-\> <C-^>
 inoremap <C-l> <C-^>
 set noeb vb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
