@@ -41,6 +41,7 @@ set fo-=t
 syntax on
 set t_Co=256 
 set tags=./tags,tags,~/work/tags
+set synmaxcol=500
 
 let g:columnlimit=101
 function! g:ToggleColorColumn()
@@ -52,20 +53,21 @@ function! g:ToggleColorColumn()
 endfunction
 
 
-let mapleader = ","
+let mapleader = "\<Space>"
 nnoremap <silent> <leader>c :call g:ToggleColorColumn()<CR>
 set pastetoggle=<F2>
 "nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
 command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=nofile | put! a
 highlight ColorColumn ctermbg=DarkGrey
-inoremap jj <Esc>
+"inoremap jj <Esc>
 
 set background=dark
 noremap <Leader>a :call CurtineIncSw()<CR>
 set path=.,**
 set incsearch
-nnoremap <silent> <space> :set hls!<cr>
-nnoremap <silent> <F3> :set hls!<cr>
+"noremap <F1> <Nop>
+"noremap <silent> <space> :set hls!<cr>
+noremap <silent> <F1> :set hls!<cr>
 let g:loaded_matchparen=1
 set ignorecase
 " Ignore case for buffer names
@@ -86,6 +88,8 @@ set exrc
 set secure
 set laststatus=2
 set ruler
+set ttyfast
+set lazyredraw
 
 " find files and populate the quickfix list
 fun! FindFiles(filename)
@@ -132,6 +136,10 @@ set et
 set ts=4
 set sw=4
 set sts=4  " feels like if working with tabs!
+set shiftround
+set smarttab
+set nostartofline
+set showcmd
 
 set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
 noremap <F5> :set list!<CR>
@@ -185,6 +193,7 @@ set noeb vb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
 nnoremap <Leader>a :A<CR>
 nnoremap <Leader>e :e!<CR>
+set termencoding=utf-8
 set encoding=utf-8
 setglobal fileencoding=utf-8
 
@@ -205,3 +214,8 @@ function! ToggleQuickFix()
 endfunction
 
 nnoremap <silent> <F4> :call ToggleQuickFix()<cr>
+set noerrorbells
+set wildmenu
+set wildmode=longest:full,full
+set title
+set shortmess=a
