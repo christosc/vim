@@ -25,6 +25,8 @@ Plugin 'nathanalderson/yang.vim'
 Plugin 'ludovicchabant/vim-lawrencium'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
+Plugin 'preservim/tagbar'
+"Plugin 'vim-syntastic/syntastic'
 
 
 
@@ -38,6 +40,7 @@ filetype plugin indent on    " required
 "set runtimepath^=~/.vim/bundle/ctrlp.vim
 
 set fo-=t
+set fo+=j
 syntax on
 set t_Co=256 
 set tags=./tags,tags,~/work/tags
@@ -89,7 +92,7 @@ set secure
 set laststatus=2
 set ruler
 set ttyfast
-set lazyredraw
+"set lazyredraw
 
 " find files and populate the quickfix list
 fun! FindFiles(filename)
@@ -113,22 +116,22 @@ map ,* *<C-O>:%s///gn<CR>
 " work-around to copy selected text to system clipboard
 " and prevent it from clearing clipboard when using ctrl+z (depends on xsel)
 " and when quitting vim.
-if executable("xsel")
-
-  function! PreserveClipboard()
-    call system("xsel -ib", getreg('+'))
-  endfunction
-
-  function! PreserveClipboadAndSuspend()
-    call PreserveClipboard()
-    suspend
-  endfunction
-
-  autocmd VimLeave * call PreserveClipboard()
-  nnoremap <silent> <c-z> :call PreserveClipboadAndSuspend()<cr>
-  vnoremap <silent> <c-z> :<c-u>call PreserveClipboadAndSuspend()<cr>
-
-endif
+"if executable("xsel")
+"
+"  function! PreserveClipboard()
+"    call system("xsel -ib", getreg('+'))
+"  endfunction
+"
+"  function! PreserveClipboadAndSuspend()
+"    call PreserveClipboard()
+"    suspend
+"  endfunction
+"
+"  autocmd VimLeave * call PreserveClipboard()
+"  nnoremap <silent> <c-z> :call PreserveClipboadAndSuspend()<cr>
+"  vnoremap <silent> <c-z> :<c-u>call PreserveClipboadAndSuspend()<cr>
+"
+"endif
 
 set ttymouse=xterm2
 
@@ -218,4 +221,68 @@ set noerrorbells
 set wildmenu
 set wildmode=longest:full,full
 set title
-set shortmess=a
+set shortmess=Ia
+
+if has('clipboard')     " If the feature is available
+  set clipboard=unnamed " copy to the system clipboard
+
+  if has('unnamedplus')
+    set clipboard+=unnamedplus
+  endif
+endif
+
+" Setting to indent wrapped lines
+if exists('+breakindent')
+  set breakindent
+  "set breakindentopt=shift:2
+endif
+
+nmap <F8> :TagbarToggle<CR>
+
+" Functions for status line config since these functions aren't loaded
+" when the vimrc is sourced
+function! CurrentTag(...)
+  if exists('g:tagbar_iconchars')
+    return call('tagbar#currenttag', a:000)
+  else
+    return ''
+  endif
+endfunction
+
+function! SyntasticStatuslineFlag()
+  return ''
+endfunction
+
+let g:tagbar_width = max([25, winwidth(0) / 5])
+
+" Left Side
+set statusline=
+set statusline+=%#IncSearch#%{&paste?'\ \ PASTE\ ':''}%*
+set statusline+=\ %.50f
+set statusline+=\ %m
+set statusline+=\ %r
+set statusline+=%=
+" Right Side
+set statusline+=%{CurrentTag('%s\ <\ ','','')}
+set statusline+=%y
+set statusline+=\ \ %P
+set statusline+=-%l
+set statusline+=-%c
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
+
+"set statusline+=\ %#ErrorMsg#%{SyntasticStatuslineFlag()}%*
+"let g:syntastic_cpp_include_dirs = ['/home/chryssoc/work/main_repo/y/include','/home/chryssoc/work/main_repo/vobs/dsl/sw/include','/home/chryssoc/work/main_repo/y/src/']
+"let g:syntastic_cpp_config_file = '~/.syntastic_cpp_config'
+"let g:syntastic_quiet_messages = { 'regex': 'generated.*h' }
+"let g:syntastic_cpp_compiler_options = ' -std=c++11'
+"let g:syntastic_debug = 3
+"let g:syntastic_debug = 1
+"let g:syntastic_cpp_remove_include_errors = 1
+
