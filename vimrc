@@ -62,7 +62,7 @@ set pastetoggle=<F2>
 "nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
 command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=nofile | put! a
 highlight ColorColumn ctermbg=DarkGrey
-"inoremap jj <Esc>
+inoremap jj <Esc>
 
 set background=dark
 noremap <Leader>a :call CurtineIncSw()<CR>
@@ -70,7 +70,7 @@ set path=.,**
 set incsearch
 "noremap <F1> <Nop>
 "noremap <silent> <space> :set hls!<cr>
-noremap <silent> <F1> :set hls!<cr>
+noremap <silent> <F3> :set hls!<cr>
 let g:loaded_matchparen=1
 set ignorecase
 " Ignore case for buffer names
@@ -210,7 +210,7 @@ set complete-=i
 
 function! ToggleQuickFix()
     if empty(filter(getwininfo(), 'v:val.quickfix'))
-        copen
+        botright cwindow
     else
         cclose
     endif
