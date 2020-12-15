@@ -150,28 +150,28 @@ inoremap <F5> <C-o>:set list!<CR>
 cnoremap <F5> <C-c>:set list!<CR>
 setglobal complete=.,w,b,u
 set mouse=a
-nnoremap <Leader>l :ls<CR>
-nnoremap <Leader>bp :bp<CR>
-nnoremap <Leader>bn :bn<CR>
-nnoremap <Leader>cn :cn<CR>
-nnoremap <Leader>cp :cp<CR>
-nnoremap <Leader>co :copen<CR>
-nnoremap <Leader>cc :ccl<CR>
-nnoremap <Leader>cf :cfirst<CR>
-
-nnoremap <Leader>tp :tabp<CR>
-nnoremap <Leader>tn :tabn<CR>
+"nnoremap <Leader>l :ls<CR>
+"nnoremap <Leader>bp :bp<CR>
+"nnoremap <Leader>bn :bn<CR>
+"nnoremap <Leader>cn :cn<CR>
+"nnoremap <Leader>cp :cp<CR>
+"nnoremap <Leader>co :copen<CR>
+"nnoremap <Leader>cc :ccl<CR>
+"nnoremap <Leader>cf :cfirst<CR>
+"
+"nnoremap <Leader>tp :tabp<CR>
+"nnoremap <Leader>tn :tabn<CR>
 
 " bind \ (backward slash) to grep shortcut
 command! -nargs=1 Gr exec ':silent! grep'.<args>|redraw!
 command! -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
 command! -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
-nnoremap <leader>gf :grep! "\b<cword>\b" -r %:h<CR>:copen<CR>
-nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>:copen<CR>
-nnoremap <leader>g. :grep! "\b<cword>\b" -r .<CR>:copen<CR>
-nnoremap <leader>o :vimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:copen<CR>
-nnoremap <leader>O :vimg /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:copen<CR>
+nnoremap <leader>gf :grep! "\b<cword>\b" -r %:h<CR>:botright cwindow<CR>
+nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>::botright cwindow<CR>
+nnoremap <leader>g. :grep! "\b<cword>\b" -r .<CR>:botright cwindow<CR>
+nnoremap <leader>o :vimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:botright cwindow<CR>
+nnoremap <leader>O :vimg /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:botright cwindow<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
 nnoremap <leader>L :lcd %:p:h:h<CR>
