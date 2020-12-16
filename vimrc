@@ -256,21 +256,21 @@ endfunction
 let g:tagbar_width = max([25, winwidth(0) / 5])
 
 " Left Side
-set statusline=
-set statusline+=%#IncSearch#%{&paste?'\ \ PASTE\ ':''}%*
-set statusline+=\ %.50f
-set statusline+=\ %m
-set statusline+=\ %r
-set statusline+=%=
-" Right Side
-set statusline+=%{CurrentTag('%s\ <\ ','','')}
-set statusline+=%y
-set statusline+=\ \ %P
-set statusline+=-%l
-set statusline+=-%c
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+"set statusline=
+"set statusline+=%#IncSearch#%{&paste?'\ \ PASTE\ ':''}%*
+"set statusline+=\ %.50f
+"set statusline+=\ %m
+"set statusline+=\ %r
+"set statusline+=%=
+"" Right Side
+"set statusline+=%{CurrentTag('%s\ <\ ','','')}
+"set statusline+=%y
+"set statusline+=\ \ %P
+"set statusline+=-%l
+"set statusline+=-%c
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
 
 "let g:syntastic_always_populate_loc_list = 1
 "let g:syntastic_auto_loc_list = 1
