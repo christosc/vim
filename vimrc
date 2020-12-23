@@ -125,7 +125,7 @@ set bs=2
 set autoindent
 set smartindent
 "noremap <Leader>s :update<CR>
-noremap <Leader>s :update<CR>
+noremap <Leader>w :write<CR>
 set mouse=v
 set exrc
 set secure
@@ -181,7 +181,6 @@ set sw=4
 set sts=4  " feels like if working with tabs!
 set shiftround
 set smarttab
-set nostartofline
 set showcmd
 
 set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
@@ -234,7 +233,6 @@ set imsearch=-1
 inoremap <C-l> <C-^>
 set noeb vb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
-nnoremap <Leader>a :A<CR>
 nnoremap <Leader>e :e!<CR>
 set termencoding=utf-8
 set encoding=utf-8
