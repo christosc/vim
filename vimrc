@@ -102,7 +102,7 @@ set pastetoggle=<F2>
 "nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
 command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=nofile | put! a
 highlight ColorColumn ctermbg=DarkGrey
-inoremap jj <Esc>
+"inoremap jj <Esc>
 
 set background=dark
 noremap <Leader>a :call CurtineIncSw()<CR>
@@ -233,7 +233,6 @@ set imsearch=-1
 inoremap <C-l> <C-^>
 set noeb vb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
-nnoremap <Leader>e :e!<CR>
 set termencoding=utf-8
 set encoding=utf-8
 setglobal fileencoding=utf-8
@@ -259,7 +258,7 @@ set noerrorbells
 set wildmenu
 "set wildmode=longest:full,full
 set title
-set shortmess=Ia
+set shortmess=a
 
 if has('clipboard')     " If the feature is available
   set clipboard=unnamed " copy to the system clipboard
