@@ -145,7 +145,8 @@ fun! FindFiles(filename)
 endfun
 command! -nargs=1 FindFile call FindFiles(<q-args>)
 
-set grepprg=grep\ -nI\ --exclude-dir={.hg,.git}\ $*\ /dev/null"
+set grepprg=grep\ -nI\ --exclude-dir={.hg,.git}\ --exclude='*~'\ $*\ /dev/null
+"set grepprg='grep -nI --exclude-dir={.hg,.git} $*'
 
 " Count the occurrences of the word under cursor
 map ,* *<C-O>:%s///gn<CR>
