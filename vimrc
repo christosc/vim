@@ -323,4 +323,4 @@ let g:tagbar_width = max([25, winwidth(0) / 5])
 "let g:syntastic_debug = 3
 "let g:syntastic_debug = 1
 "let g:syntastic_cpp_remove_include_errors = 1
-
+runtime macros/matchit.vim
