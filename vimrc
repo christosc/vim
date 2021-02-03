@@ -83,7 +83,11 @@ set fo-=t
 set fo+=j
 syntax on
 set t_Co=256 
-set tags=./tags,tags,~/work/tags
+"set tags=./tags,tags,~/work/tags
+"set tags=./tags;~/work/main_repo
+" Begin looking for tags from current file's directory and walk up the
+" hiearchy until root directory.
+set tags=./tags;/
 set synmaxcol=500
 
 let g:columnlimit=101
@@ -117,10 +121,10 @@ set ignorecase
 set wildignorecase
 set smartcase
 set linebreak
-noremap j gj
-noremap k gk
-noremap 0 g0
-noremap $ g$
+"noremap j gj
+"noremap k gk
+"noremap 0 g0
+"noremap $ g$
 set bs=2
 set autoindent
 set smartindent
@@ -324,3 +328,4 @@ let g:tagbar_width = max([25, winwidth(0) / 5])
 "let g:syntastic_debug = 1
 "let g:syntastic_cpp_remove_include_errors = 1
 runtime macros/matchit.vim
+set scrolloff&  "Revert value from defaults.vim
