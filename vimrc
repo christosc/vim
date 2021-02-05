@@ -16,10 +16,10 @@ else
   endif
 endif
 
-if &t_Co > 2 || has("gui_running")
-  " Switch on highlighting the last used search pattern.
-  set hlsearch
-endif
+"if &t_Co > 2 || has("gui_running")
+"  " Switch on highlighting the last used search pattern.
+"  set hlsearch
+"endif
 
 " Put these in an autocmd group, so that we can delete them easily.
 augroup vimrcEx
@@ -235,7 +235,9 @@ command! -nargs=1 Defr call GrepRec("<args>")
 set keymap=greek_mac
 set iminsert=0
 set imsearch=-1
-inoremap <C-l> <C-^>
+inoremap <C-\> <C-^>
+"inoremap <silent><ESC> <ESC>:set iminsert=0<CR>
+
 set noeb vb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
 set termencoding=utf-8
@@ -329,3 +331,8 @@ let g:tagbar_width = max([25, winwidth(0) / 5])
 "let g:syntastic_cpp_remove_include_errors = 1
 runtime macros/matchit.vim
 set scrolloff&  "Revert value from defaults.vim
+
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
