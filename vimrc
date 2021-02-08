@@ -87,7 +87,7 @@ set t_Co=256
 "set tags=./tags;~/work/main_repo
 " Begin looking for tags from current file's directory and walk up the
 " hiearchy until root directory.
-set tags=./tags;/
+set tags=./tags;~/work
 set synmaxcol=500
 
 let g:columnlimit=101
@@ -149,7 +149,7 @@ fun! FindFiles(filename)
 endfun
 command! -nargs=1 FindFile call FindFiles(<q-args>)
 
-set grepprg=grep\ -nI\ --exclude-dir={.hg,.git}\ --exclude='*~'\ $*\ /dev/null
+set grepprg=grep\ -nI\ --exclude-dir={.hg,.git}\ --exclude='*~'\ $*\ /dev/null\ --exclude=tags\ --exclude=TAGS
 "set grepprg='grep -nI --exclude-dir={.hg,.git} $*'
 
 " Count the occurrences of the word under cursor
