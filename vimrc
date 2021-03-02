@@ -7,6 +7,9 @@ endif
 " Get the defaults that most users want.
 source $VIMRUNTIME/defaults.vim
 
+" Don't highlight literals within C comments (set by defaults.vim).
+unlet c_comment_strings
+
 if has("vms")
   set nobackup		" do not keep a backup file, use versions instead
 else
@@ -83,6 +86,8 @@ set fo-=t
 set fo+=j
 syntax on
 set t_Co=256 
+colorscheme molokai
+"colorscheme desert256
 "set tags=./tags,tags,~/work/tags
 "set tags=./tags;~/work/main_repo
 " Begin looking for tags from current file's directory and walk up the
@@ -117,8 +122,10 @@ set incsearch
 noremap <silent> <F3> :set hls!<cr>
 let g:loaded_matchparen=1
 set ignorecase
+set tagcase=smart
 " Ignore case for buffer names
 set wildignorecase
+set fileignorecase
 set smartcase
 set linebreak
 "noremap j gj
@@ -214,8 +221,8 @@ command! -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 nnoremap <leader>gf :grep! "\b<cword>\b" -r %:h<CR>:botright cwindow<CR>
 nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>::botright cwindow<CR>
 nnoremap <leader>g. :grep! "\b<cword>\b" -r .<CR>:botright cwindow<CR>
-nnoremap <leader>o :vimg /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:botright cwindow<CR>
-nnoremap <leader>O :vimg /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:botright cwindow<CR>
+nnoremap <leader>o :vim /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:botright cwindow<CR>
+nnoremap <leader>O :vim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:botright cwindow<CR>
 nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
 nnoremap <leader>L :lcd %:p:h:h<CR>
@@ -336,3 +343,5 @@ noremap <Up> <Nop>
 noremap <Down> <Nop>
 noremap <Left> <Nop>
 noremap <Right> <Nop>
+
+set hidden
