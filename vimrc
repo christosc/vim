@@ -69,6 +69,7 @@ Plugin 'ludovicchabant/vim-lawrencium'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'preservim/tagbar'
+Plugin 'morhetz/gruvbox'
 "Plugin 'vim-syntastic/syntastic'
 
 
@@ -86,7 +87,11 @@ set fo-=t
 set fo+=j
 syntax on
 set t_Co=256 
-colorscheme molokai
+" Unbind some useless/annoying default key bindings.
+nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
+"set number
+"set relativenumber
+"colorscheme molokai
 "colorscheme desert256
 "set tags=./tags,tags,~/work/tags
 "set tags=./tags;~/work/main_repo
@@ -111,9 +116,10 @@ set pastetoggle=<F2>
 "nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
 command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=nofile | put! a
 highlight ColorColumn ctermbg=DarkGrey
-"inoremap jj <Esc>
+inoremap jj <Esc>
 
 set background=dark
+"set background=light
 noremap <Leader>a :call CurtineIncSw()<CR>
 set path=.,**
 set incsearch
@@ -252,7 +258,7 @@ set encoding=utf-8
 setglobal fileencoding=utf-8
 
 autocmd BufRead,BufNewFile *.cpp,*.c,*.h,*.hpp setlocal tw=80
-autocmd! BufWinEnter quickfix setlocal nowinfixheight
+"autocmd! BufWinEnter quickfix setlocal nowinfixheight
 
 " Don't take tags and included files into account in completing words.
 " I dont' use tags anyway.
