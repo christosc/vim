@@ -116,7 +116,7 @@ set pastetoggle=<F2>
 "nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
 command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=nofile | put! a
 highlight ColorColumn ctermbg=DarkGrey
-inoremap jj <Esc>
+"inoremap jj <Esc>
 
 set background=dark
 "set background=light
@@ -351,3 +351,4 @@ noremap <Left> <Nop>
 noremap <Right> <Nop>
 
 set hidden
+"set t_ut=""
