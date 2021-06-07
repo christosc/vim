@@ -92,7 +92,7 @@ nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
 "set number
 "set relativenumber
 "colorscheme molokai
-"colorscheme desert256
+colorscheme desert256
 "set tags=./tags,tags,~/work/tags
 "set tags=./tags;~/work/main_repo
 " Begin looking for tags from current file's directory and walk up the
