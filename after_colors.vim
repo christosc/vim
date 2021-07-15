@@ -12,3 +12,5 @@
 " Quickfix list highlight color
 " Dark grey 
 hi QuickFixLine term=reverse ctermbg=237 
+highlight Normal ctermfg=white
+

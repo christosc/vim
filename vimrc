@@ -275,10 +275,10 @@ endfunction
 
 nnoremap <silent> <F4> :call ToggleQuickFix()<cr>
 set noerrorbells
-set wildmenu
+"set wildmenu
 "set wildmode=longest:full,full
 set title
-set shortmess=a
+"set shortmess=a
 
 if has('clipboard')     " If the feature is available
   set clipboard=unnamed " copy to the system clipboard
@@ -343,7 +343,7 @@ let g:tagbar_width = max([25, winwidth(0) / 5])
 "let g:syntastic_debug = 1
 "let g:syntastic_cpp_remove_include_errors = 1
 runtime macros/matchit.vim
-set scrolloff&  "Revert value from defaults.vim
+"set scrolloff&  "Revert value from defaults.vim
 
 noremap <Up> <Nop>
 noremap <Down> <Nop>
