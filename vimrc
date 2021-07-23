@@ -279,6 +279,7 @@ set noerrorbells
 "set wildmode=longest:full,full
 set title
 "set shortmess=a
+set shortmess-=S  "Show [x/y] for search results
 
 if has('clipboard')     " If the feature is available
   set clipboard=unnamed " copy to the system clipboard
