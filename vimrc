@@ -70,6 +70,8 @@ Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'preservim/tagbar'
 Plugin 'morhetz/gruvbox'
+"Plugin 'godlygeek/tabular'
+"Plugin 'plasticboy/vim-markdown'
 "Plugin 'vim-syntastic/syntastic'
 
 
@@ -93,6 +95,7 @@ nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
 "set relativenumber
 "colorscheme molokai
 colorscheme desert256
+"colorscheme solarize/
 "set tags=./tags,tags,~/work/tags
 "set tags=./tags;~/work/main_repo
 " Begin looking for tags from current file's directory and walk up the
@@ -162,7 +165,10 @@ fun! FindFiles(filename)
 endfun
 command! -nargs=1 FindFile call FindFiles(<q-args>)
 
-set grepprg=grep\ -nI\ --exclude-dir={.hg,.git}\ --exclude='*~'\ $*\ /dev/null\ --exclude=tags\ --exclude=TAGS
+" To exclude Emacs temporary files beginning with a '#' symbol, it was
+" necessary to escape # character with shellescape as shown, because it was
+" getting expanded to the 'alternate' buffer name.
+let &grepprg="grep -nI --exclude='*~' --exclude=tags\ --exclude=TAGS --exclude-dir={.hg,.git} --exclude=" . shellescape("#", 1) . "'*' --exclude='*.orig'"
 "set grepprg='grep -nI --exclude-dir={.hg,.git} $*'
 
 " Count the occurrences of the word under cursor
@@ -224,14 +230,25 @@ command! -nargs=1 Gr exec ':silent! grep'.<args>|redraw!
 command! -nargs=1 Grep exec ':silent! :grep'.<args>|redraw!|copen
 command! -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 
-nnoremap <leader>gf :grep! "\b<cword>\b" -r %:h<CR>:botright cwindow<CR>
-nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>::botright cwindow<CR>
-nnoremap <leader>g. :grep! "\b<cword>\b" -r .<CR>:botright cwindow<CR>
-nnoremap <leader>o :vim /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:botright cwindow<CR>
-nnoremap <leader>O :vim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:botright cwindow<CR>
-nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
+"" Search mappings using quickfix list
+"nnoremap <silent><leader>gf :grep! "\b<cword>\b" -r %:h<CR>:botright cwindow<CR>
+"nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>:botright cwindow<CR>
+"nnoremap <leader>g. :grep! "\b<cword>\b" -r .<CR>:botright cwindow<CR>
+"nnoremap <leader>o :vim /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:botright cwindow<CR>
+"nnoremap <leader>O :vim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:botright cwindow<CR>
+
+" Search mappings using quickfix list
+nnoremap <silent><leader>gf :lgrep! "\b<cword>\b" -r %:h<CR>:lopen<CR>
+nnoremap <leader>gp :lgrep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR>
+nnoremap <leader>g. :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR>
+nnoremap <leader>o :lvim /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR>
+nnoremap <leader>O :lvim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:lopen<CR>
+
+"nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
 nnoremap <leader>L :lcd %:p:h:h<CR>
+nnoremap <leader>lo :lopen<CR>
+nnoremap <leader>lc :lclose<CR>
 nnoremap <silent><leader>d /\w\s\+\(\w\+::\)\{,1}<c-r>=expand('<cword>')<CR>(\\|\(\*\\|>\\|&\)\(\s*\\|\(\s*\w\+::\)\)<c-r>=expand('<cword>')<CR>(<CR>
 nnoremap <silent><leader>D :silent! lgrep! "\\w\\s\\+\\(\\w\\+::\\)\\?<cword>(\\\|\\(\\*\\\|>\\\|&\\)\\(\\s*\\\|\\(\\s*\\w\\+::\\)\\)<cword>(" -r %:p:h<CR>:redraw!<CR>:silent! llast<CR>
 
@@ -250,6 +267,15 @@ set iminsert=0
 set imsearch=-1
 inoremap <C-\> <C-^>
 "inoremap <silent><ESC> <ESC>:set iminsert=0<CR>
+function! ToggleKeymap()
+    if &keymap=='greek_mac'
+        set keymap=
+    else
+        set keymap=greek_mac
+    endif
+endfunction
+
+nnoremap <C-\> :call ToggleKeymap()<cr>
 
 set noeb vb t_vb=  "silence the audible bell
 nnoremap <Leader>b# :b#<CR>
@@ -312,7 +338,7 @@ function! SyntasticStatuslineFlag()
 endfunction
 
 let g:tagbar_width = max([25, winwidth(0) / 5])
-
+let g:tagbar_ctags_bin="/home/chryssoc/bin/ctags"
 " Left Side
 "set statusline=
 "set statusline+=%#IncSearch#%{&paste?'\ \ PASTE\ ':''}%*
@@ -329,6 +355,7 @@ let g:tagbar_width = max([25, winwidth(0) / 5])
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
 "set statusline+=%*
+"set statusline=%<%f\ %h%m%r\ \ %-9(%l,%c%V%)\ %P
 
 "let g:syntastic_always_populate_loc_list = 1
 "let g:syntastic_auto_loc_list = 1
@@ -353,3 +380,11 @@ noremap <Right> <Nop>
 
 set hidden
 "set t_ut=""
+
+" Auto-detect Freemarker (ftl) file type.
+augroup filetypedetect
+  au BufNewFile,BufRead *.ftl setf ftl
+augroup END
+
+set autochdir
+

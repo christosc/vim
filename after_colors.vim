@@ -12,5 +12,8 @@
 " Quickfix list highlight color
 " Dark grey 
 hi QuickFixLine term=reverse ctermbg=237 
-highlight Normal ctermfg=white
+
+" Comment out below for light backgrounds!
+"highlight Normal ctermfg=white
+hi StatusLine term=bold,reverse cterm=bold,reverse ctermfg=145 ctermbg=16 gui=reverse guifg=#c2bfa5 guibg=#000000
 
