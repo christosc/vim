@@ -338,7 +338,7 @@ function! SyntasticStatuslineFlag()
 endfunction
 
 let g:tagbar_width = max([25, winwidth(0) / 5])
-let g:tagbar_ctags_bin="/home/chryssoc/bin/ctags"
+let g:tagbar_ctags_bin="/data/chryssoc/bin/ctags"
 " Left Side
 "set statusline=
 "set statusline+=%#IncSearch#%{&paste?'\ \ PASTE\ ':''}%*
@@ -386,5 +386,20 @@ augroup filetypedetect
   au BufNewFile,BufRead *.ftl setf ftl
 augroup END
 
-set autochdir
+"set autochdir
 
+" Use a line cursor within insert mode and a block cursor everywhere else.
+"
+" Reference chart of values:
+"   Ps = 0  -> blinking block.
+"   Ps = 1  -> blinking block (default).
+"   Ps = 2  -> steady block.
+"   Ps = 3  -> blinking underline.
+"   Ps = 4  -> steady underline.
+"   Ps = 5  -> blinking bar (xterm).
+"   Ps = 6  -> steady bar (xterm).
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+
+" YAML files by default don't get indented correctly. This fixes the issue.
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
