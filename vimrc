@@ -371,7 +371,7 @@ let g:tagbar_ctags_bin="/data/chryssoc/bin/ctags"
 "let g:syntastic_debug = 1
 "let g:syntastic_cpp_remove_include_errors = 1
 runtime macros/matchit.vim
-"set scrolloff&  "Revert value from defaults.vim
+set scrolloff&  "Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
 
 noremap <Up> <Nop>
 noremap <Down> <Nop>
