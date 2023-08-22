@@ -126,13 +126,14 @@ set background=dark
 noremap <Leader>a :call CurtineIncSw()<CR>
 # Use :fin[d] %:t:r.hpp or %:t:r.cpp to switch between header and
 # implementation files. (See also :help expand.)
-set path=.,../export/**,../include/**,../src/**
+# Searches recursively relative to current directory of vim.
+set path=include/**,src/**,export/**,source/**,**
 set incsearch
 #noremap <F1> <Nop>
 #noremap <silent> <space> :set hls!<cr>
 noremap <silent> <F3> :set hls!<cr>
 set hls #highlight search
-g:loaded_matchparen = 1
+#g:loaded_matchparen = 1
 set ignorecase
 set tagcase=smart
 # Ignore case for buffer names
@@ -369,3 +370,5 @@ def SwitchToOtherFile(filepath: string): bool
     return 1
 enddef
 command! A call SwitchToOtherFile(expand('%'))
+
+set omnifunc=syntaxcomplete#Complete
