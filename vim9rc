@@ -42,7 +42,7 @@ augroup END
 if has('syntax') && has('eval')
   packadd! matchit
 endif
-set nocompatible 
+set nocompatible
 filetype off                  # required
 
 # set the runtime path to include Vundle and initialize
@@ -86,7 +86,7 @@ filetype plugin indent on    # required
 set fo-=t
 set fo+=j
 syntax on
-set t_Co=256 
+set t_Co=256
 # Unbind some useless/annoying default key bindings.
 nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
 #set number
@@ -95,6 +95,7 @@ nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
 #colorscheme desert256
 #colorscheme codedark
 colorscheme desert
+#colorscheme default
 #colorscheme solarize/
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
@@ -130,8 +131,10 @@ noremap <Leader>a :call CurtineIncSw()<CR>
 set path=include/**,src/**,export/**,source/**,**
 set incsearch
 #noremap <F1> <Nop>
-#noremap <silent> <space> :set hls!<cr>
-noremap <silent> <F3> :set hls!<cr>
+noremap <silent> <space> :set hls!<cr>
+#noremap <silent> <F3> :noh<cr>
+noremap <silent> <space> :noh<cr>
+
 set hls #highlight search
 #g:loaded_matchparen = 1
 set ignorecase
@@ -247,7 +250,8 @@ enddef
 
 nnoremap <C-\> :call ToggleKeymap()<cr>
 
-set noeb vb t_vb=  #silence the audible bell
+#Don't suppress bells. They may be actually useful...
+#set noeb vb t_vb=
 nnoremap <Leader>b# :b#<CR>
 set termencoding=utf-8
 set encoding=utf-8
@@ -317,7 +321,7 @@ noremap <Down> <Nop>
 noremap <Left> <Nop>
 noremap <Right> <Nop>
 
-#set hidden
+set hidden
 #set t_ut=""
 
 # Auto-detect Freemarker (ftl) file type.
@@ -372,3 +376,11 @@ enddef
 command! A call SwitchToOtherFile(expand('%'))
 
 set omnifunc=syntaxcomplete#Complete
+
+set diffopt=filler,vertical
+
+# I don't like the hint about the command-line window.
+augroup vimHints | exe 'au!' | augroup END
+
+# Access old (recent) files easily.
+nnoremap <leader>r :bro ol<CR>
