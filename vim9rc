@@ -69,6 +69,7 @@ Plugin 'nathanalderson/yang.vim'
 Plugin 'ludovicchabant/vim-lawrencium'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
+Plugin 'tpope/vim-fugitive'
 Plugin 'preservim/tagbar'
 Plugin 'morhetz/gruvbox'
 
@@ -120,7 +121,7 @@ set pastetoggle=<F2>
 #nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
 command! -nargs=? Filter let @a='' | execute 'g/<args>/y A' | new | setlocal bt=nofile | put! a
 highlight ColorColumn ctermbg=DarkGrey
-#inoremap jj <Esc>
+inoremap jj <Esc>
 
 set background=dark
 #set background=light
@@ -211,11 +212,11 @@ command! -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 #nnoremap <leader>O :vim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:botright cwindow<CR>
 
 # Search mappings using quickfix list
-nnoremap <silent><leader>gf :lgrep! "\b<cword>\b" -r %:h<CR>:lopen<CR>
-nnoremap <leader>gp :lgrep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR>
-nnoremap <leader>g. :lgrep! "\b<cword>\b" -r .<CR>:lopen<CR>
-nnoremap <leader>o :lvim /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR>
-nnoremap <leader>O :lvim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:lopen<CR>
+nnoremap <silent><leader>gf :grep! "\b<cword>\b" -r %:h<CR>:lopen<CR>
+nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>:lopen<CR>
+nnoremap <leader>g. :grep! "\b<cword>\b" -r .<CR>:lopen<CR>
+nnoremap <leader>o :vim /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:lopen<CR>
+nnoremap <leader>O :vim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:lopen<CR>
 
 #nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
