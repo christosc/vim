@@ -113,7 +113,6 @@ function! g:ToggleColorColumn()
 endfunction
 
 
-let mapleader = "\<Space>"
 nnoremap <silent> <leader>c :call g:ToggleColorColumn()<CR>
 set pastetoggle=<F2>
 "nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
@@ -172,7 +171,7 @@ let &grepprg="grep -nI --exclude='*~' --exclude=tags\ --exclude=TAGS --exclude-d
 "set grepprg='grep -nI --exclude-dir={.hg,.git} $*'
 
 " Count the occurrences of the word under cursor
-map ,* *<C-O>:%s///gn<CR>
+map <leader>* *<C-O>:%s///gn<CR>
 
 " use X11 clipboard for yank and paste
 "set clipboard=unnamedplus
