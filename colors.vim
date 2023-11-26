@@ -20,8 +20,8 @@ vim9script
 
 # Need to specify other search hit highlight color for Solarized light
 # colortheme.
-hi Search cterm=NONE ctermfg=black ctermbg=blue
+#hi Search cterm=NONE ctermfg=black ctermbg=blue
 
 # Try to make the mode sign "--INSERT--" more visible.
-#hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow
+hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow
 
