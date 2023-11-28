@@ -119,8 +119,8 @@ colorscheme desert256
 set tags=./tags;~/work
 set synmaxcol=500
 # The next command is from christosc/fzf.vim
-nnoremap <silent> <C-P> :VcFiles<CR>
-nnoremap <silent> <C-p>       :Files<CR>
+nnoremap <silent> <C-p> :VcFiles<CR>
+nnoremap <silent> <F5> :Files<CR>
 #g:fzf_vim = {}
 #g:fzf_vim.preview_window = ['right,50%', 'ctrl-t']
 
@@ -148,9 +148,9 @@ inoremap jj <Esc>
 set path=include/**,src/**,export/**,source/**,**
 set incsearch
 #noremap <F1> <Nop>
-noremap <silent> <space> :set hls!<cr>
+noremap <silent> <F3> :set hls!<cr>
 #noremap <silent> <F3> :noh<cr>
-noremap <silent> <space> :noh<cr>
+#noremap <silent> <space> :noh<cr>
 
 set hls #highlight search
 #g:loaded_matchparen = 1
@@ -412,10 +412,13 @@ nnoremap <leader>r :bro ol<CR>
 
 def g:HgBranch(): string
     #return "Hello"
-    return system("hg --cwd " .. expand("%:p:h") .. "  bookmarks 2>/dev/null | grep  '\*'")
+    #return system("hg --cwd " .. expand("%:p:h") .. "  bookmarks 2>/dev/null | grep  '\*'")
+    var bookmark = substitute(system("hg book -ql ."), '\n\+$', '', '')
+    return bookmark
     #return trim(system("hg --cwd " .. expand("%:p:h") .. " bookmarks"))
 enddef
 
 #Leveraging here Tagbars' function for finding the tag we are currently near.
-set statusline=%<%f\ \ \ \ \ \ \ \ %{tagbar#currenttag('%s','','')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+#set statusline=%<%f\ \ \ \ \ \ \ \ %{tagbar#currenttag('%s','','')}\ %{g:HgBranch()}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 #set statusline+=\ %{tagbar#currenttag('%s','','')}
+set statusline=%<%f\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
