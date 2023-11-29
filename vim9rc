@@ -119,8 +119,8 @@ colorscheme desert256
 set tags=./tags;~/work
 set synmaxcol=500
 # The next command is from christosc/fzf.vim
-nnoremap <silent> <C-p> :VcFiles<CR>
-nnoremap <silent> <F5> :Files<CR>
+nnoremap <silent> <C-p> :Files<CR>
+nnoremap <silent> <F5> :VcFiles<CR>
 #g:fzf_vim = {}
 #g:fzf_vim.preview_window = ['right,50%', 'ctrl-t']
 
@@ -152,7 +152,7 @@ noremap <silent> <F3> :set hls!<cr>
 #noremap <silent> <F3> :noh<cr>
 #noremap <silent> <space> :noh<cr>
 
-set hls #highlight search
+set nohls #highlight search
 #g:loaded_matchparen = 1
 set ignorecase
 set tagcase=smart

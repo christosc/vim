@@ -17,10 +17,10 @@ vim9script
 # Comment out below for light backgrounds!
 #highlight Normal ctermfg=white
 #hi StatusLine term=bold,reverse cterm=bold,reverse ctermfg=145 ctermbg=16 gui=reverse guifg=#c2bfa5 guibg=#000000
-
+hi StatusLine cterm=bold,reverse
 # Need to specify other search hit highlight color for Solarized light
 # colortheme.
-#hi Search cterm=NONE ctermfg=black ctermbg=blue
+hi Search cterm=NONE ctermfg=white ctermbg=blue
 
 # Try to make the mode sign "--INSERT--" more visible.
 hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow
