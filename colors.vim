@@ -18,6 +18,7 @@ vim9script
 #highlight Normal ctermfg=white
 #hi StatusLine term=bold,reverse cterm=bold,reverse ctermfg=145 ctermbg=16 gui=reverse guifg=#c2bfa5 guibg=#000000
 hi StatusLine cterm=bold,reverse
+hi MatchParen ctermbg=blue
 # Need to specify other search hit highlight color for Solarized light
 # colortheme.
 hi Search cterm=NONE ctermfg=white ctermbg=blue
