@@ -73,8 +73,8 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-fugitive'
 Plugin 'preservim/tagbar'
 Plugin 'morhetz/gruvbox'
-#Plugin 'vim-airline/vim-airline'
-#Plugin 'vim-airline/vim-airline-themes'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'junegunn/fzf'
 #Plugin 'junegunn/fzf.vim' #using my own fork for Mercurial
 Plugin 'preservim/nerdtree'
@@ -141,7 +141,9 @@ set pastetoggle=<F2>
 command! -nargs=? Filter @a = '' | execute 'g/<args>/y A' | new | setlocal bt=nofile | put! a
 highlight ColorColumn ctermbg=DarkGrey
 inoremap jj <Esc>
-
+# Emulate Emacs keybindings when editing...
+inoremap <C-b> <left>
+inoremap <C-f> <right>
 #noremap <Leader>a :call CurtineIncSw()<CR>
 # Use :fin[d] %:t:r.hpp or %:t:r.cpp to switch between header and
 # implementation files. (See also :help expand.)
@@ -435,6 +437,7 @@ enddef
 # By doing this trick with expand() of the filepath, we make sure that the
 # filepath is displayed relatively to the current directory.
 #set statusline=%<%{expand('%:~:.')}\ %{toupper(mode())}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
-set statusline=%<\ %{toupper(mode())}\ %{expand('%:~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+#set statusline=%<\ %{toupper(mode())}\ %{expand('%:~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
 #set statusline=%<%t\ %{toupper(mode())}\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
+g:airline#extensions#branch#displayed_head_limit = 22
