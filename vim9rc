@@ -121,6 +121,7 @@ set synmaxcol=500
 # The next command is from christosc/fzf.vim
 nnoremap <silent> <C-p> :Files<CR>
 nnoremap <silent> <F5> :VcFiles<CR>
+nnoremap <silent> <leader>b :Buffers<CR>
 #g:fzf_vim = {}
 #g:fzf_vim.preview_window = ['right,50%', 'ctrl-t']
 
@@ -390,7 +391,15 @@ def SwitchToOtherFile(filepath: string): bool
     if tgt_ext != ""
         const tgt_file = fnamemodify(filepath, ":t:r") .. "." .. tgt_ext
         #echo "tgt_file = " .. tgt_file
-        exe 'find ' .. tgt_file
+        try
+            exe 'find ' .. tgt_file
+        catch /E345:/
+            if src_ext == "cpp"
+                exe 'find ' .. fnamemodify(filepath, ":t:r") .. "." .. "h"
+            elseif src_ext == "h"
+                exe 'find ' .. fnamemodify(filepath, ":t:r") .. "." .. "cpp"
+            endif
+        endtry
     endif
     return 1
 enddef
@@ -425,6 +434,7 @@ enddef
 
 # By doing this trick with expand() of the filepath, we make sure that the
 # filepath is displayed relatively to the current directory.
-set statusline=%<%{expand('%:~:.')}\ %{toupper(mode())}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+#set statusline=%<%{expand('%:~:.')}\ %{toupper(mode())}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+set statusline=%<\ %{toupper(mode())}\ %{expand('%:~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
 #set statusline=%<%t\ %{toupper(mode())}\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
