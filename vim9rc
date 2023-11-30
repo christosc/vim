@@ -421,4 +421,4 @@ enddef
 #Leveraging here Tagbars' function for finding the tag we are currently near.
 #set statusline=%<%f\ \ \ \ \ \ \ \ %{tagbar#currenttag('%s','','')}\ %{g:HgBranch()}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 #set statusline+=\ %{tagbar#currenttag('%s','','')}
-set statusline=%<%f\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
+set statusline=%<%f\ [%{toupper(mode())}]\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
