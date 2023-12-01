@@ -367,14 +367,14 @@ set backupdir=~/tmp,/tmp
 set directory=~/tmp,/tmp
 set undodir=~/tmp,/tmp
 
-# Switch to "other" file:
-#    .cpp => .hpp
+# Find potential "other" files:
+#    .cpp => .h,.hpp
 #    .hpp => .cpp
 #    .c   => .h
-#    .h   => .c
+#    .h   => .cpp,.c
 # It uses the find command, which should have the 'path' variable
 # appropriately set.
-def SwitchToOtherFile(filepath: string): bool
+def PotentialOtherFiles(filepath: string): list<string>
     #echo "filepath = " .. filepath
     var tgt_ext = ""
     const src_ext = fnamemodify(filepath, ":e")
@@ -390,24 +390,36 @@ def SwitchToOtherFile(filepath: string): bool
     else
         echo "Unknown file extention."
     endif
+    var files = []
     if tgt_ext != ""
-        const tgt_file = fnamemodify(filepath, ":t:r") .. "." .. tgt_ext
-        #echo "tgt_file = " .. tgt_file
-        try
-            exe 'find ' .. tgt_file
-        catch /E345:/
-            if src_ext == "cpp"
-                exe 'find ' .. fnamemodify(filepath, ":t:r") .. "." .. "h"
-            elseif src_ext == "h"
-                exe 'find ' .. fnamemodify(filepath, ":t:r") .. "." .. "cpp"
-            endif
-        endtry
+        const basename = fnamemodify(filepath, ":t:r")
+        files = files + [basename .. "." .. tgt_ext]
+        if src_ext == "cpp"
+            files = files + [basename .. ".h"]
+        elseif src_ext == "h"
+            files = files + [basename .. ".cpp"]
+        endif
     endif
-    return 1
+    return files
 enddef
-command! A call SwitchToOtherFile(expand('%'))
-command! AS :split|call SwitchToOtherFile(expand('%'))
-command! AV :vsplit|call SwitchToOtherFile(expand('%'))
+
+def SwitchToOtherFile(others: list<string>, cmd: string)
+    const nOthers = len(others)
+    if nOthers == 0
+        throw "File extension unknown"
+    endif
+    try
+        exe cmd .. ' ' .. get(others, 0)
+    catch /E345:/
+        if nOthers > 1
+            exe cmd .. ' ' .. get(others, 1)
+        endif
+    endtry
+enddef
+
+command! A call SwitchToOtherFile(PotentialOtherFiles(expand('%')), 'find')
+command! AS call SwitchToOtherFile(PotentialOtherFiles(expand('%')), 'sfind')
+command! AV call SwitchToOtherFile(PotentialOtherFiles(expand('%')), 'vert sfind')
 
 set omnifunc=syntaxcomplete#Complete
 
