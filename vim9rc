@@ -406,6 +406,8 @@ def SwitchToOtherFile(filepath: string): bool
     return 1
 enddef
 command! A call SwitchToOtherFile(expand('%'))
+command! AS :split|call SwitchToOtherFile(expand('%'))
+command! AV :vsplit|call SwitchToOtherFile(expand('%'))
 
 set omnifunc=syntaxcomplete#Complete
 
