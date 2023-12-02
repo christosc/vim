@@ -19,11 +19,11 @@ vim9script
 #hi StatusLine term=bold,reverse cterm=bold,reverse ctermfg=145 ctermbg=16 gui=reverse guifg=#c2bfa5 guibg=#000000
 #hi StatusLine cterm=bold,reverse
 #hi MatchParen ctermfg=white cterm=reverse
-hi MatchParen ctermbg=lightblue ctermfg=black cterm=reverse,bold
+#hi MatchParen ctermbg=lightblue ctermfg=black cterm=reverse,bold
 # Need to specify other search hit highlight color for Solarized light
 # colortheme.
 #hi Search cterm=NONE ctermfg=white ctermbg=blue
 
 # Try to make the mode sign "--INSERT--" more visible.
-hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow
-hi LineNr ctermfg=darkgrey
+#hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow
+#hi LineNr ctermfg=darkgrey guifg=darkgrey
