@@ -427,6 +427,9 @@ command! HgDiff enew|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent e
 command! HgSDiff new|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent execute 'read! hg diff -g' |set ft=diff|:1| set bt=nofile
 command! HgVDiff vnew|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent execute 'read! hg diff -g' |set ft=diff|:1| set bt=nofile
 
+command! NoFile set bt=nofile
+nnoremap <F10> :NoFile<CR>
+
 set omnifunc=syntaxcomplete#Complete
 
 set diffopt=filler,vertical
@@ -462,7 +465,10 @@ enddef
 #set statusline=%<\ %{toupper(mode())}\ %{expand('%:~:.')}\ %h%m%r\ %-14.(%l,%c%V%)\ %P
 #set statusline=%<\ %{toupper(mode())}\ %{expand('%:~:.')}\ %h%m%r\ %l\ %c%V%\ %P
 #set statusline=%<\ %{toupper(mode())}\ %{expand('%:~:.')}\ %h%m%r\ %(%l,%c%V%)\ \ %P
-set statusline=%<\ %{expand('%:~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+
+# For some reason for 'no-file' buffers no name is shown with this
+# statusline...
+#set statusline=%<\ %{expand('%:~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
 #set statusline=%<%t\ %{toupper(mode())}\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
 g:airline#extensions#branch#displayed_head_limit = 22
