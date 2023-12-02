@@ -466,3 +466,7 @@ set statusline=%<\ %{expand('%:~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
 #set statusline=%<%t\ %{toupper(mode())}\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
 g:airline#extensions#branch#displayed_head_limit = 22
+
+# Try changing where the splits, both horizontal and vertical, are created.
+set splitbelow
+set splitright
