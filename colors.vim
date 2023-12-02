@@ -25,5 +25,5 @@ hi MatchParen ctermbg=lightblue ctermfg=black cterm=reverse,bold
 #hi Search cterm=NONE ctermfg=white ctermbg=blue
 
 # Try to make the mode sign "--INSERT--" more visible.
-# hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow
-
+hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow
+hi LineNr ctermfg=darkgrey
