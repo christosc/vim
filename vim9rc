@@ -105,12 +105,13 @@ set background=dark
 
 #colorscheme solarized
 #colorscheme molokai
-colorscheme desert256
+#colorscheme desert256
 #colorscheme desert
 #colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
 #colorscheme zenburn
+colorscheme gruvbox
 #g:airline_theme = 'simple'
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
@@ -421,6 +422,11 @@ command! A call SwitchToOtherFile(PotentialOtherFiles(expand('%')), 'find')
 command! AS call SwitchToOtherFile(PotentialOtherFiles(expand('%')), 'sfind')
 command! AV call SwitchToOtherFile(PotentialOtherFiles(expand('%')), 'vert sfind')
 
+
+command! HgDiff enew|execute 'read! hg diff -g' |set ft=diff|:1
+command! HgSDiff new|execute 'read! hg diff -g' |set ft=diff|:1
+command! HgVDiff vnew|execute 'read! hg diff -g' |set ft=diff|:1
+
 set omnifunc=syntaxcomplete#Complete
 
 set diffopt=filler,vertical
@@ -456,7 +462,7 @@ enddef
 #set statusline=%<\ %{toupper(mode())}\ %{expand('%:~:.')}\ %h%m%r\ %-14.(%l,%c%V%)\ %P
 #set statusline=%<\ %{toupper(mode())}\ %{expand('%:~:.')}\ %h%m%r\ %l\ %c%V%\ %P
 #set statusline=%<\ %{toupper(mode())}\ %{expand('%:~:.')}\ %h%m%r\ %(%l,%c%V%)\ \ %P
-set statusline=%<\ %{expand('%:~:.')}\ %h%m%r\ %(%l,%c%V%)\ \ %P
+set statusline=%<\ %{expand('%:~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
 #set statusline=%<%t\ %{toupper(mode())}\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
 g:airline#extensions#branch#displayed_head_limit = 22
