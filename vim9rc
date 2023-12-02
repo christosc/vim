@@ -93,14 +93,11 @@ filetype plugin indent on    # required
 set fo-=t
 set fo+=j
 syntax on
-#set t_Co=256
+
 # Unbind some useless/annoying default key bindings.
 nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
 set number
 set relativenumber
-
-#set t_Co=256
-g:solarized_termcolors = 256
 set background=dark
 #g:airline#extensions#tabline#enabled = 1
 #set background=light
@@ -177,7 +174,6 @@ set smartindent
 #noremap <Leader>s :update<CR>
 noremap <Leader>w :write<CR>
 set mouse=v
-set exrc
 set secure
 set laststatus=2
 set ruler
@@ -481,6 +477,13 @@ set splitright
 
 # Read somewhere that the following settings enable 24-bit colors in terminal
 # Vim...
+# One also has to enable 24-bit colors in the terminal.  This can done by
+# putting the setting
+#
+# export COLORTERM=truecolor
+#
+# in .bashrc.  Also one needs to configure tmux appropriately (see
+# christosc/dotfiles/tmux.conf).
 #&t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 #&t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
