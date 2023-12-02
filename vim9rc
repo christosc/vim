@@ -476,3 +476,9 @@ g:airline#extensions#branch#displayed_head_limit = 22
 # Try changing where the splits, both horizontal and vertical, are created.
 set splitbelow
 set splitright
+
+# Read somewhere that the following settings enable 24-bit colors in terminal
+# Vim...
+#&t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+#&t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+set termguicolors
