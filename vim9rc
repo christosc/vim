@@ -337,7 +337,7 @@ enddef
 #let g:tagbar_width = max([25, winwidth(0) / 5])
 g:tagbar_ctags_bin = "/data/chryssoc/bin/ctags"
 runtime macros/matchit.vim
-set scrolloff&  #Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
+#set scrolloff&  #Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
 
 noremap <Up> <Nop>
 noremap <Down> <Nop>
