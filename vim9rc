@@ -73,8 +73,8 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-fugitive'
 Plugin 'preservim/tagbar'
 Plugin 'morhetz/gruvbox'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+#Plugin 'vim-airline/vim-airline'
+#Plugin 'vim-airline/vim-airline-themes'
 Plugin 'junegunn/fzf'
 #Plugin 'junegunn/fzf.vim' #using my own fork for Mercurial
 Plugin 'preservim/nerdtree'
@@ -96,21 +96,21 @@ syntax on
 
 # Unbind some useless/annoying default key bindings.
 nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
-set number
-set relativenumber
+#set number
+#set relativenumber
 set background=dark
 #g:airline#extensions#tabline#enabled = 1
 #set background=light
 
 #colorscheme solarized
 #colorscheme molokai
-#colorscheme desert256
+colorscheme desert256
 #colorscheme desert
 #colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
 #colorscheme zenburn
-colorscheme gruvbox
+#colorscheme gruvbox
 #g:airline_theme = 'simple'
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
@@ -431,6 +431,8 @@ nnoremap <F10> :NoFile<CR>
 set omnifunc=syntaxcomplete#Complete
 
 set diffopt=filler,vertical
+
+command! Scratch new|set bt=nofile|file scratch
 
 # I don't like the hint about the command-line window.
 augroup vimHints | exe 'au!' | augroup END
