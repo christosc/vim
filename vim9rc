@@ -96,16 +96,14 @@ syntax on
 
 # Unbind some useless/annoying default key bindings.
 nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
-set number
-set relativenumber
 set background=dark
 #g:airline#extensions#tabline#enabled = 1
 #set background=light
 
 #colorscheme solarized
 #colorscheme molokai
-colorscheme desert256
-#colorscheme desert
+#colorscheme desert256
+colorscheme desert
 #colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
@@ -118,6 +116,11 @@ colorscheme desert256
 # hiearchy until root directory.
 set tags=./tags;~/work
 set synmaxcol=500
+
+set number
+#set relativenumber
+hi LineNr ctermfg=darkgrey guifg=dimgrey
+hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
 
 # The next mappings work best with the fzf.vim fork of christosc/fzf.vim.
 nnoremap <silent> <leader>p. :Files<CR>
@@ -337,17 +340,12 @@ enddef
 
 #let g:tagbar_width = max([25, winwidth(0) / 5])
 g:tagbar_ctags_bin = "/data/chryssoc/bin/ctags"
-runtime macros/matchit.vim
-#set scrolloff&  #Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
-
-noremap <Up> <Nop>
-noremap <Down> <Nop>
-noremap <Left> <Nop>
-noremap <Right> <Nop>
+#runtime macros/matchit.vim
+set scrolloff&  #Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
 
 set hidden
 #set t_ut=""
-
+g:loaded_matchparen = 1
 # Auto-detect Freemarker (ftl) file type.
 augroup filetypedetect
   au BufNewFile,BufRead *.ftl setf ftl
