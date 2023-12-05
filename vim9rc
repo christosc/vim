@@ -260,7 +260,7 @@ set imsearch=-1
 inoremap <C-\> <C-^>
 #inoremap <silent><ESC> <ESC>:set iminsert=0<CR>
 def ToggleKeymap()
-    if &keymap=='greek_mac'
+    if &keymap == 'greek_mac'
         set keymap=
     else
         set keymap=greek_mac
@@ -425,8 +425,10 @@ command! HgDiff enew|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent e
 command! HgSDiff new|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent execute 'read! hg diff -g' |set ft=diff|:1| set bt=nofile
 command! HgVDiff vnew|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent execute 'read! hg diff -g' |set ft=diff|:1| set bt=nofile
 
-command! NoFile set bt=nofile
-nnoremap <F10> :NoFile<CR>
+command! NoFile set bt=nofile|file scratch
+#nnoremap <silent> <F10> :echom "Hello!"
+#nnoremap <F10> :set bt=nofile|file foo<CR>
+nnoremap <silent><F10> :NoFile<CR>
 
 set omnifunc=syntaxcomplete#Complete
 
