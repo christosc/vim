@@ -96,8 +96,8 @@ syntax on
 
 # Unbind some useless/annoying default key bindings.
 nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
-#set number
-#set relativenumber
+set number
+set relativenumber
 set background=dark
 #g:airline#extensions#tabline#enabled = 1
 #set background=light
@@ -118,10 +118,12 @@ colorscheme desert256
 # hiearchy until root directory.
 set tags=./tags;~/work
 set synmaxcol=500
-# The next command is from christosc/fzf.vim
-nnoremap <silent> <C-p> :Files<CR>
-nnoremap <silent> <F5> :VcFiles<CR>
-nnoremap <silent> <leader>b :Buffers<CR>
+
+# The next mappings work best with the fzf.vim fork of christosc/fzf.vim.
+nnoremap <silent> <leader>p. :Files<CR>
+nnoremap <silent> <leader>pf :Files %:p:h<CR>
+nnoremap <silent> <leader>pp :VcFiles<CR>
+nnoremap <silent> <leader>pb :Buffers<CR>
 #g:fzf_vim = {}
 #g:fzf_vim.preview_window = ['right,50%', 'ctrl-t']
 
@@ -293,7 +295,6 @@ def ToggleQuickFix()
 enddef
 
 nnoremap <silent> <F4> <ScriptCmd>ToggleQuickFix()<CR>
-nnoremap <silent> <F5> :VcFiles<CR>
 nnoremap <silent> <F1> :NERDTreeToggle<CR>
 inoremap <silent> <F1> <C-o>:NERDTreeToggle<CR>
 

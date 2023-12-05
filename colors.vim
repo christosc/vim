@@ -26,4 +26,4 @@ hi MatchParen ctermbg=lightblue ctermfg=black cterm=reverse,bold guibg=lightblue
 
 # Try to make the mode sign "--INSERT--" more visible.
 hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
-hi LineNr ctermfg=darkgrey guifg=darkgrey
+hi LineNr ctermfg=darkgrey guifg=dimgrey
