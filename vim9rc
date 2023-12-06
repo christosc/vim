@@ -73,8 +73,8 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-fugitive'
 Plugin 'preservim/tagbar'
 Plugin 'morhetz/gruvbox'
-#Plugin 'vim-airline/vim-airline'
-#Plugin 'vim-airline/vim-airline-themes'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'junegunn/fzf'
 #Plugin 'junegunn/fzf.vim' #using my own fork for Mercurial
 Plugin 'preservim/nerdtree'
@@ -90,8 +90,11 @@ filetype plugin indent on    # required
 
 #set runtimepath^=~/.vim/bundle/ctrlp.vim
 #g:ctags_statusline = 1
-set fo-=t
-set fo+=j
+
+# Better set the format options in a augroup statement.
+#set fo+=t
+#set fo-=c
+#set fo+=j
 syntax on
 
 # Unbind some useless/annoying default key bindings.
@@ -103,8 +106,8 @@ set background=dark
 #colorscheme solarized
 #colorscheme molokai
 #colorscheme desert256
-colorscheme desert
-#colorscheme codedark
+#colorscheme desert
+colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
 #colorscheme zenburn
@@ -118,9 +121,9 @@ set tags=./tags;~/work
 set synmaxcol=500
 
 set number
-#set relativenumber
-hi LineNr ctermfg=darkgrey guifg=dimgrey
-hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
+set relativenumber
+#hi LineNr ctermfg=darkgrey guifg=dimgrey
+#hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
 
 # The next mappings work best with the fzf.vim fork of christosc/fzf.vim.
 nnoremap <silent> <leader>p. :Files<CR>
@@ -281,13 +284,7 @@ set termencoding=utf-8
 set encoding=utf-8
 setglobal fileencoding=utf-8
 
-autocmd BufRead,BufNewFile *.cpp,*.c,*.h,*.hpp setlocal tw=80
 #autocmd! BufWinEnter quickfix setlocal nowinfixheight
-
-# Don't take tags and included files into account in completing words.
-# I dont' use tags anyway.
-set complete-=t
-set complete-=i
 
 def ToggleQuickFix()
     if empty(filter(getwininfo(), 'v:val.quickfix'))
@@ -341,7 +338,7 @@ enddef
 #let g:tagbar_width = max([25, winwidth(0) / 5])
 g:tagbar_ctags_bin = "/data/chryssoc/bin/ctags"
 #runtime macros/matchit.vim
-set scrolloff&  #Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
+#set scrolloff&  #Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
 
 set hidden
 #set t_ut=""
@@ -420,9 +417,9 @@ command! AS call SwitchToOtherFile(PotentialOtherFiles(expand('%')), 'sfind')
 command! AV call SwitchToOtherFile(PotentialOtherFiles(expand('%')), 'vert sfind')
 
 
-command! HgDiff enew|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent execute 'read! hg diff -g' |set ft=diff|:1| set bt=nofile
-command! HgSDiff new|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent execute 'read! hg diff -g' |set ft=diff|:1| set bt=nofile
-command! HgVDiff vnew|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent execute 'read! hg diff -g' |set ft=diff|:1| set bt=nofile
+command! HgDiff enew|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent execute 'read! hg diff -g' |set ft=diff|:1| set bt=nofile|setlocal nonu|setlocal nornu
+command! HgSDiff new|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent execute 'read! hg diff -g' |set ft=diff|:1| set bt=nofile|setlocal nonu|setlocal nornu
+command! HgVDiff vnew|silent! bd HgDiffOutput|silent! file HgDiffOutput |silent execute 'read! hg diff -g' |set ft=diff|:1| set bt=nofile|setlocal nonu|setlocal nornu
 
 command! NoFile set bt=nofile|file scratch
 #nnoremap <silent> <F10> :echom "Hello!"
@@ -475,8 +472,8 @@ enddef
 g:airline#extensions#branch#displayed_head_limit = 22
 
 # Try changing where the splits, both horizontal and vertical, are created.
-#set splitbelow
-#set splitright
+set splitbelow
+set splitright
 
 # Read somewhere that the following settings enable 24-bit colors in terminal
 # Vim...
