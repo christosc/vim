@@ -120,7 +120,7 @@ g:airline_theme = 'simple'
 set tags=./tags;~/work
 set synmaxcol=500
 
-set number
+#set number
 #set relativenumber
 hi LineNr ctermfg=darkgrey guifg=dimgrey
 #hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
