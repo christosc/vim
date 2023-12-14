@@ -71,7 +71,7 @@ Plugin 'ludovicchabant/vim-lawrencium'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-fugitive'
-Plugin 'preservim/tagbar'
+#Plugin 'preservim/tagbar'
 Plugin 'morhetz/gruvbox'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
@@ -105,14 +105,14 @@ set background=dark
 
 #colorscheme solarized
 #colorscheme molokai
-#colorscheme desert256
+colorscheme desert256
 #colorscheme desert
-colorscheme codedark
+#colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
 #colorscheme zenburn
 #colorscheme gruvbox
-#g:airline_theme = 'simple'
+g:airline_theme = 'simple'
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
 # Begin looking for tags from current file's directory and walk up the
@@ -121,9 +121,10 @@ set tags=./tags;~/work
 set synmaxcol=500
 
 set number
-set relativenumber
-#hi LineNr ctermfg=darkgrey guifg=dimgrey
+#set relativenumber
+hi LineNr ctermfg=darkgrey guifg=dimgrey
 #hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
+hi MatchParen ctermbg=NONE ctermfg=lightblue cterm=bold guibg=NONE guifg=lightblue gui=bold
 
 # The next mappings work best with the fzf.vim fork of christosc/fzf.vim.
 nnoremap <silent> <leader>p. :Files<CR>
@@ -342,7 +343,7 @@ g:tagbar_ctags_bin = "/data/chryssoc/bin/ctags"
 
 set hidden
 #set t_ut=""
-g:loaded_matchparen = 1
+#g:loaded_matchparen = 1
 # Auto-detect Freemarker (ftl) file type.
 augroup filetypedetect
   au BufNewFile,BufRead *.ftl setf ftl
@@ -352,6 +353,7 @@ augroup END
 # YAML files by default don't get indented correctly. This fixes the issue.
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType json setlocal ts=2 sts=2 sw=2 expandtab
+autocmd FileType qf setlocal scrolloff&
 #set showbreak=\
 #source /home/chryssoc/.vim/pack/vendor/start/a/a.vim
 
@@ -487,3 +489,8 @@ set splitright
 #&t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 #&t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
+
+# Don't take tags and included files into account in completing words.
+# I dont' use tags anyway.
+set complete-=t
+set complete-=i
