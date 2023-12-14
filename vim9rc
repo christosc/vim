@@ -494,3 +494,7 @@ set termguicolors
 # I dont' use tags anyway.
 set complete-=t
 set complete-=i
+
+# Favor Unix file format over the DOS one
+set fileformats=unix,dos
+set encoding=utf-8
