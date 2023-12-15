@@ -124,7 +124,7 @@ set synmaxcol=500
 #set relativenumber
 #hi LineNr ctermfg=darkgrey guifg=dimgrey
 #hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
-hi MatchParen ctermbg=NONE ctermfg=lightblue cterm=bold guibg=NONE guifg=lightblue gui=bold
+hi MatchParen ctermbg=NONE ctermfg=lightblue cterm=bold guibg=NONE guifg=turquoise gui=bold
 
 # The next mappings work best with the fzf.vim fork of christosc/fzf.vim.
 nnoremap <silent> <leader>p. :Files<CR>
