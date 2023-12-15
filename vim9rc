@@ -149,7 +149,7 @@ set pastetoggle=<F2>
 #nnoremap <silent> <F3> :redir @a<CR>:g//<CR>:redir END<CR>:new<CR>:put! a<CR>
 command! -nargs=? Filter @a = '' | execute 'g/<args>/y A' | new | setlocal bt=nofile | put! a
 highlight ColorColumn ctermbg=DarkGrey
-inoremap jj <Esc>
+#inoremap jj <Esc>
 # Emulate Emacs keybindings when editing...
 inoremap <C-b> <left>
 inoremap <C-f> <right>
@@ -296,8 +296,6 @@ def ToggleQuickFix()
 enddef
 
 nnoremap <silent> <F4> <ScriptCmd>ToggleQuickFix()<CR>
-nnoremap <silent> <F1> :NERDTreeToggle<CR>
-inoremap <silent> <F1> <C-o>:NERDTreeToggle<CR>
 
 set noerrorbells
 #set wildmenu
@@ -498,3 +496,14 @@ set complete-=i
 # Favor Unix file format over the DOS one
 set fileformats=unix,dos
 set encoding=utf-8
+
+def g:ToggleKeyboard()
+    if &iminsert
+        setlocal iminsert=0
+    else
+        setlocal iminsert=1
+    endif
+enddef
+
+nnoremap <silent> <F1> <ScriptCmd>ToggleKeymap()<cr>
+inoremap <silent> <F1> <ScriptCmd>ToggleKeymap()<cr>
