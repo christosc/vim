@@ -105,13 +105,13 @@ set background=dark
 
 #colorscheme solarized
 #colorscheme molokai
-colorscheme desert256
+#colorscheme desert256
 #colorscheme desert
 #colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
 #colorscheme zenburn
-#colorscheme gruvbox
+colorscheme gruvbox
 g:airline_theme = 'simple'
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
@@ -122,7 +122,7 @@ set synmaxcol=500
 
 #set number
 #set relativenumber
-hi LineNr ctermfg=darkgrey guifg=dimgrey
+#hi LineNr ctermfg=darkgrey guifg=dimgrey
 #hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
 hi MatchParen ctermbg=NONE ctermfg=lightblue cterm=bold guibg=NONE guifg=lightblue gui=bold
 
@@ -494,3 +494,7 @@ set complete-=i
 set fileformats=unix,dos
 set encoding=utf-8
 
+augroup AngleBrackets
+    autocmd!
+    autocmd FileType cpp set matchpairs+=<:>
+augroup END
