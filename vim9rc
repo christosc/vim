@@ -181,7 +181,7 @@ set bs=2
 set autoindent
 set smartindent
 #noremap <Leader>s :update<CR>
-noremap <Leader>w :write<CR>
+noremap <leader>w :write<CR>
 set mouse=v
 set secure
 set laststatus=2
@@ -263,20 +263,17 @@ enddef
 
 command! -nargs=1 Defr call GrepRec("<args>")
 
-set keymap=greek_mac
-set iminsert=0
-set imsearch=-1
-inoremap <C-\> <C-^>
-#inoremap <silent><ESC> <ESC>:set iminsert=0<CR>
-def ToggleKeymap()
-    if &keymap == 'greek_mac'
-        set keymap=
-    else
+def g:ToggleKeymap()
+    if &keymap == ""
         set keymap=greek_mac
+    else
+        set keymap=
+        set iminsert=0
     endif
 enddef
 
-nnoremap <C-\> <ScriptCmd>ToggleKeymap()<CR>
+nnoremap <C-\> <ScriptCmd>g:ToggleKeymap()<CR>
+inoremap <C-\> <ScriptCmd>g:ToggleKeymap()<CR>
 
 #Don't suppress bells. They may be actually useful...
 #set noeb vb t_vb=
@@ -497,13 +494,3 @@ set complete-=i
 set fileformats=unix,dos
 set encoding=utf-8
 
-def g:ToggleKeyboard()
-    if &iminsert
-        setlocal iminsert=0
-    else
-        setlocal iminsert=1
-    endif
-enddef
-
-nnoremap <silent> <F1> <ScriptCmd>ToggleKeymap()<cr>
-inoremap <silent> <F1> <ScriptCmd>ToggleKeymap()<cr>
