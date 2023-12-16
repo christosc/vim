@@ -498,3 +498,5 @@ augroup AngleBrackets
     autocmd!
     autocmd FileType cpp set matchpairs+=<:>
 augroup END
+
+inoremap <C-h> <BS>
