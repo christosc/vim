@@ -114,7 +114,7 @@ set background=dark
 colorscheme gruvbox
 #-- Gruvbox customizations
 hi Normal guibg=black
-g:airline_theme = 'simple'
+g:airline_theme = 'dark' # This is the default Airline theme
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
 # Begin looking for tags from current file's directory and walk up the
