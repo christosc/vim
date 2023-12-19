@@ -263,17 +263,30 @@ enddef
 
 command! -nargs=1 Defr call GrepRec("<args>")
 
+set keymap=greek_mac
+set iminsert=0 imsearch=-1
+
+# Does not work because I cannot emulate how the C-^ keybinding works in
+# insert mode...
 def g:ToggleKeymap()
-    if &keymap == ""
-        set keymap=greek_mac
+    echom "Entering ToggleKeymap"
+    if &iminsert == 0
+        echom "Setting keymap"
+        #setlocal keymap=greek_mac
+        setlocal iminsert=1
     else
-        set keymap=
-        set iminsert=0
+        echom "Unsetting keymap"
+
+        #setlocal keymap=
+        setlocal iminsert=0
     endif
 enddef
 
-nnoremap <C-\> <ScriptCmd>g:ToggleKeymap()<CR>
+#nnoremap <C-\> <ScriptCmd>g:ToggleKeymap()<CR>
 inoremap <C-\> <ScriptCmd>g:ToggleKeymap()<CR>
+#nnoremap <C-\> i<C-^><ESC>l
+inoremap <C-\> <C-^>
+cnoremap <C-\> <C-^>
 
 #Don't suppress bells. They may be actually useful...
 #set noeb vb t_vb=
