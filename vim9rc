@@ -112,6 +112,8 @@ set background=dark
 #colorscheme solarize/
 #colorscheme zenburn
 colorscheme gruvbox
+#-- Gruvbox customizations
+hi Normal guibg=black
 g:airline_theme = 'simple'
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
