@@ -110,11 +110,12 @@ set background=dark
 #colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
-#colorscheme zenburn
-colorscheme gruvbox
+colorscheme zenburn
+#colorscheme gruvbox
 #-- Gruvbox customizations
 hi Normal guibg=black
 g:airline_theme = 'dark' # This is the default Airline theme
+#g:airline_theme = 'simple' # This is the default Airline theme
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
 # Begin looking for tags from current file's directory and walk up the
@@ -159,7 +160,7 @@ inoremap <C-f> <right>
 # Use :fin[d] %:t:r.hpp or %:t:r.cpp to switch between header and
 # implementation files. (See also :help expand.)
 # Searches recursively relative to current directory of vim.
-set path=include/**,src/**,export/**,source/**,**
+set path=include/**,src/**,export/**,source/**,../include/**,../export/**,../src/**,../source/**,**
 set incsearch
 #noremap <F1> <Nop>
 noremap <silent> <F3> :set hls!<cr>
@@ -482,10 +483,6 @@ enddef
 
 #set statusline=%<%t\ %{toupper(mode())}\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
 g:airline#extensions#branch#displayed_head_limit = 22
-
-# Try changing where the splits, both horizontal and vertical, are created.
-set splitbelow
-set splitright
 
 # Read somewhere that the following settings enable 24-bit colors in terminal
 # Vim...
