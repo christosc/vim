@@ -105,17 +105,20 @@ set background=dark
 
 #colorscheme solarized
 #colorscheme molokai
-#colorscheme desert256
+colorscheme desert256
 #colorscheme desert
 #colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
-colorscheme zenburn
+#colorscheme zenburn
 #colorscheme gruvbox
 #-- Gruvbox customizations
 hi Normal guibg=black
-g:airline_theme = 'dark' # This is the default Airline theme
-#g:airline_theme = 'simple' # This is the default Airline theme
+hi PmenuSel ctermbg=blue guibg=blue
+hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
+
+#g:airline_theme = 'dark' # This is the default Airline theme
+g:airline_theme = 'simple' # This is the default Airline theme
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
 # Begin looking for tags from current file's directory and walk up the
@@ -350,7 +353,7 @@ enddef
 #let g:tagbar_width = max([25, winwidth(0) / 5])
 g:tagbar_ctags_bin = "/data/chryssoc/bin/ctags"
 #runtime macros/matchit.vim
-#set scrolloff&  #Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
+set scrolloff&  #Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
 
 set hidden
 #set t_ut=""
@@ -439,7 +442,9 @@ command! NoFile set bt=nofile|file scratch
 #nnoremap <F10> :set bt=nofile|file foo<CR>
 nnoremap <silent><F10> :NoFile<CR>
 
-set omnifunc=syntaxcomplete#Complete
+# I've commented out this option, because it may have netative impact on
+# vim's performance.
+#set omnifunc=syntaxcomplete#Complete
 
 set diffopt=filler,vertical
 
@@ -512,3 +517,4 @@ augroup AngleBrackets
 augroup END
 
 inoremap <C-h> <BS>
+#set timeoutlen=500
