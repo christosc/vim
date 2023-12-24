@@ -289,7 +289,7 @@ def g:ToggleKeymap()
 enddef
 
 #nnoremap <C-\> <ScriptCmd>g:ToggleKeymap()<CR>
-inoremap <C-\> <ScriptCmd>g:ToggleKeymap()<CR>
+#inoremap <C-\> <ScriptCmd>g:ToggleKeymap()<CR>
 #nnoremap <C-\> i<C-^><ESC>l
 inoremap <C-\> <C-^>
 cnoremap <C-\> <C-^>
