@@ -105,17 +105,20 @@ set background=dark
 
 #colorscheme solarized
 #colorscheme molokai
-colorscheme desert256
+#colorscheme desert256
 #colorscheme desert
 #colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
-#colorscheme zenburn
+colorscheme zenburn
 #colorscheme gruvbox
 #-- Gruvbox customizations
 hi Normal guibg=black
-hi PmenuSel ctermbg=blue guibg=blue
-hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
+
+# The Zenburn color scheme has nice colors for the completion menus, so we
+# don't need the following customizations.
+#hi PmenuSel ctermbg=blue guibg=blue
+#hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
 
 #g:airline_theme = 'dark' # This is the default Airline theme
 g:airline_theme = 'simple' # This is the default Airline theme
@@ -125,7 +128,7 @@ g:airline_theme = 'simple' # This is the default Airline theme
 # hiearchy until root directory.
 set tags=./tags;~/work
 set synmaxcol=500
-
+set wildoptions=fuzzy,pum # wildmenu is set by defaults.vim
 #set number
 #set relativenumber
 #hi LineNr ctermfg=darkgrey guifg=dimgrey
@@ -355,7 +358,7 @@ g:tagbar_ctags_bin = "/data/chryssoc/bin/ctags"
 #runtime macros/matchit.vim
 set scrolloff&  #Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
 
-set hidden
+#set hidden  # This option is deprecated. See :h 'hidden'
 #set t_ut=""
 #g:loaded_matchparen = 1
 # Auto-detect Freemarker (ftl) file type.
