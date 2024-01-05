@@ -105,23 +105,23 @@ set background=dark
 
 #colorscheme solarized
 #colorscheme molokai
-#colorscheme desert256
+colorscheme desert256
 #colorscheme desert
 #colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
-colorscheme zenburn
+#colorscheme zenburn
 #colorscheme gruvbox
 #-- Gruvbox customizations
-hi Normal guibg=black
+#hi Normal guibg=black
 
 # The Zenburn color scheme has nice colors for the completion menus, so we
 # don't need the following customizations.
-#hi PmenuSel ctermbg=blue guibg=blue
-#hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
+hi PmenuSel ctermbg=blue guibg=blue
+hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
 
 #g:airline_theme = 'dark' # This is the default Airline theme
-g:airline_theme = 'simple' # This is the default Airline theme
+#g:airline_theme = 'simple' # This is the default Airline theme
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
 # Begin looking for tags from current file's directory and walk up the
@@ -166,7 +166,7 @@ inoremap <C-f> <right>
 # Use :fin[d] %:t:r.hpp or %:t:r.cpp to switch between header and
 # implementation files. (See also :help expand.)
 # Searches recursively relative to current directory of vim.
-set path=include/**,src/**,export/**,source/**,../include/**,../export/**,../src/**,../source/**,**
+set path=include/**,src/**,export/**,source/**,../include/**,../export/**,../src/**,../source/**
 set incsearch
 #noremap <F1> <Nop>
 noremap <silent> <F3> :set hls!<cr>
