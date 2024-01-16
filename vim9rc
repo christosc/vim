@@ -121,7 +121,7 @@ hi PmenuSel ctermbg=blue guibg=blue
 hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
 
 #g:airline_theme = 'dark' # This is the default Airline theme
-#g:airline_theme = 'simple' # This is the default Airline theme
+g:airline_theme = 'simple'
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
 # Begin looking for tags from current file's directory and walk up the
@@ -140,6 +140,7 @@ nnoremap <silent> <leader>p. :Files<CR>
 nnoremap <silent> <leader>pf :Files %:p:h<CR>
 nnoremap <silent> <leader>pp :VcFiles<CR>
 nnoremap <silent> <leader>pb :Buffers<CR>
+nmap <leader>n :tab drop $WORK_DIR/notes.md<CR>
 #g:fzf_vim = {}
 #g:fzf_vim.preview_window = ['right,50%', 'ctrl-t']
 
