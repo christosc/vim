@@ -1,0 +1,15 @@
+[cursor]
+  [cursor.style]
+  blinking = "Always"
+
+[shell]
+program = "C:\\Windows\\System32\\wsl.exe"
+args = ["--cd /mnt/c/Users/chryssoc"]
+
+[font]
+size = 12.0
+
+[window]
+  [window.dimensions]
+  columns = 150
+  lines = 40
