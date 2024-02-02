@@ -9,8 +9,8 @@ endif
 source $VIMRUNTIME/defaults.vim
 
 # Try remapping the space key as leader
-nnoremap <SPACE> <Nop>
-g:mapleader = " "
+#nnoremap <SPACE> <Nop>
+#g:mapleader = " "
 
 # Don't highlight literals within C comments (set by defaults.vim).
 #unlet c_comment_strings
@@ -77,8 +77,8 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-fugitive'
 #Plugin 'preservim/tagbar'
 Plugin 'morhetz/gruvbox'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+#Plugin 'vim-airline/vim-airline'
+#Plugin 'vim-airline/vim-airline-themes'
 Plugin 'junegunn/fzf'
 #Plugin 'junegunn/fzf.vim' #using my own fork for Mercurial
 Plugin 'preservim/nerdtree'
@@ -109,13 +109,13 @@ set background=dark
 
 #colorscheme solarized
 #colorscheme molokai
-colorscheme desert256
+#colorscheme desert256
 #colorscheme desert
 #colorscheme codedark
 #colorscheme default
 #colorscheme solarize/
 #colorscheme zenburn
-#colorscheme gruvbox
+colorscheme gruvbox
 #-- Gruvbox customizations
 #hi Normal guibg=black
 
@@ -125,7 +125,7 @@ hi PmenuSel ctermbg=blue guibg=blue
 hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
 
 #g:airline_theme = 'dark' # This is the default Airline theme
-g:airline_theme = 'simple'
+#g:airline_theme = 'simple'
 #set tags=./tags,tags,~/work/tags
 #set tags=./tags;~/work/main_repo
 # Begin looking for tags from current file's directory and walk up the
@@ -136,7 +136,7 @@ set wildoptions=fuzzy,pum # wildmenu is set by defaults.vim
 #set number
 #set relativenumber
 #hi LineNr ctermfg=darkgrey guifg=dimgrey
-#hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
+hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
 hi MatchParen ctermbg=NONE ctermfg=lightblue cterm=bold guibg=NONE guifg=turquoise gui=bold
 
 # The next mappings work best with the fzf.vim fork of christosc/fzf.vim.
@@ -144,7 +144,7 @@ nnoremap <silent> <leader>p. :Files<CR>
 nnoremap <silent> <leader>pf :Files %:p:h<CR>
 nnoremap <silent> <leader>pp :VcFiles<CR>
 nnoremap <silent> <leader>pb :Buffers<CR>
-nmap <leader>n :tab drop $WORK_DIR/notes.md<CR>
+nmap <leader>n :tab drop $WORK_DIR/notes.txt<CR>
 #g:fzf_vim = {}
 #g:fzf_vim.preview_window = ['right,50%', 'ctrl-t']
 
@@ -194,11 +194,13 @@ set linebreak
 set bs=2
 set autoindent
 set smartindent
+set laststatus=2
 #noremap <Leader>s :update<CR>
 noremap <leader>w :write<CR>
-set mouse=v
-set secure
-set laststatus=2
+#set ttymouse=xterm2
+set mouse=a
+#set secure
+#set laststatus=2
 set ruler
 #set ttyfast
 #set lazyredraw
@@ -222,10 +224,6 @@ command! -nargs=1 FindFile call FindFiles(<q-args>)
 
 # Count the occurrences of the word under cursor
 map <leader>* *<C-O>:%s///gn<CR>
-
-
-set ttymouse=xterm2
-
 set et
 set ts=4
 set sw=4
@@ -321,7 +319,7 @@ enddef
 
 nnoremap <silent> <F4> <ScriptCmd>ToggleQuickFix()<CR>
 
-set noerrorbells
+#set noerrorbells
 #set wildmenu
 #set wildmode=longest:full,full
 set title
@@ -495,7 +493,7 @@ enddef
 #set statusline=%<\ %{expand('%:~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
 #set statusline=%<%t\ %{toupper(mode())}\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
-g:airline#extensions#branch#displayed_head_limit = 22
+#g:airline#extensions#branch#displayed_head_limit = 22
 
 # Read somewhere that the following settings enable 24-bit colors in terminal
 # Vim...
