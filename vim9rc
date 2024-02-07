@@ -83,7 +83,7 @@ Plugin 'junegunn/fzf'
 #Plugin 'junegunn/fzf.vim' #using my own fork for Mercurial
 Plugin 'preservim/nerdtree'
 Plugin 'catppuccin/vim', {'name': 'catppuccin_vim'}
-
+Plugin 'aklt/plantuml-syntax'
 
 
 # All of your Plugins must be added before the following line
@@ -280,7 +280,7 @@ set iminsert=0 imsearch=-1
 
 # Does not work because I cannot emulate how the C-^ keybinding works in
 # insert mode...
-def g:ToggleKeymap()
+def! g:ToggleKeymap()
     echom "Entering ToggleKeymap"
     if &iminsert == 0
         echom "Setting keymap"
@@ -466,7 +466,7 @@ nnoremap <leader>r :bro ol<CR>
 # set autochdir
 #set path=../include/**,../src/**,../export/**,../source/**,** # Make search relative to current WD. I try this out together with autochdir.
 
-def g:HgBranch(): string
+def! g:HgBranch(): string
     #return "Hello"
     #return system("hg --cwd " .. expand("%:p:h") .. "  bookmarks 2>/dev/null | grep  '\*'")
     var bookmark = substitute(system("hg book -ql ."), '\n\+$', '', '')
