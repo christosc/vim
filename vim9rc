@@ -9,9 +9,9 @@ endif
 source $VIMRUNTIME/defaults.vim
 
 # Try remapping the space key as leader
-nnoremap <SPACE> <Nop>
-g:mapleader = " "
-
+#nnoremap <SPACE> <Nop>
+#g:mapleader = " "
+#nnoremap <SPACE> <C-f>
 # Don't highlight literals within C comments (set by defaults.vim).
 #unlet c_comment_strings
 
@@ -75,16 +75,16 @@ Plugin 'ludovicchabant/vim-lawrencium'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-fugitive'
-#Plugin 'preservim/tagbar'
+Plugin 'preservim/tagbar'
 Plugin 'morhetz/gruvbox'
-#Plugin 'vim-airline/vim-airline'
-#Plugin 'vim-airline/vim-airline-themes'
-Plugin 'junegunn/fzf'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+#Plugin 'junegunn/fzf'
 #Plugin 'junegunn/fzf.vim' #using my own fork for Mercurial
 Plugin 'preservim/nerdtree'
 Plugin 'catppuccin/vim', {'name': 'catppuccin_vim'}
 Plugin 'aklt/plantuml-syntax'
-
+Plugin 'dhruvasagar/vim-table-mode'
 
 # All of your Plugins must be added before the following line
 call vundle#end()            # required
@@ -134,10 +134,14 @@ hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
 set tags=./tags;~/work
 set synmaxcol=500
 set wildoptions=fuzzy,pum # wildmenu is set by defaults.vim
-#set number
-#set relativenumber
-#hi LineNr ctermfg=darkgrey guifg=dimgrey
-hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
+set number
+set relativenumber
+hi LineNr ctermfg=darkgrey guifg=dimgrey
+
+# If you want to highlight the mode you're in instead of using Airline, you
+# can uncomment the next statement.
+#hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
+
 hi MatchParen ctermbg=NONE ctermfg=lightblue cterm=bold guibg=NONE guifg=turquoise gui=bold
 
 # The next mappings work best with the fzf.vim fork of christosc/fzf.vim.
@@ -252,11 +256,11 @@ command! -nargs=1 GrDef exec ':silent! grep "::'.<args>.'"'
 #nnoremap <leader>O :vim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:botright cwindow<CR>
 
 # Search mappings using quickfix list
-nnoremap <silent><leader>gf :grep! "\b<cword>\b" -r %:h<CR>:copen<CR>
-nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>:copen<CR>
+nnoremap <silent><leader>gf :grep! "\b<cword>\b" -r %:h<CR>:botright copen<CR>
+nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>:botright copen<CR>
 nnoremap <leader>g. :grep! "\b<cword>\b" -r .<CR>:copen<CR>
-nnoremap <leader>o :vim /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:copen<CR>
-nnoremap <leader>O :vim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:copen<CR>
+nnoremap <leader>o :vim /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:botright copen<CR>
+nnoremap <leader>O :vim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:botright copen<CR>
 
 #nnoremap T :silent! grep "::<cword>\b" -r .<CR>:redraw!<CR>
 nnoremap <leader>l :lcd %:p:h<CR>
@@ -429,9 +433,11 @@ def SwitchToOtherFile(others: list<string>, cmd: string)
         throw "File extension unknown"
     endif
     try
+        #echom get(others, 0)
         exe cmd .. ' ' .. get(others, 0)
     catch /E345:/
         if nOthers > 1
+            #echom get(others, 1)
             exe cmd .. ' ' .. get(others, 1)
         endif
     endtry
@@ -499,6 +505,9 @@ set statusline=%<%f\ %h%m%r\ %-14.(%l,%c%V%)\ %P
 #set statusline=%<%t\ %{toupper(mode())}\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
 #g:airline#extensions#branch#displayed_head_limit = 22
 
+# Disable showing of branch in airline, because it hides the filepath.
+g:airline#extensions#branch#enabled = 0
+g:airline#extensions#tagbar#enabled = 0
 # Read somewhere that the following settings enable 24-bit colors in terminal
 # Vim...
 # One also has to enable 24-bit colors in the terminal.  This can done by
@@ -534,3 +543,7 @@ set splitright
 
 noremap Zz <c-w>_ \| <c-w>\|
 noremap Zo <c-w>=
+
+# I find automatic wrap of text mingling unexpectedly with what I write,
+# so I disable it.
+set fo-=t
