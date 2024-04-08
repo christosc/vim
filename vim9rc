@@ -133,9 +133,9 @@ hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
 # hiearchy until root directory.
 set tags=./tags;~/work
 set synmaxcol=500
-set wildoptions=fuzzy,pum # wildmenu is set by defaults.vim
+#set wildoptions=fuzzy,pum # wildmenu is set by defaults.vim
 set number
-set relativenumber
+#set relativenumber
 hi LineNr ctermfg=darkgrey guifg=dimgrey
 
 # If you want to highlight the mode you're in instead of using Airline, you
@@ -550,3 +550,35 @@ set fo-=t
 
 # Set table header separator to '='
 g:table_mode_header_fillchar = '='
+
+
+# The following script is taken from Vimtricks.
+# There is maps the function call to <leader>w
+# Since I map <leader>w to save, I use here the capital W.
+var wrapenabled = 0
+def! g:ToggleWrap()
+  set wrap nolist
+  if wrapenabled
+    set nolinebreak
+    unmap j
+    unmap k
+    unmap 0
+    unmap ^
+    unmap $
+    wrapenabled = 0
+  else
+    set linebreak
+    nnoremap j gj
+    nnoremap k gk
+    nnoremap 0 g0
+    nnoremap ^ g^
+    nnoremap $ g$
+    vnoremap j gj
+    vnoremap k gk
+    vnoremap 0 g0
+    vnoremap ^ g^
+    vnoremap $ g$
+    wrapenabled = 1
+  endif
+enddef
+map <leader>W :call ToggleWrap()<CR>
