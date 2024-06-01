@@ -606,11 +606,4 @@ enddef
 # normal mode (for terminal Vim). https://stackoverflow.com/a/42118416/375842
 &t_SI = "\e[6 q"
 &t_EI = "\e[2 q"
-
-# reset the cursor on start (for older versions of vim, usually not required)
-augroup myCmds
-au!
-autocmd VimEnter * silent !echo -ne "\e[2 q"
-augroup END
-
 # END addition for tweaking cursor style in different modes
