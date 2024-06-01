@@ -75,6 +75,7 @@ Plugin 'ludovicchabant/vim-lawrencium'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-abolish'
 Plugin 'preservim/tagbar'
 Plugin 'morhetz/gruvbox'
 Plugin 'vim-airline/vim-airline'
@@ -85,6 +86,9 @@ Plugin 'preservim/nerdtree'
 Plugin 'catppuccin/vim', {'name': 'catppuccin_vim'}
 Plugin 'aklt/plantuml-syntax'
 Plugin 'dhruvasagar/vim-table-mode'
+Plugin 'godlygeek/tabular'
+
+
 
 # All of your Plugins must be added before the following line
 call vundle#end()            # required
@@ -178,7 +182,7 @@ inoremap <C-f> <right>
 # Searches recursively relative to current directory of vim.
 set path=include/**,src/**,export/**,source/**,../include/**,../export/**,../src/**,../source/**
 set incsearch
-#noremap <F1> <Nop>
+noremap <F1> :update<cr>
 noremap <silent> <F3> :set hls!<cr>
 #noremap <silent> <F3> :noh<cr>
 #noremap <silent> <space> :noh<cr>
@@ -507,7 +511,9 @@ set statusline=%<%f\ %h%m%r\ %-14.(%l,%c%V%)\ %P
 
 # Disable showing of branch in airline, because it hides the filepath.
 g:airline#extensions#branch#enabled = 0
-g:airline#extensions#tagbar#enabled = 0
+
+#g:airline#extensions#tagbar#enabled = 0
+
 # Read somewhere that the following settings enable 24-bit colors in terminal
 # Vim...
 # One also has to enable 24-bit colors in the terminal.  This can done by
@@ -582,3 +588,29 @@ def! g:ToggleWrap()
   endif
 enddef
 map <leader>W :call ToggleWrap()<CR>
+
+inoremap <silent> <Bar>   <Bar><Esc>:g:Align()<CR>a
+
+def! g:Align()
+  p = '^\s*|\s.*\s|\s*$'
+  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+    column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+    position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+    Tabularize/|/l1
+    normal! 0
+    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+  endif
+enddef
+
+# START Set the cursor to bar when entering insert mode and block when in
+# normal mode (for terminal Vim). https://stackoverflow.com/a/42118416/375842
+&t_SI = "\e[6 q"
+&t_EI = "\e[2 q"
+
+# reset the cursor on start (for older versions of vim, usually not required)
+augroup myCmds
+au!
+autocmd VimEnter * silent !echo -ne "\e[2 q"
+augroup END
+
+# END addition for tweaking cursor style in different modes
