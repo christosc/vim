@@ -78,8 +78,8 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-abolish'
 Plugin 'preservim/tagbar'
 Plugin 'morhetz/gruvbox'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+#Plugin 'vim-airline/vim-airline'
+#Plugin 'vim-airline/vim-airline-themes'
 #Plugin 'junegunn/fzf'
 #Plugin 'junegunn/fzf.vim' #using my own fork for Mercurial
 Plugin 'preservim/nerdtree'
@@ -138,13 +138,13 @@ hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
 set tags=./tags;~/work
 set synmaxcol=500
 #set wildoptions=fuzzy,pum # wildmenu is set by defaults.vim
-set number
+#set number
 #set relativenumber
 hi LineNr ctermfg=darkgrey guifg=dimgrey
 
 # If you want to highlight the mode you're in instead of using Airline, you
 # can uncomment the next statement.
-#hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
+# hi ModeMsg cterm=bold ctermfg=black ctermbg=yellow gui=bold guifg=black guibg=yellow
 
 hi MatchParen ctermbg=NONE ctermfg=lightblue cterm=bold guibg=NONE guifg=turquoise gui=bold
 
@@ -370,7 +370,12 @@ enddef
 #let g:tagbar_width = max([25, winwidth(0) / 5])
 g:tagbar_ctags_bin = "/data/chryssoc/bin/ctags"
 #runtime macros/matchit.vim
-set scrolloff&  #Do not scroll automatically near the bottom or top of the window (revert value from defaults.vim)
+
+# Do not scroll automatically near the bottom or top of the window (revert
+# value from defaults.vim).
+# In Windows Terminal there seems to be a problem with screen flickering when
+# this option is set. Alacritty doesn't have this problem though.
+set scrolloff&
 
 #set hidden  # This option is deprecated. See :h 'hidden'
 #set t_ut=""
@@ -504,7 +509,7 @@ enddef
 # For some reason for 'no-file' buffers no name is shown with this
 # statusline...
 #set statusline=%<\ %{expand('%:~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
-set statusline=%<%f\ %h%m%r\ %-14.(%l,%c%V%)\ %P
+#set statusline=%<%f\ %h%m%r\ %-14.((%l,\ %c%V)%)\ %P
 
 #set statusline=%<%t\ %{toupper(mode())}\ %h%m%r\ %14.(%l,%c%V%)\ \ %P
 #g:airline#extensions#branch#displayed_head_limit = 22
