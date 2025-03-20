@@ -68,6 +68,8 @@ set softtabstop=4
 set shiftround
 set smarttab
 set showcmd
+set ignorecase
+set smartcase
 
 " Set grep program
 "set grepprg=grep\ -nI\ --exclude='*~'\ --exclude-dir={.hg,.git}\ $*
@@ -194,6 +196,7 @@ lspconfig.clangd.setup({
     fallbackFlags = { '-std=c++17' },
   },
 })
+vim.lsp.set_log_level("debug")
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'Show diagnostics' })
 vim.api.nvim_create_autocmd('LspAttach', {
   desc = 'Enable LSP completion',
@@ -204,5 +207,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
   end,
 })
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
+vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
 EOF
+
+" This statusline show the targeted filepath when the file is symlinked and
+" also it shows it relatively to the current working directory.
+"set statusline=%<%{fnamemodify(resolve(expand('%:p')),\ ':~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
