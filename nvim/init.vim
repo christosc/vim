@@ -212,6 +212,30 @@ vim.api.nvim_create_autocmd('LspAttach', {
 --vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
 vim.keymap.set('n', '<leader>a', ':ClangdSwitchSourceHeader<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>r', vim.lsp.buf.references, { noremap = true, silent = true })
+
+-- Gets the path of the cpp file corresponding to the current symlinked header file.
+local function GetCppFilepathAfterResolvingSymlink()
+    local resolved_filename = vim.fn.resolve(vim.fn.expand('%:p'))
+    --print(resolved_filename)
+    local resolved_dir = vim.fn.fnamemodify(resolved_filename, ':h')
+    --print(resolved_dir)
+    local bname = vim.fn.fnamemodify(resolved_filename, ':t')
+    --print(bname)
+    local bname_wo_ext = vim.fn.fnamemodify(bname, ':r')
+    --print(bname_wo_ext)
+    return resolved_dir .. '/' .. bname_wo_ext .. '.cpp'
+end
+
+-- Calls GetCppFilepathAfterResolvingSymlink() as a command
+vim.api.nvim_create_user_command('EditLinkedCppFile', function()
+  local file = GetCppFilepathAfterResolvingSymlink()
+  if file and file ~= "" then
+    vim.cmd("edit " .. vim.fn.fnameescape(file))
+  else
+    print("No file path returned")
+  end
+end, {})
+vim.keymap.set('n', '<leader>lc', ':EditLinkedCppFile<CR>', { noremap = true, silent = true })
 EOF
 
 " This statusline show the targeted filepath when the file is symlinked and
