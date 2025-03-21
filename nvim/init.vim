@@ -208,9 +208,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
   end,
 })
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
+--vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
+--vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
 vim.keymap.set('n', '<leader>a', ':ClangdSwitchSourceHeader<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>r', vim.lsp.buf.references, { noremap = true, silent = true })
 EOF
 
 " This statusline show the targeted filepath when the file is symlinked and
