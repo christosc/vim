@@ -70,6 +70,7 @@ set smarttab
 set showcmd
 set ignorecase
 set smartcase
+set signcolumn=yes
 
 " Set grep program
 "set grepprg=grep\ -nI\ --exclude='*~'\ --exclude-dir={.hg,.git}\ $*
@@ -213,5 +214,5 @@ EOF
 
 " This statusline show the targeted filepath when the file is symlinked and
 " also it shows it relatively to the current working directory.
-"set statusline=%<%{fnamemodify(resolve(expand('%:p')),\ ':~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+set statusline=%<%{fnamemodify(resolve(expand('%:p')),\ ':~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
