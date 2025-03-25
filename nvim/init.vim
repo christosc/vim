@@ -199,15 +199,15 @@ lspconfig.clangd.setup({
 })
 vim.lsp.set_log_level("debug")
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'Show diagnostics' })
-vim.api.nvim_create_autocmd('LspAttach', {
-  desc = 'Enable LSP completion',
-  callback = function(event)
-    local client_id = event.data and event.data.client_id
-    if client_id then
-      vim.lsp.completion.enable(true, client_id, event.buf, { autotrigger = true })
-    end
-  end,
-})
+--vim.api.nvim_create_autocmd('LspAttach', {
+--  desc = 'Enable LSP completion',
+--  callback = function(event)
+--    local client_id = event.data and event.data.client_id
+--    if client_id then
+--      vim.lsp.completion.enable(true, client_id, event.buf, { autotrigger = true })
+--    end
+--  end,
+--})
 --vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
 --vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
 vim.keymap.set('n', '<leader>a', ':ClangdSwitchSourceHeader<CR>', { noremap = true, silent = true })
