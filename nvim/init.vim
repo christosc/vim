@@ -1,3 +1,11 @@
+" INSTALLATION
+" ============
+" $ git clone https://github.com/neovim/neovim
+" $ cd neovim
+" $ make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/data/chryssoc
+" $ make install
+"
+
 call plug#begin()
 " List your plugins here
 " Plug 'tpope/vim-sensible'
@@ -171,8 +179,8 @@ noremap <silent> <F3> :set hls!<cr>
 "inoremap <silent> <F2> <ESC>:set paste!<CR>i
 
 " Search mappings using quickfix list
-nnoremap <silent><leader>gf :grep! "\b<cword>\b" -r %:h<CR>:botright copen<CR>
-nnoremap <leader>gp :grep! "\b<cword>\b" -r %:p:h:h<CR>:botright copen<CR>
+nnoremap <silent><leader>gf :grep! "\b<cword>\b" <CR>:botright copen<CR>
+nnoremap <leader>gp :grep! "\b<cword>\b" <CR>:botright copen<CR>
 nnoremap <leader>g. :grep! "\b<cword>\b" <CR>:copen<CR>
 nnoremap <leader>o :vim /\<<c-r>=expand('<cword>')<CR>\>/j %<CR>:botright copen<CR>
 nnoremap <leader>O :vim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:botright copen<CR>
@@ -183,15 +191,12 @@ autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 lua <<EOF
 require'nvim-treesitter.configs'.setup{highlight={enable=true}}  -- At the bottom of your init.vim, keep all configs on one line
 local lspconfig = require('lspconfig')
-local on_attach = function(client, bufnr)
-    -- Enable LSP-driven autocompletion
-    vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
-end
-require('lspconfig').clangd.setup {
-    on_attach = on_attach,
-    cmd = { "clangd", "--background-index" }, -- Optional: indexes in background
-}
+--local on_attach = function(client, bufnr)
+--    -- Enable LSP-driven autocompletion
+--    vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+--end
 lspconfig.clangd.setup({
+  --on_attach = on_attach,
   cmd = {'clangd', '--background-index', '--clang-tidy', '--log=verbose'},
   init_options = {
     fallbackFlags = { '-std=c++17' },
