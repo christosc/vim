@@ -1,10 +1,15 @@
 " INSTALLATION
 " ============
+" Since I had issues with the prebuilt binaries not finding the appropriate
+" version of glibc, I succeeded in building it from the source, like this:
+"
 " $ git clone https://github.com/neovim/neovim
 " $ cd neovim
+" $ git checkout stable
 " $ make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/data/chryssoc
 " $ make install
 "
+" The binary will be installed under /data/chryssoc/bin.
 
 call plug#begin()
 " List your plugins here
