@@ -18,7 +18,12 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend upda
 Plug 'neovim/nvim-lspconfig'
 Plug 'folke/trouble.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
 
+" If you want to have icons in your statusline choose one of these
+Plug 'nvim-tree/nvim-web-devicons'
 call plug#end()
 
 
@@ -83,7 +88,7 @@ set smarttab
 set showcmd
 set ignorecase
 set smartcase
-set signcolumn=yes
+"set signcolumn=yes
 
 " Set grep program
 "set grepprg=grep\ -nI\ --exclude='*~'\ --exclude-dir={.hg,.git}\ $*
@@ -246,9 +251,18 @@ vim.api.nvim_create_user_command('EditLinkedCppFile', function()
   end
 end, {})
 vim.keymap.set('n', '<leader>lc', ':EditLinkedCppFile<CR>', { noremap = true, silent = true })
+
+require('lualine').setup()
+
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+
 EOF
 
 " This statusline show the targeted filepath when the file is symlinked and
 " also it shows it relatively to the current working directory.
-set statusline=%<%{fnamemodify(resolve(expand('%:p')),\ ':~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+"set statusline=%<%{fnamemodify(resolve(expand('%:p')),\ ':~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
