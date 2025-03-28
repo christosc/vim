@@ -21,10 +21,11 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
-Plug 'phleet/vim-mercenary'
-
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
+Plug 'phleet/vim-mercenary'
+Plug 'hedyhli/outline.nvim'
+
 call plug#end()
 
 
@@ -262,7 +263,47 @@ vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' 
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
 vim.keymap.set('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
 
+require("outline").setup({})
+ --icons = {
+ --     File = { icon = '󰈔', hl = 'Identifier' },
+ --     Module = { icon = '󰆧', hl = 'Include' },
+ --     Namespace = { icon = '󰅪', hl = 'Include' },
+ --     Package = { icon = '󰏗', hl = 'Include' },
+ --     Class = { icon = '𝓒', hl = 'Type' },
+ --     Method = { icon = 'ƒ', hl = 'Function' },
+ --     Property = { icon = '', hl = 'Identifier' },
+ --     Field = { icon = '󰆨', hl = 'Identifier' },
+ --     Constructor = { icon = '', hl = 'Special' },
+ --     Enum = { icon = 'ℰ', hl = 'Type' },
+ --     Interface = { icon = '󰜰', hl = 'Type' },
+ --     Function = { icon = '', hl = 'Function' },
+ --     Variable = { icon = '', hl = 'Constant' },
+ --     Constant = { icon = '', hl = 'Constant' },
+ --     String = { icon = '𝓐', hl = 'String' },
+ --     Number = { icon = '#', hl = 'Number' },
+ --     Boolean = { icon = '⊨', hl = 'Boolean' },
+ --     Array = { icon = '󰅪', hl = 'Constant' },
+ --     Object = { icon = '⦿', hl = 'Type' },
+ --     Key = { icon = '🔐', hl = 'Type' },
+ --     Null = { icon = 'NULL', hl = 'Type' },
+ --     EnumMember = { icon = '', hl = 'Identifier' },
+ --     Struct = { icon = '𝓢', hl = 'Structure' },
+ --     Event = { icon = '🗲', hl = 'Type' },
+ --     Operator = { icon = '+', hl = 'Identifier' },
+ --     TypeParameter = { icon = '𝙏', hl = 'Identifier' },
+ --     Component = { icon = '󰅴', hl = 'Function' },
+ --     Fragment = { icon = '󰅴', hl = 'Constant' },
+ --     TypeAlias = { icon = ' ', hl = 'Type' },
+ --     Parameter = { icon = ' ', hl = 'Identifier' },
+ --     StaticMethod = { icon = ' ', hl = 'Function' },
+ --     Macro = { icon = ' ', hl = 'Function' },
+ --   },
+ --})
+
+vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
+
 EOF
+" END OF LUA INIT SEGMENT
 
 " This statusline show the targeted filepath when the file is symlinked and
 " also it shows it relatively to the current working directory.
