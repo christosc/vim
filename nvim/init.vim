@@ -25,6 +25,23 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCM
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'phleet/vim-mercenary'
 Plug 'hedyhli/outline.nvim'
+"Plug 'github/copilot.vim'
+Plug 'zbirenbaum/copilot.lua'
+Plug 'nvim-treesitter/nvim-treesitter-context'
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'CopilotC-Nvim/CopilotChat.nvim'
+
+" Not so sure what all these do. Copy-pasting them from the instructions of Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+
+" For vsnip users.
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
 
 call plug#end()
 
@@ -201,19 +218,17 @@ autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 "set number relativenumber
 
 lua <<EOF
-require'nvim-treesitter.configs'.setup{highlight={enable=true}}  -- At the bottom of your init.vim, keep all configs on one line
+require'nvim-treesitter.configs'.setup{
+    highlight={enable=true},
+    -- enable indentation
+    indent = { enable = true },
+}  -- At the bottom of your init.vim, keep all configs on one line
+
 local lspconfig = require('lspconfig')
 --local on_attach = function(client, bufnr)
 --    -- Enable LSP-driven autocompletion
 --    vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
 --end
-lspconfig.clangd.setup({
-  --on_attach = on_attach,
-  cmd = {'clangd', '--background-index', '--clang-tidy', '--log=verbose'},
-  init_options = {
-    fallbackFlags = { '-std=c++17' },
-  },
-})
 vim.lsp.set_log_level("debug")
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'Show diagnostics' })
 --vim.api.nvim_create_autocmd('LspAttach', {
@@ -243,6 +258,24 @@ local function GetCppFilepathAfterResolvingSymlink()
     return resolved_dir .. '/' .. bname_wo_ext .. '.cpp'
 end
 
+local function GetCppFilepathAfterResolvingSymlink()
+    local resolved_filename = vim.fn.resolve(vim.fn.expand('%:p'))
+    --print(resolved_filename)
+    local resolved_dir = vim.fn.fnamemodify(resolved_filename, ':h')
+    --print(resolved_dir)
+    local bname = vim.fn.fnamemodify(resolved_filename, ':t')
+    --print(bname)
+    local bname_wo_ext = vim.fn.fnamemodify(bname, ':r')
+    --print(bname_wo_ext)
+    return resolved_dir .. '/' .. bname_wo_ext .. '.cpp'
+end
+
+local function resolvedFilepath()
+    local resolved_filename = vim.fn.resolve(vim.fn.expand('%:p'))
+    --return vim.fn.fnamemodify(resolved_filepath, ':~:.');
+    return "MITSOS"
+end
+
 -- Calls GetCppFilepathAfterResolvingSymlink() as a command
 vim.api.nvim_create_user_command('EditLinkedCppFile', function()
   local file = GetCppFilepathAfterResolvingSymlink()
@@ -255,9 +288,17 @@ end, {})
 vim.keymap.set('n', '<leader>lc', ':EditLinkedCppFile<CR>', { noremap = true, silent = true })
 
 require('lualine').setup({
+    --sections = {
+    --    lualine_c = {
+    --        {
+    --            'filename',
+    --            path={resolvedFilepath}
+    --        }
+    --    }
+    --},
     options = {
         icons_enabled = true,
-        theme='auto'
+        theme='auto',
     }
 })
 
@@ -363,6 +404,168 @@ require'nvim-web-devicons'.setup {
  };
 }
 
+require("CopilotChat").setup {
+  -- See Configuration section for options
+}
+
+require'nvim-treesitter.configs'.setup {
+  textobjects = {
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        -- You can optionally set descriptions to the mappings (used in the desc parameter of
+        -- nvim_buf_set_keymap) which plugins like which-key display
+        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+        -- You can also use captures from other query groups like `locals.scm`
+        ["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
+      },
+      -- You can choose the select mode (default is charwise 'v')
+      --
+      -- Can also be a function which gets passed a table with the keys
+      -- * query_string: eg '@function.inner'
+      -- * method: eg 'v' or 'o'
+      -- and should return the mode ('v', 'V', or '<c-v>') or a table
+      -- mapping query_strings to modes.
+      selection_modes = {
+        ['@parameter.outer'] = 'v', -- charwise
+        ['@function.outer'] = 'V', -- linewise
+        ['@class.outer'] = '<c-v>', -- blockwise
+      },
+      -- If you set this to `true` (default is `false`) then any textobject is
+      -- extended to include preceding or succeeding whitespace. Succeeding
+      -- whitespace has priority in order to act similarly to eg the built-in
+      -- `ap`.
+      --
+      -- Can also be a function which gets passed a table with the keys
+      -- * query_string: eg '@function.inner'
+      -- * selection_mode: eg 'v'
+      -- and should return true or false
+      include_surrounding_whitespace = true,
+    },
+  },
+}
+
+--require("copilot").setup({
+--  suggestion = {
+--    auto_trigger = true,
+--    debounce = 75,
+--    keymap = {
+--      accept = "<C-Right>",
+--      accept_word = false,
+--      accept_line = false,
+--      next = "<C-Right>",
+--      prev = "<C-Left>",
+--      dismiss = "<C-e>",
+--    },
+--  },
+--  panel = {
+--    enabled = true,
+--    auto_refresh = true,
+--    keymap = {
+--      jump_prev = "[[",
+--      jump_next = "]]",
+--      accept = "<C-Right>",
+--      refresh = "gr",
+--      open = "<M-CR>",
+--    },
+--  },
+--})
+
+ -- Set up nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+        -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+
+        -- For `mini.snippets` users:
+        -- local insert = MiniSnippets.config.expand.insert or MiniSnippets.default_insert
+        -- insert({ body = args.body }) -- Insert at cursor
+        -- cmp.resubscribe({ "TextChangedI", "TextChangedP" })
+        -- require("cmp.config").set_onetime({ sources = {} })
+      end,
+    },
+    window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
+  -- Set configuration for specific filetype.
+  --[[ cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'git' },
+    }, {
+      { name = 'buffer' },
+    })
+ })
+ require("cmp_git").setup() ]]--
+
+  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    }),
+    matching = { disallow_symbol_nonprefix_matching = false }
+  })
+
+  require("copilot").setup({})
+  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  lspconfig.clangd.setup({
+    capabilities = capabilities,
+    --on_attach = on_attach,
+    cmd = {'clangd', '--background-index', '--clang-tidy', '--log=verbose'},
+    init_options = {
+        fallbackFlags = { '-std=c++17' },
+    },
+  })
+
+  local project_root = os.getenv("PROJECT_ROOT") or vim.fn.getcwd()
+  vim.keymap.set('n', '<leader>ff', function()
+    require('telescope.builtin').find_files({ cwd = project_root })
+  end, { desc = 'Find files in specified project root' })
 EOF
 " END OF LUA INIT SEGMENT
 
