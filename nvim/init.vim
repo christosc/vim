@@ -38,6 +38,7 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'zbirenbaum/copilot-cmp'
 
 " For vsnip users.
 Plug 'hrsh7th/cmp-vsnip'
@@ -108,7 +109,7 @@ set showcmd
 set ignorecase
 set smartcase
 set signcolumn=yes
-
+set completeopt+=popup,noinsert,noselect
 " Set grep program
 "set grepprg=grep\ -nI\ --exclude='*~'\ --exclude-dir={.hg,.git}\ $*
 
@@ -402,10 +403,17 @@ require'nvim-web-devicons'.setup {
     name = "Apple",
   },
  };
-}
+};
 
 require("CopilotChat").setup {
   -- See Configuration section for options
+  chat_autocomplete = false,
+  mappings = {
+    complete = {
+        normal = "", -- TAB key won't work in autocompletions otherwise
+        insert = "",
+    }
+  }
 }
 
 require'nvim-treesitter.configs'.setup {
@@ -453,32 +461,11 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
---require("copilot").setup({
---  suggestion = {
---    auto_trigger = true,
---    debounce = 75,
---    keymap = {
---      accept = "<C-Right>",
---      accept_word = false,
---      accept_line = false,
---      next = "<C-Right>",
---      prev = "<C-Left>",
---      dismiss = "<C-e>",
---    },
---  },
---  panel = {
---    enabled = true,
---    auto_refresh = true,
---    keymap = {
---      jump_prev = "[[",
---      jump_next = "]]",
---      accept = "<C-Right>",
---      refresh = "gr",
---      open = "<M-CR>",
---    },
---  },
---})
-
+  local has_words_before = function()
+  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
+      local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+      return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
+  end
  -- Set up nvim-cmp.
   local cmp = require'cmp'
 
@@ -506,11 +493,13 @@ require'nvim-treesitter.configs'.setup {
     mapping = cmp.mapping.preset.insert({
       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      ['<C-Space>'] = cmp.mapping.complete(),
+      --['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
       ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     }),
     sources = cmp.config.sources({
+      -- Copilot Source
+      { name = "copilot", group_index = 2 },
       { name = 'nvim_lsp' },
       { name = 'vsnip' }, -- For vsnip users.
       -- { name = 'luasnip' }, -- For luasnip users.
@@ -523,15 +512,15 @@ require'nvim-treesitter.configs'.setup {
 
   -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
   -- Set configuration for specific filetype.
-  --[[ cmp.setup.filetype('gitcommit', {
+  cmp.setup.filetype('gitcommit', {
     sources = cmp.config.sources({
       { name = 'git' },
     }, {
       { name = 'buffer' },
     })
  })
- require("cmp_git").setup() ]]--
-
+  --[[
+ require("cmp_git").setup()
   -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
   cmp.setup.cmdline({ '/', '?' }, {
     mapping = cmp.mapping.preset.cmdline(),
@@ -539,7 +528,7 @@ require'nvim-treesitter.configs'.setup {
       { name = 'buffer' }
     }
   })
-
+--]]
   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
   cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
