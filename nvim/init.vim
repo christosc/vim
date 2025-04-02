@@ -109,7 +109,7 @@ set showcmd
 set ignorecase
 set smartcase
 set signcolumn=yes
-set completeopt+=popup,noinsert,noselect
+set completeopt+=popup
 " Set grep program
 "set grepprg=grep\ -nI\ --exclude='*~'\ --exclude-dir={.hg,.git}\ $*
 
@@ -467,6 +467,7 @@ require'nvim-treesitter.configs'.setup {
       return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
   end
  -- Set up nvim-cmp.
+ --[[
   local cmp = require'cmp'
 
   cmp.setup({
@@ -519,16 +520,6 @@ require'nvim-treesitter.configs'.setup {
       { name = 'buffer' },
     })
  })
-  --[[
- require("cmp_git").setup()
-  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline({ '/', '?' }, {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-      { name = 'buffer' }
-    }
-  })
---]]
   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
   cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
@@ -539,6 +530,17 @@ require'nvim-treesitter.configs'.setup {
     }),
     matching = { disallow_symbol_nonprefix_matching = false }
   })
+  --]]
+  --[[
+ require("cmp_git").setup()
+  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+--]]
 
   require("copilot").setup({})
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
