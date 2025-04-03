@@ -27,8 +27,6 @@ Plug 'phleet/vim-mercenary'
 Plug 'hedyhli/outline.nvim'
 "Plug 'github/copilot.vim'
 Plug 'zbirenbaum/copilot.lua'
-Plug 'nvim-treesitter/nvim-treesitter-context'
-Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'CopilotC-Nvim/CopilotChat.nvim'
 
