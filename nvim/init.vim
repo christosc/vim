@@ -19,7 +19,7 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'folke/trouble.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-lualine/lualine.nvim'
+Plug 'itchyny/lightline.vim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
@@ -41,6 +41,7 @@ Plug 'zbirenbaum/copilot-cmp'
 " For vsnip users.
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
+
 
 call plug#end()
 
@@ -286,21 +287,6 @@ vim.api.nvim_create_user_command('EditLinkedCppFile', function()
 end, {})
 vim.keymap.set('n', '<leader>lc', ':EditLinkedCppFile<CR>', { noremap = true, silent = true })
 
-require('lualine').setup({
-    --sections = {
-    --    lualine_c = {
-    --        {
-    --            'filename',
-    --            path={resolvedFilepath}
-    --        }
-    --    }
-    --},
-    options = {
-        icons_enabled = true,
-        theme='auto',
-    }
-})
-
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
@@ -545,7 +531,7 @@ require'nvim-treesitter.configs'.setup {
   lspconfig.clangd.setup({
     capabilities = capabilities,
     --on_attach = on_attach,
-    cmd = {'clangd', '--background-index', '--clang-tidy', '--log=verbose'},
+    cmd = {'clangd', '--background-index', '--clang-tidy'},
     init_options = {
         fallbackFlags = { '-std=c++17' },
     },
@@ -555,6 +541,7 @@ require'nvim-treesitter.configs'.setup {
   vim.keymap.set('n', '<leader>ff', function()
     require('telescope.builtin').find_files({ cwd = project_root })
   end, { desc = 'Find files in specified project root' })
+
 EOF
 " END OF LUA INIT SEGMENT
 
