@@ -259,7 +259,9 @@ local function GetCppFilepathAfterResolvingSymlink()
 end
 
 local function GetCppFilepathAfterResolvingSymlink()
-    local resolved_filename = vim.fn.resolve(vim.fn.expand('%:p'))
+    local original_filename = vim.fn.expand('%:p')
+    local extension = vim.fn.fnamemodify(original_filename, ':e')
+    local resolved_filename = vim.fn.resolve(original_filename)
     --print(resolved_filename)
     local resolved_dir = vim.fn.fnamemodify(resolved_filename, ':h')
     --print(resolved_dir)
@@ -267,7 +269,8 @@ local function GetCppFilepathAfterResolvingSymlink()
     --print(bname)
     local bname_wo_ext = vim.fn.fnamemodify(bname, ':r')
     --print(bname_wo_ext)
-    return resolved_dir .. '/' .. bname_wo_ext .. '.cpp'
+    print(resolved_dir .. '/' .. bname_wo_ext .. '.' .. extension)
+    return resolved_dir .. '/' .. bname_wo_ext .. '.' .. extension
 end
 
 local function resolvedFilepath()
@@ -280,6 +283,13 @@ end
 vim.api.nvim_create_user_command('EditLinkedCppFile', function()
   local file = GetCppFilepathAfterResolvingSymlink()
   if file and file ~= "" then
+    -- First delete the current buffer, because it seems that it detects that it's
+    -- opening the same file and eventually does not open the linked file.
+    -- First get the current buffer number
+    local buf = vim.api.nvim_get_current_buf()
+    -- Delete the current buffer
+    vim.api.nvim_buf_delete(buf, { force = false })
+    -- Open the linked file
     vim.cmd("edit " .. vim.fn.fnameescape(file))
   else
     print("No file path returned")
@@ -531,7 +541,7 @@ require'nvim-treesitter.configs'.setup {
   lspconfig.clangd.setup({
     capabilities = capabilities,
     --on_attach = on_attach,
-    cmd = {'clangd', '--background-index', '--clang-tidy'},
+    cmd = {'clangd', '--background-index', '--clang-tidy', '--log=verbose'},
     init_options = {
         fallbackFlags = { '-std=c++17' },
     },
@@ -542,6 +552,7 @@ require'nvim-treesitter.configs'.setup {
     require('telescope.builtin').find_files({ cwd = project_root })
   end, { desc = 'Find files in specified project root' })
 
+  vim.lsp.set_log_level("trace")
 EOF
 " END OF LUA INIT SEGMENT
 
