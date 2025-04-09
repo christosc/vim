@@ -26,9 +26,9 @@ Plug 'nvim-tree/nvim-web-devicons'
 Plug 'phleet/vim-mercenary'
 Plug 'hedyhli/outline.nvim'
 "Plug 'github/copilot.vim'
-Plug 'zbirenbaum/copilot.lua'
+"Plug 'zbirenbaum/copilot.lua'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'CopilotC-Nvim/CopilotChat.nvim'
+"Plug 'CopilotC-Nvim/CopilotChat.nvim'
 
 " Not so sure what all these do. Copy-pasting them from the instructions of Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
@@ -36,7 +36,7 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'zbirenbaum/copilot-cmp'
+"Plug 'zbirenbaum/copilot-cmp'
 
 " For vsnip users.
 Plug 'hrsh7th/cmp-vsnip'
@@ -399,16 +399,16 @@ require'nvim-web-devicons'.setup {
  };
 };
 
-require("CopilotChat").setup {
-  -- See Configuration section for options
-  chat_autocomplete = false,
-  mappings = {
-    complete = {
-        normal = "", -- TAB key won't work in autocompletions otherwise
-        insert = "",
-    }
-  }
-}
+--require("CopilotChat").setup {
+--  -- See Configuration section for options
+--  chat_autocomplete = false,
+--  mappings = {
+--    complete = {
+--        normal = "", -- TAB key won't work in autocompletions otherwise
+--        insert = "",
+--    }
+--  }
+--}
 
 require'nvim-treesitter.configs'.setup {
   textobjects = {
@@ -536,12 +536,12 @@ require'nvim-treesitter.configs'.setup {
   })
 --]]
 
-  require("copilot").setup({})
+  --require("copilot").setup({})
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   lspconfig.clangd.setup({
     capabilities = capabilities,
     --on_attach = on_attach,
-    cmd = {'clangd', '--background-index', '--clang-tidy', '--log=verbose'},
+    cmd = {'clangd', '--background-index', '--clang-tidy', --[['--log=verbose'--]]},
     init_options = {
         fallbackFlags = { '-std=c++17' },
     },
