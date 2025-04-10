@@ -15,7 +15,7 @@ call plug#begin()
 " List your plugins here
 " Plug 'tpope/vim-sensible'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
-Plug 'neovim/nvim-lspconfig'
+"Plug 'neovim/nvim-lspconfig'
 Plug 'folke/trouble.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -224,7 +224,7 @@ require'nvim-treesitter.configs'.setup{
     indent = { enable = true },
 }  -- At the bottom of your init.vim, keep all configs on one line
 
-local lspconfig = require('lspconfig')
+--local lspconfig = require('lspconfig')
 --local on_attach = function(client, bufnr)
 --    -- Enable LSP-driven autocompletion
 --    vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
@@ -242,8 +242,50 @@ vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { noremap = true, si
 --})
 --vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
 --vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
-vim.keymap.set('n', '<leader>a', ':ClangdSwitchSourceHeader<CR>', { noremap = true, silent = true })
+-- Function to start the clangd language server
+local function start_clangd()
+  local config = {
+    name = 'clangd',
+    cmd = {'clangd'},
+    filetypes = {'c', 'cpp', 'objc', 'objcpp', 'h', 'hpp'},
+    root_dir = vim.fs.dirname(vim.fs.find({'compile_commands.json', '.git'}, { upward = true })[1]),
+    -- Additional settings can be added here
+  }
+
+  -- Start or attach the language server
+  vim.lsp.start(config)
+end
+
+function SwitchSourceHeader()
+    local bufnr = 0  -- Current buffer
+    local uri = vim.uri_from_bufnr(bufnr)  -- Get the URI of the current file
+    local params = { uri = uri }  -- Parameters for the LSP request
+
+    vim.lsp.buf_request(bufnr, "textDocument/switchSourceHeader", params, function(err, result)
+        if err then
+            print("Error switching file: " .. err.message)
+            return
+        end
+        if result then
+            local target_uri = result  -- URI of the corresponding file
+            local target_path = vim.uri_to_fname(target_uri)  -- Convert URI to file path
+            vim.cmd("edit " .. target_path)  -- Open the file in the current window
+        else
+            print("No corresponding file found")
+        end
+    end)
+end
+
+-- Map a key to switch between source and header files
+vim.keymap.set('n', '<Leader>a', SwitchSourceHeader, { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>r', vim.lsp.buf.references, { noremap = true, silent = true })
+
+
+-- Create an autocommand to start clangd when relevant files are opened
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = {'c', 'cpp', 'objc', 'objcpp', 'h', 'hpp'},
+  callback = start_clangd,
+})
 
 -- Gets the path of the cpp file corresponding to the current symlinked header file.
 local function GetCppFilepathAfterResolvingSymlink()
@@ -538,14 +580,14 @@ require'nvim-treesitter.configs'.setup {
 
   --require("copilot").setup({})
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
-  lspconfig.clangd.setup({
-    capabilities = capabilities,
-    --on_attach = on_attach,
-    cmd = {'clangd', '--background-index', '--clang-tidy', --[['--log=verbose'--]]},
-    init_options = {
-        fallbackFlags = { '-std=c++17' },
-    },
-  })
+  --lspconfig.clangd.setup({
+  --  capabilities = capabilities,
+  --  --on_attach = on_attach,
+  --  cmd = {'clangd', '--background-index', '--clang-tidy', --[['--log=verbose'--]]},
+  --  init_options = {
+  --      fallbackFlags = { '-std=c++17' },
+  --  },
+  --})
 
   local project_root = os.getenv("PROJECT_ROOT") or vim.fn.getcwd()
   vim.keymap.set('n', '<leader>ff', function()
