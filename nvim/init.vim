@@ -553,6 +553,33 @@ require'nvim-treesitter.configs'.setup {
   end, { desc = 'Find files in specified project root' })
 
   vim.lsp.set_log_level("trace")
+
+  -- Function to list resolved filepaths of all listed buffers.
+  local function list_buffers()
+    local bufs = vim.api.nvim_list_bufs()  -- Get all buffer handles
+    local lines = {}                      -- Table to accumulate output lines
+
+    for _, buf in ipairs(bufs) do
+      -- Only process buffers that are listed
+      if vim.api.nvim_buf_get_option(buf, "buflisted") then
+        local name = vim.api.nvim_buf_get_name(buf)
+        if name == "" then
+          table.insert(lines, string.format("%d: [No Name]", buf))
+        else
+          -- Resolve symlinks then make filename prettier (e.g. abbreviating home directory)
+          local resolved = vim.fn.fnamemodify(vim.fn.resolve(name), ":~:.")
+          table.insert(lines, string.format("%d: %s", buf, resolved))
+        end
+      end
+    end
+
+    -- Print the output as separate lines
+    print(table.concat(lines, "\n"))
+  end
+
+  -- Create a user command "Lls" that calls the list_buffers function.
+  vim.api.nvim_create_user_command("Lls", list_buffers, {})
+
 EOF
 " END OF LUA INIT SEGMENT
 
