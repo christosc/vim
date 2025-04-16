@@ -217,6 +217,13 @@ nnoremap <leader>O :vim /\<<c-r>=expand('<cword>')<CR>\>\C/j %<CR>:botright cope
 autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 "set number relativenumber
 
+" FAQ lsp-faq
+" Q: How to force-reload LSP?
+" A: Stop all clients, then reload the buffer.
+"
+" :lua vim.lsp.stop_client(vim.lsp.get_clients())
+" :edit
+
 lua <<EOF
 require'nvim-treesitter.configs'.setup{
     highlight={enable=true},
@@ -621,6 +628,7 @@ require'nvim-treesitter.configs'.setup {
 
   -- Create a user command "Lls" that calls the list_buffers function.
   vim.api.nvim_create_user_command("Lls", list_buffers, {})
+  vim.api.nvim_create_user_command("LspStop", 'lua vim.lsp.stop_client(vim.lsp.get_clients())', {})
 
 EOF
 " END OF LUA INIT SEGMENT
