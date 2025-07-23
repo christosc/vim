@@ -249,17 +249,42 @@ vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { noremap = true, si
 --})
 --vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
 --vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
+
+local function find_project_root()
+  local compile_db = vim.fs.find('compile_commands.json', { upward = true })[1]
+  if compile_db then
+    return vim.fs.dirname(compile_db)
+  end
+
+  local vc_dir = vim.fs.find({'.hg', '.git'}, { upward = true })[1]
+  if vc_dir then
+    return vim.fs.dirname(vc_dir)
+  end
+
+  return vim.fn.getcwd()
+end
+
 -- Function to start the clangd language server
 local function start_clangd()
+  local root_dir = find_project_root()
+
+  -- Avoid starting multiple clients for the same root_dir
+  for _, client in ipairs(vim.lsp.get_clients({ name = 'clangd' })) do
+    if client.config.root_dir == root_dir then
+      return -- Already started for this project
+    end
+  end
+
   local config = {
     name = 'clangd',
-    cmd = {'clangd'},
-    filetypes = {'c', 'cpp', 'objc', 'objcpp', 'h', 'hpp'},
-    root_dir = vim.fs.dirname(vim.fs.find({'compile_commands.json', '.git'}, { upward = true })[1]),
-    -- Additional settings can be added here
+    cmd = { 'clangd' },
+    filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'h', 'hpp' },
+    root_dir = root_dir,
+    on_init = function(client)
+      print('LSP started:', client.name)
+    end,
   }
 
-  -- Start or attach the language server
   vim.lsp.start(config)
 end
 
@@ -354,42 +379,6 @@ vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help ta
 vim.keymap.set('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
 
 require("outline").setup({})
- --icons = {
- --     File = { icon = '󰈔', hl = 'Identifier' },
- --     Module = { icon = '󰆧', hl = 'Include' },
- --     Namespace = { icon = '󰅪', hl = 'Include' },
- --     Package = { icon = '󰏗', hl = 'Include' },
- --     Class = { icon = '𝓒', hl = 'Type' },
- --     Method = { icon = 'ƒ', hl = 'Function' },
- --     Property = { icon = '', hl = 'Identifier' },
- --     Field = { icon = '󰆨', hl = 'Identifier' },
- --     Constructor = { icon = '', hl = 'Special' },
- --     Enum = { icon = 'ℰ', hl = 'Type' },
- --     Interface = { icon = '󰜰', hl = 'Type' },
- --     Function = { icon = '', hl = 'Function' },
- --     Variable = { icon = '', hl = 'Constant' },
- --     Constant = { icon = '', hl = 'Constant' },
- --     String = { icon = '𝓐', hl = 'String' },
- --     Number = { icon = '#', hl = 'Number' },
- --     Boolean = { icon = '⊨', hl = 'Boolean' },
- --     Array = { icon = '󰅪', hl = 'Constant' },
- --     Object = { icon = '⦿', hl = 'Type' },
- --     Key = { icon = '🔐', hl = 'Type' },
- --     Null = { icon = 'NULL', hl = 'Type' },
- --     EnumMember = { icon = '', hl = 'Identifier' },
- --     Struct = { icon = '𝓢', hl = 'Structure' },
- --     Event = { icon = '🗲', hl = 'Type' },
- --     Operator = { icon = '+', hl = 'Identifier' },
- --     TypeParameter = { icon = '𝙏', hl = 'Identifier' },
- --     Component = { icon = '󰅴', hl = 'Function' },
- --     Fragment = { icon = '󰅴', hl = 'Constant' },
- --     TypeAlias = { icon = ' ', hl = 'Type' },
- --     Parameter = { icon = ' ', hl = 'Identifier' },
- --     StaticMethod = { icon = ' ', hl = 'Function' },
- --     Macro = { icon = ' ', hl = 'Function' },
- --   },
- --})
-
 vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
 
 require'nvim-web-devicons'.setup {
@@ -448,17 +437,6 @@ require'nvim-web-devicons'.setup {
  };
 };
 
---require("CopilotChat").setup {
---  -- See Configuration section for options
---  chat_autocomplete = false,
---  mappings = {
---    complete = {
---        normal = "", -- TAB key won't work in autocompletions otherwise
---        insert = "",
---    }
---  }
---}
-
 require'nvim-treesitter.configs'.setup {
   textobjects = {
     select = {
@@ -504,131 +482,46 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
-  local has_words_before = function()
+local has_words_before = function()
   if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
-      local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-      return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
-  end
- -- Set up nvim-cmp.
- --[[
-  local cmp = require'cmp'
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return (col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil)
+end
 
-  cmp.setup({
-    snippet = {
-      -- REQUIRED - you must specify a snippet engine
-      expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-        -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-        -- For `mini.snippets` users:
-        -- local insert = MiniSnippets.config.expand.insert or MiniSnippets.default_insert
-        -- insert({ body = args.body }) -- Insert at cursor
-        -- cmp.resubscribe({ "TextChangedI", "TextChangedP" })
-        -- require("cmp.config").set_onetime({ sources = {} })
-      end,
-    },
-    window = {
-      -- completion = cmp.config.window.bordered(),
-      -- documentation = cmp.config.window.bordered(),
-    },
-    mapping = cmp.mapping.preset.insert({
-      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      --['<C-Space>'] = cmp.mapping.complete(),
-      ['<C-e>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-    }),
-    sources = cmp.config.sources({
-      -- Copilot Source
-      { name = "copilot", group_index = 2 },
-      { name = 'nvim_lsp' },
-      { name = 'vsnip' }, -- For vsnip users.
-      -- { name = 'luasnip' }, -- For luasnip users.
-      -- { name = 'ultisnips' }, -- For ultisnips users.
-      -- { name = 'snippy' }, -- For snippy users.
-    }, {
-      { name = 'buffer' },
-    })
-  })
+vim.keymap.set('n', '<leader>ff', function()
+  require('telescope.builtin').find_files({ cwd = find_project_root() })
+end, { desc = 'Find files in specified project root' })
 
-  -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
-  -- Set configuration for specific filetype.
-  cmp.setup.filetype('gitcommit', {
-    sources = cmp.config.sources({
-      { name = 'git' },
-    }, {
-      { name = 'buffer' },
-    })
- })
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
-      { name = 'cmdline' }
-    }),
-    matching = { disallow_symbol_nonprefix_matching = false }
-  })
-  --]]
-  --[[
- require("cmp_git").setup()
-  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline({ '/', '?' }, {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-      { name = 'buffer' }
-    }
-  })
---]]
+vim.lsp.set_log_level("trace")
 
-  --require("copilot").setup({})
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
-  --lspconfig.clangd.setup({
-  --  capabilities = capabilities,
-  --  --on_attach = on_attach,
-  --  cmd = {'clangd', '--background-index', '--clang-tidy', --[['--log=verbose'--]]},
-  --  init_options = {
-  --      fallbackFlags = { '-std=c++17' },
-  --  },
-  --})
+-- Function to list resolved filepaths of all listed buffers.
+local function list_buffers()
+  local bufs = vim.api.nvim_list_bufs()  -- Get all buffer handles
+  local lines = {}                      -- Table to accumulate output lines
 
-  local project_root = os.getenv("PROJECT_ROOT") or vim.fn.getcwd()
-  vim.keymap.set('n', '<leader>ff', function()
-    require('telescope.builtin').find_files({ cwd = project_root })
-  end, { desc = 'Find files in specified project root' })
-
-  vim.lsp.set_log_level("trace")
-
-  -- Function to list resolved filepaths of all listed buffers.
-  local function list_buffers()
-    local bufs = vim.api.nvim_list_bufs()  -- Get all buffer handles
-    local lines = {}                      -- Table to accumulate output lines
-
-    for _, buf in ipairs(bufs) do
-      -- Only process buffers that are listed
-      if vim.api.nvim_buf_get_option(buf, "buflisted") then
-        local name = vim.api.nvim_buf_get_name(buf)
-        if name == "" then
-          table.insert(lines, string.format("%d: [No Name]", buf))
-        else
-          -- Resolve symlinks then make filename prettier (e.g. abbreviating home directory)
-          local resolved = vim.fn.fnamemodify(vim.fn.resolve(name), ":~:.")
-          table.insert(lines, string.format("%d: %s", buf, resolved))
-        end
+  for _, buf in ipairs(bufs) do
+    -- Only process buffers that are listed
+    if vim.api.nvim_buf_get_option(buf, "buflisted") then
+      local name = vim.api.nvim_buf_get_name(buf)
+      if name == "" then
+        table.insert(lines, string.format("%d: [No Name]", buf))
+      else
+        -- Resolve symlinks then make filename prettier (e.g. abbreviating home directory)
+        local resolved = vim.fn.fnamemodify(vim.fn.resolve(name), ":~:.")
+        table.insert(lines, string.format("%d: %s", buf, resolved))
       end
     end
-
-    -- Print the output as separate lines
-    print(table.concat(lines, "\n"))
   end
 
-  -- Create a user command "Lls" that calls the list_buffers function.
-  vim.api.nvim_create_user_command("Lls", list_buffers, {})
-  vim.api.nvim_create_user_command("LspStop", 'lua vim.lsp.stop_client(vim.lsp.get_clients())', {})
+  -- Print the output as separate lines
+  print(table.concat(lines, "\n"))
+end
+
+-- Create a user command "Lls" that calls the list_buffers function.
+vim.api.nvim_create_user_command("Lls", list_buffers, {})
+vim.api.nvim_create_user_command("LspStop", 'lua vim.lsp.stop_client(vim.lsp.get_clients())', {})
 
 EOF
 " END OF LUA INIT SEGMENT
