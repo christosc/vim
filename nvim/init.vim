@@ -277,7 +277,7 @@ local function start_clangd()
 
   local config = {
     name = 'clangd',
-    cmd = { 'clangd' },
+    cmd = { "clangd", "--log=verbose", "--pretty" },
     filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'h', 'hpp' },
     root_dir = root_dir,
     on_init = function(client)
@@ -314,9 +314,19 @@ vim.keymap.set('n', '<leader>r', vim.lsp.buf.references, { noremap = true, silen
 
 
 -- Create an autocommand to start clangd when relevant files are opened
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = {'c', 'cpp', 'objc', 'objcpp', 'h', 'hpp'},
-  callback = start_clangd,
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+  pattern = { "*.c", "*.cpp", "*.cc", "*.h", "*.hpp", "*.objc", "*.objcpp" },
+  callback = function(args)
+    local buf = args.buf
+    if not vim.lsp.get_clients({ bufnr = buf })[1] then
+      local root = find_project_root()
+      vim.lsp.start({
+        name = "clangd",
+        cmd = { "clangd", "--log=verbose", "--pretty" },
+        root_dir = root,
+      })
+    end
+  end,
 })
 
 -- Gets the path of the cpp file corresponding to the current symlinked header file.
