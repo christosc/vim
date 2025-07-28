@@ -19,7 +19,7 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend upda
 Plug 'folke/trouble.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-lua/plenary.nvim'
-"Plug 'itchyny/lightline.vim'
+Plug 'itchyny/lightline.vim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
@@ -27,7 +27,8 @@ Plug 'phleet/vim-mercenary'
 Plug 'hedyhli/outline.nvim'
 "Plug 'github/copilot.vim'
 "Plug 'zbirenbaum/copilot.lua'
-Plug 'nvim-lua/plenary.nvim'
+Plug 'liuchengxu/vista.vim'
+
 "Plug 'CopilotC-Nvim/CopilotChat.nvim'
 
 " Not so sure what all these do. Copy-pasting them from the instructions of Plug 'hrsh7th/cmp-nvim-lsp'
@@ -44,7 +45,6 @@ Plug 'hrsh7th/vim-vsnip'
 
 
 call plug#end()
-
 
 " Toggle colorcolumn
 function! ToggleColorColumn()
@@ -224,6 +224,9 @@ autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 " :lua vim.lsp.stop_client(vim.lsp.get_clients())
 " :edit
 
+" Set the default backend to LSP or ctags as fallback
+let g:vista_default_executive = 'nvim_lsp'
+
 lua <<EOF
 require'nvim-treesitter.configs'.setup{
     highlight={enable=true},
@@ -280,6 +283,7 @@ local function start_clangd()
     cmd = { "clangd", "--log=verbose", "--pretty" },
     filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'h', 'hpp' },
     root_dir = root_dir,
+    capabilities = vim.lsp.protocol.make_client_capabilities(),
     on_init = function(client)
       print('LSP started:', client.name)
     end,
@@ -533,6 +537,15 @@ end
 vim.api.nvim_create_user_command("Lls", list_buffers, {})
 vim.api.nvim_create_user_command("LspStop", 'lua vim.lsp.stop_client(vim.lsp.get_clients())', {})
 
+-- Silent warning "position_encoding param is required in vim.lsp.util.make_position_params. Defaulting to position encoding of the first client."
+-- which get printed due to Vista.vim plugin
+vim.notify = function(msg, log_level, _)
+  if msg:match("position_encoding param is required") then
+    return
+  end
+  vim.api.nvim_notify(msg, log_level, {})
+end
+
 EOF
 " END OF LUA INIT SEGMENT
 
@@ -541,3 +554,37 @@ EOF
 set statusline=%<%{fnamemodify(resolve(expand('%:p')),\ ':~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 nnoremap <leader>rp :echo fnamemodify(resolve(expand('%:p')), ':~:.')<CR>
 
+" Executive used when opening vista sidebar without specifying it.
+"
+" " See all the avaliable executives via `:echo g:vista#executives`.
+"
+let g:vista_default_executive = 'nvim_lsp'
+
+" How each level is indented and what to prepend.
+" " This could make the display more compact or more spacious.
+" " e.g., more compact: ["▸ ", ""]
+" " Note: this option only works for the kind renderer, not the tree renderer.
+let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+
+function! NearestMethodOrFunction() abort
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
+
+set statusline+=%{NearestMethodOrFunction()}
+
+" By default vista.vim never run if you don't call it explicitly.
+"
+" If you want to show the nearest function in your statusline automatically,
+" you can add the following line to your vimrc
+autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
+
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'readonly', 'filename', 'modified', 'method' ] ]
+      \ },
+      \ 'component_function': {
+      \   'method': 'NearestMethodOrFunction'
+      \ },
+      \ }
