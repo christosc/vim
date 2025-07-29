@@ -19,15 +19,17 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend upda
 Plug 'folke/trouble.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'itchyny/lightline.vim'
+"Plug 'itchyny/lightline.vim'
+Plug 'nvim-lualine/lualine.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'phleet/vim-mercenary'
-Plug 'hedyhli/outline.nvim'
+"Plug 'hedyhli/outline.nvim'
+"Plug 'liuchengxu/vista.vim'
+Plug 'stevearc/aerial.nvim'
 "Plug 'github/copilot.vim'
 "Plug 'zbirenbaum/copilot.lua'
-Plug 'liuchengxu/vista.vim'
 
 "Plug 'CopilotC-Nvim/CopilotChat.nvim'
 
@@ -392,8 +394,8 @@ vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' 
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
 vim.keymap.set('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
 
-require("outline").setup({})
-vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
+--require("outline").setup({})
+--vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
 
 require'nvim-web-devicons'.setup {
  -- your personal icons can go here (to override)
@@ -546,6 +548,82 @@ vim.notify = function(msg, log_level, _)
   vim.api.nvim_notify(msg, log_level, {})
 end
 
+require("lualine").setup({
+  options = {
+    theme = 'onedark',
+  },
+  sections = {
+    lualine_x = { "aerial" },
+
+    -- Or you can customize it
+    --lualine_y = {
+    --  {
+    --    "aerial",
+    --    -- The separator to be used to separate symbols in status line.
+    --    sep = " ) ",
+
+    --    -- The number of symbols to render top-down. In order to render only 'N' last
+    --    -- symbols, negative numbers may be supplied. For instance, 'depth = -1' can
+    --    -- be used in order to render only current symbol.
+    --    depth = nil,
+
+    --    -- When 'dense' mode is on, icons are not rendered near their symbols. Only
+    --    -- a single icon that represents the kind of current symbol is rendered at
+    --    -- the beginning of status line.
+    --    dense = false,
+
+    --    -- The separator to be used to separate symbols in dense mode.
+    --    dense_sep = ".",
+
+    --    -- Color the symbol icons.
+    --    colored = true,
+    --  },
+    --},
+  },
+})
+require('aerial').setup({
+  backend = {"lsp", "treesitter"},
+  show_guides = true,
+  layout = {
+    -- These control the width of the aerial window.
+    -- They can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
+    -- min_width and max_width can be a list of mixed types.
+    -- max_width = {40, 0.2} means "the lesser of 40 columns or 20% of total"
+    --max_width = { 40, 0.2 },
+    max_width = 40,
+    min_width = 40,
+    --min_width = 10,
+    -- key-value pairs of window-local options for aerial window (e.g. winhl)
+    win_opts = {},
+    -- Determines the default direction to open the aerial window. The 'prefer'
+    -- options will open the window in the other direction *if* there is a
+    -- different buffer in the way of the preferred direction
+    -- Enum: prefer_right, prefer_left, right, left, float
+    default_direction = "prefer_right",
+    -- Determines where the aerial window will be opened
+    --   edge   - open aerial at the far right/left of the editor
+    --   window - open aerial to the right/left of the current window
+    placement = "window",
+    -- When the symbols change, resize the aerial window (within min/max constraints) to fit
+    resize_to_content = true,
+    -- Preserve window size equality with (:help CTRL-W_=)
+    preserve_equality = false,
+  },
+})
+
+--vim.api.nvim_set_hl(0, "AerialLine", { bg = "NONE" })
+--vim.api.nvim_set_hl(0, "AerialLine", { bg = "NONE", fg = "NONE" })
+-- This will fix the highlight for your specific configuration
+-- This is the most robust solution that will fix the issue regardless of the section
+--vim.api.nvim_create_autocmd('ColorScheme', {
+--  pattern = '*',
+--  callback = function()
+--    vim.api.nvim_set_hl(0, 'LualineC_normal', { link = 'Normal' })
+--    vim.api.nvim_set_hl(0, 'LualineX_normal', { link = 'Normal' })
+--    vim.api.nvim_set_hl(0, 'LualineY_normal', { link = 'Normal' })
+--  end,
+--})
+
 EOF
 " END OF LUA INIT SEGMENT
 
@@ -554,37 +632,37 @@ EOF
 set statusline=%<%{fnamemodify(resolve(expand('%:p')),\ ':~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 nnoremap <leader>rp :echo fnamemodify(resolve(expand('%:p')), ':~:.')<CR>
 
-" Executive used when opening vista sidebar without specifying it.
+"" Executive used when opening vista sidebar without specifying it.
+""
+"" " See all the avaliable executives via `:echo g:vista#executives`.
+""
+"let g:vista_default_executive = 'nvim_lsp'
 "
-" " See all the avaliable executives via `:echo g:vista#executives`.
+"" How each level is indented and what to prepend.
+"" " This could make the display more compact or more spacious.
+"" " e.g., more compact: ["▸ ", ""]
+"" " Note: this option only works for the kind renderer, not the tree renderer.
+"let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
 "
-let g:vista_default_executive = 'nvim_lsp'
-
-" How each level is indented and what to prepend.
-" " This could make the display more compact or more spacious.
-" " e.g., more compact: ["▸ ", ""]
-" " Note: this option only works for the kind renderer, not the tree renderer.
-let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-
-function! NearestMethodOrFunction() abort
-  return get(b:, 'vista_nearest_method_or_function', '')
-endfunction
-
-set statusline+=%{NearestMethodOrFunction()}
-
-" By default vista.vim never run if you don't call it explicitly.
+"function! NearestMethodOrFunction() abort
+"  return get(b:, 'vista_nearest_method_or_function', '')
+"endfunction
 "
-" If you want to show the nearest function in your statusline automatically,
-" you can add the following line to your vimrc
-autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
-
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'readonly', 'filename', 'modified', 'method' ] ]
-      \ },
-      \ 'component_function': {
-      \   'method': 'NearestMethodOrFunction'
-      \ },
-      \ }
+"set statusline+=%{NearestMethodOrFunction()}
+"
+"" By default vista.vim never run if you don't call it explicitly.
+""
+"" If you want to show the nearest function in your statusline automatically,
+"" you can add the following line to your vimrc
+"autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
+"
+"let g:lightline = {
+"      \ 'colorscheme': 'wombat',
+"      \ 'active': {
+"      \   'left': [ [ 'mode', 'paste' ],
+"      \             [ 'readonly', 'filename', 'modified', 'method' ] ]
+"      \ },
+"      \ 'component_function': {
+"      \   'method': 'NearestMethodOrFunction'
+"      \ },
+"      \ }
