@@ -19,20 +19,12 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend upda
 Plug 'folke/trouble.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-lua/plenary.nvim'
-"Plug 'itchyny/lightline.vim'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'phleet/vim-mercenary'
-"Plug 'hedyhli/outline.nvim'
-"Plug 'liuchengxu/vista.vim'
 Plug 'stevearc/aerial.nvim'
-"Plug 'github/copilot.vim'
-"Plug 'zbirenbaum/copilot.lua'
-
-"Plug 'CopilotC-Nvim/CopilotChat.nvim'
-
 " Not so sure what all these do. Copy-pasting them from the instructions of Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
@@ -236,22 +228,8 @@ require'nvim-treesitter.configs'.setup{
     indent = { enable = true },
 }  -- At the bottom of your init.vim, keep all configs on one line
 
---local lspconfig = require('lspconfig')
---local on_attach = function(client, bufnr)
---    -- Enable LSP-driven autocompletion
---    vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
---end
 vim.lsp.set_log_level("debug")
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'Show diagnostics' })
---vim.api.nvim_create_autocmd('LspAttach', {
---  desc = 'Enable LSP completion',
---  callback = function(event)
---    local client_id = event.data and event.data.client_id
---    if client_id then
---      vim.lsp.completion.enable(true, client_id, event.buf, { autotrigger = true })
---    end
---  end,
---})
 --vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
 --vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
 
@@ -387,15 +365,18 @@ vim.api.nvim_create_user_command('EditLinkedCppFile', function()
 end, {})
 vim.keymap.set('n', '<leader>lc', ':EditLinkedCppFile<CR>', { noremap = true, silent = true })
 
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
-vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
-vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
-vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+local telescope = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', function()
+  project_root = find_project_root()
+  print("Project root = " .. project_root)
+  telescope.find_files({
+    search_dirs = { project_root .. "/y/src", project_root .. "/bazel-cache" }
+  })
+end, { desc = 'Telescope find files' })
+vim.keymap.set('n', '<leader>fg', telescope.live_grep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>fb', telescope.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>fh', telescope.help_tags, { desc = 'Telescope help tags' })
 vim.keymap.set('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
-
---require("outline").setup({})
---vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
 
 require'nvim-web-devicons'.setup {
  -- your personal icons can go here (to override)
@@ -506,10 +487,6 @@ end
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-vim.keymap.set('n', '<leader>ff', function()
-  require('telescope.builtin').find_files({ cwd = find_project_root() })
-end, { desc = 'Find files in specified project root' })
-
 vim.lsp.set_log_level("trace")
 
 -- Function to list resolved filepaths of all listed buffers.
@@ -539,46 +516,12 @@ end
 vim.api.nvim_create_user_command("Lls", list_buffers, {})
 vim.api.nvim_create_user_command("LspStop", 'lua vim.lsp.stop_client(vim.lsp.get_clients())', {})
 
--- Silent warning "position_encoding param is required in vim.lsp.util.make_position_params. Defaulting to position encoding of the first client."
--- which get printed due to Vista.vim plugin
-vim.notify = function(msg, log_level, _)
-  if msg:match("position_encoding param is required") then
-    return
-  end
-  vim.api.nvim_notify(msg, log_level, {})
-end
-
 require("lualine").setup({
   options = {
     theme = 'onedark',
   },
   sections = {
     lualine_x = { "aerial" },
-
-    -- Or you can customize it
-    --lualine_y = {
-    --  {
-    --    "aerial",
-    --    -- The separator to be used to separate symbols in status line.
-    --    sep = " ) ",
-
-    --    -- The number of symbols to render top-down. In order to render only 'N' last
-    --    -- symbols, negative numbers may be supplied. For instance, 'depth = -1' can
-    --    -- be used in order to render only current symbol.
-    --    depth = nil,
-
-    --    -- When 'dense' mode is on, icons are not rendered near their symbols. Only
-    --    -- a single icon that represents the kind of current symbol is rendered at
-    --    -- the beginning of status line.
-    --    dense = false,
-
-    --    -- The separator to be used to separate symbols in dense mode.
-    --    dense_sep = ".",
-
-    --    -- Color the symbol icons.
-    --    colored = true,
-    --  },
-    --},
   },
 })
 require('aerial').setup({
@@ -611,19 +554,6 @@ require('aerial').setup({
   },
 })
 
---vim.api.nvim_set_hl(0, "AerialLine", { bg = "NONE" })
---vim.api.nvim_set_hl(0, "AerialLine", { bg = "NONE", fg = "NONE" })
--- This will fix the highlight for your specific configuration
--- This is the most robust solution that will fix the issue regardless of the section
---vim.api.nvim_create_autocmd('ColorScheme', {
---  pattern = '*',
---  callback = function()
---    vim.api.nvim_set_hl(0, 'LualineC_normal', { link = 'Normal' })
---    vim.api.nvim_set_hl(0, 'LualineX_normal', { link = 'Normal' })
---    vim.api.nvim_set_hl(0, 'LualineY_normal', { link = 'Normal' })
---  end,
---})
-
 EOF
 " END OF LUA INIT SEGMENT
 
@@ -632,37 +562,3 @@ EOF
 set statusline=%<%{fnamemodify(resolve(expand('%:p')),\ ':~:.')}\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 nnoremap <leader>rp :echo fnamemodify(resolve(expand('%:p')), ':~:.')<CR>
 
-"" Executive used when opening vista sidebar without specifying it.
-""
-"" " See all the avaliable executives via `:echo g:vista#executives`.
-""
-"let g:vista_default_executive = 'nvim_lsp'
-"
-"" How each level is indented and what to prepend.
-"" " This could make the display more compact or more spacious.
-"" " e.g., more compact: ["▸ ", ""]
-"" " Note: this option only works for the kind renderer, not the tree renderer.
-"let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-"
-"function! NearestMethodOrFunction() abort
-"  return get(b:, 'vista_nearest_method_or_function', '')
-"endfunction
-"
-"set statusline+=%{NearestMethodOrFunction()}
-"
-"" By default vista.vim never run if you don't call it explicitly.
-""
-"" If you want to show the nearest function in your statusline automatically,
-"" you can add the following line to your vimrc
-"autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
-"
-"let g:lightline = {
-"      \ 'colorscheme': 'wombat',
-"      \ 'active': {
-"      \   'left': [ [ 'mode', 'paste' ],
-"      \             [ 'readonly', 'filename', 'modified', 'method' ] ]
-"      \ },
-"      \ 'component_function': {
-"      \   'method': 'NearestMethodOrFunction'
-"      \ },
-"      \ }
