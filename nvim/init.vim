@@ -522,6 +522,8 @@ require("lualine").setup({
   },
   sections = {
     lualine_x = { "aerial" },
+    lualine_y = { 'filetype', 'fileformat', 'encoding' },
+    lualine_z = { 'progress', 'location' }
   },
 })
 require('aerial').setup({
