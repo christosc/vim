@@ -540,9 +540,10 @@ local function hg_bookmark()
     if handle then
       local result = handle:read('*line')
       handle:close()
-      if result and result ~= '' then
+      -- Only process if we got a result and it doesn't look like an error/help message
+      if result and result ~= '' and not result:match('%[') and not result:match('OPT') then
         -- Remove the * prefix that hg bookmark --active adds
-        bookmark = result:match('%*%s*(.+)') or result
+        bookmark = result:match('%*%s*(.+)') or result:strip()
       end
     end
   end
@@ -553,7 +554,6 @@ local function hg_bookmark()
     if #bookmark > max_length then
       bookmark = bookmark:sub(1, max_length - 3) .. '...'
     end
-    --return ' ' .. bookmark  -- Using bookmark icon
     return '\u{f02e} ' .. bookmark  -- Using bookmark icon via Unicode
   end
 
