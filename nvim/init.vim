@@ -516,11 +516,58 @@ end
 vim.api.nvim_create_user_command("Lls", list_buffers, {})
 vim.api.nvim_create_user_command("LspStop", 'lua vim.lsp.stop_client(vim.lsp.get_clients())', {})
 
+-- Custom Mercurial bookmark component for Lualine
+local function hg_bookmark()
+  -- Check if we're in a Mercurial repository
+  local hg_dir = vim.fn.finddir('.hg', '.;')
+  if hg_dir == '' then
+    return ''
+  end
+
+  local bookmark = ''
+
+  -- Try to read the current bookmark from .hg/bookmarks.current
+  local bookmark_file = hg_dir .. '/bookmarks.current'
+  local f = io.open(bookmark_file, 'r')
+  if f then
+    bookmark = f:read('*line') or ''
+    f:close()
+  end
+
+  -- Fallback: use hg command to get current bookmark
+  if bookmark == '' then
+    local handle = io.popen('hg bookmark --active 2>/dev/null')
+    if handle then
+      local result = handle:read('*line')
+      handle:close()
+      if result and result ~= '' then
+        -- Remove the * prefix that hg bookmark --active adds
+        bookmark = result:match('%*%s*(.+)') or result
+      end
+    end
+  end
+
+  if bookmark and bookmark ~= '' then
+    -- Truncate bookmark if it's longer than 20 characters
+    local max_length = 20
+    if #bookmark > max_length then
+      bookmark = bookmark:sub(1, max_length - 3) .. '...'
+    end
+    --return ' ' .. bookmark  -- Using bookmark icon
+    return '\u{f02e} ' .. bookmark  -- Using bookmark icon via Unicode
+  end
+
+  return ''  -- No bookmark found
+end
+
 require("lualine").setup({
   options = {
     theme = 'onedark',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
   },
   sections = {
+    lualine_b = {'branch', hg_bookmark, 'diff', 'diagnostics'},
     lualine_x = { "aerial" },
     lualine_y = { 'filetype', 'fileformat', 'encoding' },
     lualine_z = { 'progress', 'location' }
