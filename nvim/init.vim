@@ -518,8 +518,8 @@ vim.api.nvim_create_user_command("LspStop", 'lua vim.lsp.stop_client(vim.lsp.get
 
 -- Custom Mercurial bookmark component for Lualine
 local function hg_bookmark()
-  -- Check if we're in a Mercurial repository
-  local hg_dir = vim.fn.finddir('.hg', '.;')
+  -- Check if we're in a Mercurial repository (search from cwd upwards)
+  local hg_dir = vim.fn.finddir('.hg', vim.fn.getcwd() .. ';')
   if hg_dir == '' then
     return ''
   end
@@ -536,7 +536,7 @@ local function hg_bookmark()
 
   -- Fallback: use hg command to get current bookmark
   if bookmark == '' then
-    local handle = io.popen('hg bookmark --active 2>/dev/null')
+    local handle = io.popen('hg log -r . --template "{activebookmark}" 2>/dev/null')
     if handle then
       local result = handle:read('*line')
       handle:close()
