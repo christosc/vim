@@ -568,6 +568,7 @@ require("lualine").setup({
   },
   sections = {
     lualine_b = {'branch', hg_bookmark, 'diff', 'diagnostics'},
+    lualine_c = { {'filename', path =1} },
     lualine_x = { "aerial" },
     lualine_y = { 'filetype', 'fileformat', 'encoding' },
     lualine_z = { 'progress', 'location' }
