@@ -534,20 +534,6 @@ local function hg_bookmark()
     f:close()
   end
 
-  -- Fallback: use hg command to get current bookmark
-  if bookmark == '' then
-    local handle = io.popen('hg log -r . --template "{activebookmark}" 2>/dev/null')
-    if handle then
-      local result = handle:read('*line')
-      handle:close()
-      -- Only process if we got a result and it doesn't look like an error/help message
-      if result and result ~= '' and not result:match('%[') and not result:match('OPT') then
-        -- Remove the * prefix that hg bookmark --active adds
-        bookmark = result:match('%*%s*(.+)') or result:strip()
-      end
-    end
-  end
-
   if bookmark and bookmark ~= '' then
     -- Truncate bookmark if it's longer than 20 characters
     local max_length = 20
