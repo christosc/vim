@@ -5,8 +5,9 @@
 --
 -- $ git clone https://github.com/neovim/neovim
 -- $ cd neovim
--- $ git checkout stable
--- $ make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/data/chryssoc
+-- $ git tag -l # look for the latest version
+-- $ git checkout v0.11.3
+-- $ make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=/data/chryssoc
 -- $ make install
 --
 -- The binary will be installed under /data/chryssoc/bin.
