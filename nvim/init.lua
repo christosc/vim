@@ -433,6 +433,37 @@ local function hg_bookmark()
   return ''
 end
 
+-- Function to get filename with symlink resolution and modification indicator
+local function get_filename_with_symlink()
+  local filename = vim.fn.expand('%:.')  -- Get relative path
+  if filename == '' then
+    return '[No Name]'
+  end
+
+  -- Check if the file is a symbolic link
+  local full_path = vim.fn.expand('%:p')  -- Get absolute path
+  local resolved_path = vim.fn.resolve(full_path)  -- Resolve symlinks
+
+  local display_name
+  if full_path ~= resolved_path then
+    -- File is a symlink, show the target with an indicator
+    local resolved_relative = vim.fn.fnamemodify(resolved_path, ':.')
+    display_name = resolved_relative .. ' 🔗'
+  else
+    -- Not a symlink, just return the relative path
+    display_name = filename
+  end
+
+  -- Add modification indicator if buffer is modified (on the right, like vanilla Neovim)
+  if vim.bo.modified then
+    display_name = display_name .. ' [+]'
+  end
+
+  return display_name
+end
+
+
+
 -- Lualine configuration
 require("lualine").setup({
   options = {
@@ -441,8 +472,8 @@ require("lualine").setup({
     section_separators = { left = '', right = ''},
   },
   sections = {
-    lualine_b = {'branch', hg_bookmark, 'diff', 'diagnostics'},
-    lualine_c = { {'filename', path = 1} },
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = { get_filename_with_symlink },
     lualine_x = { "aerial" },
     lualine_y = { 'filetype', 'fileformat', 'encoding' },
     lualine_z = { 'progress', 'location' }
