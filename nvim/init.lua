@@ -307,7 +307,11 @@ vim.keymap.set('n', '<leader>ff', function()
   local project_root = find_project_root()
   print("Project root = " .. project_root)
   telescope.find_files({
-    search_dirs = { project_root .. "/y/src", project_root .. "/bazel-cache" }
+    search_dirs = {
+      project_root .. "/vobs/dsl/sw/y/src",
+      project_root .. "/bazel-cache",
+      project_root .. "/vobs/dsl/yang/IACM",
+    }
   })
 end, { desc = 'Telescope find files' })
 
