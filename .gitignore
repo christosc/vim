@@ -1,0 +1,10 @@
+local_config.lua
+*.local.lua
+*.backup
+# Vim/Neovim files
+*.swp
+*.swo
+*~
+.*.un~
+*.un~
+*#*#

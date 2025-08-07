@@ -301,23 +301,90 @@ end, {})
 
 vim.keymap.set('n', '<leader>lc', ':EditLinkedCppFile<CR>', { noremap = true, silent = true })
 
--- Telescope configuration
-local telescope = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', function()
-  local project_root = find_project_root()
-  print("Project root = " .. project_root)
-  telescope.find_files({
-    search_dirs = {
-      project_root .. "/vobs/dsl/sw/y/src",
-      project_root .. "/bazel-cache",
-      project_root .. "/vobs/dsl/yang/IACM",
-    }
-  })
-end, { desc = 'Telescope find files' })
+-- Telescope related code here.
+-- Function to safely load private path suffixes
+local function load_private_suffixes()
+  local config_path = vim.fn.stdpath("config")
+  local local_config_file = config_path .. "/local_config.lua"
 
-vim.keymap.set('n', '<leader>fg', telescope.live_grep, { desc = 'Telescope live grep' })
-vim.keymap.set('n', '<leader>fb', telescope.buffers, { desc = 'Telescope buffers' })
-vim.keymap.set('n', '<leader>fh', telescope.help_tags, { desc = 'Telescope help tags' })
+  -- Check if local config file exists
+  if vim.fn.filereadable(local_config_file) == 1 then
+    -- Safely load the local config
+    local ok, local_config = pcall(dofile, local_config_file)
+    if ok and local_config and local_config.private_suffixes then
+      return local_config.private_suffixes
+    else
+      vim.notify("Warning: Could not load private suffixes from local_config.lua", vim.log.levels.WARN)
+    end
+  else
+    vim.notify("Info: local_config.lua not found, using default suffixes", vim.log.levels.INFO)
+  end
+
+  -- Try to load from PROJECT_ROOTS environment variable
+  -- E.g. in your .bashrc file you could have something like this:
+  -- export PROJECT_ROOTS="client-work:open-source:internal-tools"
+  local env_roots = os.getenv("PROJECT_ROOTS")
+  if env_roots then
+    local suffixes = {}
+    for suffix in string.gmatch(env_roots, "([^:]+)") do
+      -- Ensure suffix starts with /
+      if not suffix:match("^/") then
+        suffix = "/" .. suffix
+      end
+      table.insert(suffixes, suffix)
+    end
+    if #suffixes > 0 then
+      return suffixes
+    end
+  end
+
+  -- Final fallback: return empty table (will use base project root only)
+  return {}
+end
+
+-- Function to build complete project paths
+local function get_project_roots()
+  local base_root = find_project_root()
+  local private_suffixes = load_private_suffixes()
+
+  -- If no suffixes configured, just use the base project root
+  if #private_suffixes == 0 then
+    return { base_root }
+  end
+
+  local complete_paths = {}
+  for _, suffix in ipairs(private_suffixes) do
+    table.insert(complete_paths, base_root .. suffix)
+  end
+
+  return complete_paths
+end
+
+-- Telescope setup with dynamic project roots
+local telescope = require('telescope')
+telescope.setup({
+  defaults = {
+    -- Your other telescope defaults here
+  },
+  pickers = {
+    find_files = {
+      search_dirs = get_project_roots()  -- Built dynamically
+    },
+    live_grep = {
+      search_dirs = get_project_roots()
+    }
+  },
+  extensions = {
+    -- Your extensions here
+  }
+})
+
+-- Telescope configuration
+local telescope_builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', telescope_builtin.find_files, { desc = 'Telescope find files' })
+vim.keymap.set('n', '<leader>fg', telescope_builtin.live_grep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>fb', telescope_builtin.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>fh', telescope_builtin.help_tags, { desc = 'Telescope help tags' })
 vim.keymap.set('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
 
 -- Treesitter configuration

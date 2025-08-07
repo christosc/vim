@@ -1,0 +1,47 @@
+-- Template for local Neovim configuration
+-- Copy this file to local_config.lua and customize for your machine
+-- 
+-- IMPORTANT: 
+-- 1. Copy this file: cp local_config.lua.template local_config.lua
+-- 2. Edit local_config.lua with your actual paths
+-- 3. Add local_config.lua to .gitignore to keep your paths private
+--
+-- This file contains machine-specific and private configuration that should
+-- not be committed to version control.
+
+local M = {}
+
+-- Private path suffixes for Telescope project roots
+-- These will be appended to the result of find_project_root()
+-- 
+-- Example: if find_project_root() returns "/home/user/workspace"
+-- and you have suffixes ["/client-work", "/personal"], then
+-- Telescope will search in:
+--   - /home/user/workspace/client-work
+--   - /home/user/workspace/personal
+--
+-- Leave empty array {} to search only the base project root
+M.private_suffixes = {
+  -- "/client-work",
+  -- "/proprietary-projects", 
+  -- "/personal-projects",
+  -- "/work-repos"
+}
+
+-- Alternative: You can also set the PROJECT_ROOTS environment variable instead:
+-- export PROJECT_ROOTS="client-work:proprietary-projects:personal-projects"
+
+-- Optional: Add other machine-specific configurations here
+M.local_settings = {
+  -- Example: machine-specific paths
+  -- python_path = "/usr/local/bin/python3.11",
+  -- node_path = "/opt/homebrew/bin/node",
+  
+  -- Example: personal API endpoints (don't put actual API keys here!)
+  -- api_endpoints = {
+  --   dev = "https://dev-api.yourcompany.com",
+  --   staging = "https://staging-api.yourcompany.com"
+  -- }
+}
+
+return M
