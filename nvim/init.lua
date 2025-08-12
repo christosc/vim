@@ -385,7 +385,9 @@ vim.keymap.set('n', '<leader>ff', telescope_builtin.find_files, { desc = 'Telesc
 vim.keymap.set('n', '<leader>fg', telescope_builtin.live_grep, { desc = 'Telescope live grep' })
 vim.keymap.set('n', '<leader>fb', telescope_builtin.buffers, { desc = 'Telescope buffers' })
 vim.keymap.set('n', '<leader>fh', telescope_builtin.help_tags, { desc = 'Telescope help tags' })
-vim.keymap.set('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>fs', telescope_builtin.lsp_document_symbols, { desc = 'Find symbols in document' })
+vim.keymap.set('n', '<leader>fS', telescope_builtin.lsp_workspace_symbols, { desc = 'Find symbols in workspace' })
+vim.keymap.set('n', '<leader>fd', telescope_builtin.lsp_dynamic_workspace_symbols, { desc = 'Find symbols dynamically' })
 
 -- Treesitter configuration
 require'nvim-treesitter.configs'.setup{
@@ -575,3 +577,5 @@ vim.keymap.set('n', '<leader>rp', function()
   local resolved = vim.fn.fnamemodify(vim.fn.resolve(vim.fn.expand('%:p')), ':~:.')
   print(resolved)
 end, { noremap = true })
+
+vim.keymap.set('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
