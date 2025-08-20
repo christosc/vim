@@ -364,7 +364,18 @@ end
 local telescope = require('telescope')
 telescope.setup({
   defaults = {
-    -- Your other telescope defaults here
+    layout_strategy = 'vertical',
+    layout_config = {
+      vertical = {
+        height = 0.95,
+        width = 0.9,
+        preview_height = 0.6,  -- 60% for preview
+        prompt_position = "bottom",
+        mirror = false,  -- preview below results
+      },
+    },
+    sorting_strategy = "descending",  -- Default, natural for vertical
+    -- winblend = 10,  -- Optional: slight transparency
   },
   pickers = {
     find_files = {
