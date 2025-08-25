@@ -590,3 +590,19 @@ vim.keymap.set('n', '<leader>rp', function()
 end, { noremap = true })
 
 vim.keymap.set('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
+
+vim.api.nvim_create_user_command('LspDiag', function(opts)
+  local use_qf = opts.args == 'qf' or opts.args == 'quickfix'
+
+  if use_qf then
+    vim.diagnostic.setqflist({open = true})
+  else
+    vim.diagnostic.setloclist({open = true})
+  end
+end, {
+  nargs = '?',
+  complete = function()
+    return {'quickfix', 'qf', 'loclist', 'loc'}
+  end,
+  desc = 'Show LSP diagnostics in location list (default) or quickfix list'
+})
