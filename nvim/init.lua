@@ -592,17 +592,48 @@ end, { noremap = true })
 vim.keymap.set('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
 
 vim.api.nvim_create_user_command('LspDiag', function(opts)
-  local use_qf = opts.args == 'qf' or opts.args == 'quickfix'
+  local args = vim.split(opts.args, '%s+')
+  local use_loclist = false
+  local all_buffers = false
+  local severity_filter = nil
 
-  if use_qf then
-    vim.diagnostic.setqflist({open = true})
+  -- Parse arguments
+  for _, arg in ipairs(args) do
+    if arg == 'loc' or arg == 'loclist' then
+      use_loclist = true
+    elseif arg == 'all' then
+      all_buffers = true
+    elseif arg == 'error' then
+      severity_filter = vim.diagnostic.severity.ERROR
+    elseif arg == 'warn' then
+      severity_filter = {min = vim.diagnostic.severity.WARN}
+    end
+  end
+
+  if use_loclist then
+    -- Use location list
+    local config = {open = true}
+    if severity_filter then
+      config.severity = severity_filter
+    end
+    if not all_buffers then
+      config.bufnr = 0
+    end
+    vim.diagnostic.setloclist(config)
   else
-    vim.diagnostic.setloclist({open = true})
+    -- Use quickfix (default)
+    local bufnr = all_buffers and nil or 0
+    local diagnostics = vim.diagnostic.get(bufnr, {severity = severity_filter})
+
+    -- Convert to quickfix format and replace the list
+    local qf_items = vim.diagnostic.toqflist(diagnostics)
+    vim.fn.setqflist(qf_items, 'r')  -- 'r' = replace entire list
+    vim.cmd('copen')  -- Open quickfix window
   end
 end, {
-  nargs = '?',
+  nargs = '*',
   complete = function()
-    return {'quickfix', 'qf', 'loclist', 'loc'}
+    return {'loclist', 'loc', 'all', 'error', 'warn'}
   end,
-  desc = 'Show LSP diagnostics in location list (default) or quickfix list'
+  desc = 'Show LSP diagnostics in quickfix (default) or location list: [loc|loclist] [all] [error|warn]'
 })
