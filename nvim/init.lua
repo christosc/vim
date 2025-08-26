@@ -18,6 +18,7 @@ call plug#begin()
 " List your plugins here
 " Plug 'tpope/vim-sensible'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'neovim/nvim-lspconfig'
 Plug 'folke/trouble.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -204,8 +205,9 @@ vim.api.nvim_create_user_command('AV', function()
 end, {})
 
 -- Key mappings
-vim.keymap.set('n', '<F1>', ':update<cr>', { noremap = true })
-vim.keymap.set('n', '<F3>', ':set hls!<cr>', { noremap = true, silent = true })
+vim.keymap.set('n', '<F1>', ':update<cr>')
+vim.keymap.set({'n', 'i', 'v'}, '<F1>', '<Esc>:update<cr>')
+vim.keymap.set('n', '<F3>', ':set hls!<cr>', { silent = true })
 
 -- Search mappings using quickfix list
 vim.keymap.set('n', '<leader>gf', ':grep! "\\b<cword>\\b" <CR>:botright copen<CR>', { noremap = true, silent = true })
@@ -223,7 +225,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 })
 
 -- LSP and plugin configuration
-vim.lsp.set_log_level("debug")
+--vim.lsp.set_log_level("debug")
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'Show diagnostics' })
 
 -- Project root finding function
@@ -401,29 +403,66 @@ vim.keymap.set('n', '<leader>fS', telescope_builtin.lsp_workspace_symbols, { des
 vim.keymap.set('n', '<leader>fd', telescope_builtin.lsp_dynamic_workspace_symbols, { desc = 'Find symbols dynamically' })
 
 -- Treesitter configuration
-require'nvim-treesitter.configs'.setup{
-    highlight = { enable = true },
-    indent = { enable = true },
-    textobjects = {
-      select = {
-        enable = true,
-        lookahead = true,
-        keymaps = {
-          ["af"] = "@function.outer",
-          ["if"] = "@function.inner",
-          ["ac"] = "@class.outer",
-          ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-          ["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
-        },
-        selection_modes = {
-          ['@parameter.outer'] = 'v', -- charwise
-          ['@function.outer'] = 'V', -- linewise
-          ['@class.outer'] = '<c-v>', -- blockwise
-        },
-        include_surrounding_whitespace = true,
+require('nvim-treesitter.configs').setup {
+  textobjects = {
+    move = {
+      enable = true,
+      set_jumps = true,
+      goto_next_start = {
+        ["]m"] = "@function.outer",
+        ["]f"] = "@function.inner", 
+        ["]]"] = "@class.outer",
+      },
+      goto_next_end = {
+        ["]M"] = "@function.outer",
+        ["]["] = "@class.outer",
+      },
+      goto_previous_start = {
+        ["[m"] = "@function.outer",
+        ["[f"] = "@function.inner",
+        ["[["] = "@class.outer",
+      },
+      goto_previous_end = {
+        ["[M"] = "@function.outer",
+        ["[]"] = "@class.outer",
       },
     },
+    select = {
+      enable = true,
+      keymaps = {
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+      },
+    },
+  },
 }
+
+
+--require'nvim-treesitter.configs'.setup{
+--    highlight = { enable = true },
+--    indent = { enable = true },
+--    textobjects = {
+--      select = {
+--        enable = true,
+--        lookahead = true,
+--        keymaps = {
+--          ["af"] = "@function.outer",
+--          ["if"] = "@function.inner",
+--          ["ac"] = "@class.outer",
+--          ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+--          ["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
+--        },
+--        selection_modes = {
+--          ['@parameter.outer'] = 'v', -- charwise
+--          ['@function.outer'] = 'V', -- linewise
+--          ['@class.outer'] = '<c-v>', -- blockwise
+--        },
+--        include_surrounding_whitespace = true,
+--      },
+--    },
+--}
 
 -- Web devicons configuration
 require'nvim-web-devicons'.setup {
