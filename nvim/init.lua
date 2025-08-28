@@ -243,7 +243,18 @@ end
 
 -- Configure clangd with lspconfig
 require'lspconfig'.clangd.setup{
-  cmd = { "clangd", "--log=verbose", "--pretty" },
+  cmd = {
+    "clangd",
+    "--background-index",
+    "--clang-tidy",
+    "--log=verbose",
+    "--pretty",
+    "--completion-style=detailed",
+    "--cross-file-rename",
+    "--header-insertion=iwyu",
+    -- If compile_commands.json is NOT at project root, point to it:
+    -- "--compile-commands-dir=build"
+  },
   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'h', 'hpp' },
   root_dir = function(fname)
     return find_project_root()
@@ -385,7 +396,17 @@ telescope.setup({
     },
     live_grep = {
       search_dirs = get_project_roots()
-    }
+    },
+    lsp_dynamic_workspace_symbols = {
+      --show_line = false,  -- Hide line numbers to save space
+      fname_width = 60,   -- Limit filename width
+      symbol_width = 60,
+    },
+    lsp_document_symbols = {
+      --show_line = false,
+      fname_width = 60,
+      symbol_width = 60,
+    },
   },
   extensions = {
     -- Your extensions here
@@ -676,3 +697,5 @@ end, {
   end,
   desc = 'Show LSP diagnostics in quickfix (default) or location list: [loc|loclist] [all] [error|warn]'
 })
+
+vim.opt.hidden = false
