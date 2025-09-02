@@ -42,6 +42,9 @@ Plug 'hrsh7th/vim-vsnip'
 call plug#end()
 ]])
 
+-- Don't reload automatically an extenally modified file
+vim.opt.autoread = false
+
 -- Vimscript functions (keeping as-is for now, can be converted to Lua later)
 vim.cmd([[
 " Toggle colorcolumn
