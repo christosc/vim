@@ -428,6 +428,8 @@ vim.keymap.set('n', '<leader>fd', telescope_builtin.lsp_dynamic_workspace_symbol
 
 -- Treesitter configuration
 require('nvim-treesitter.configs').setup {
+  highlight = { enable = true },
+  indent = { enable = true },
   textobjects = {
     move = {
       enable = true,
