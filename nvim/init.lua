@@ -12,35 +12,140 @@
 --
 -- The binary will be installed under /data/chryssoc/bin.
 
--- Plugin management with vim-plug
-vim.cmd([[
-call plug#begin()
-" List your plugins here
-" Plug 'tpope/vim-sensible'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
-Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-Plug 'neovim/nvim-lspconfig'
-Plug 'folke/trouble.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-lualine/lualine.nvim'
-Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' }
-" If you want to have icons in your statusline choose one of these
-Plug 'nvim-tree/nvim-web-devicons'
-Plug 'phleet/vim-mercenary'
-Plug 'stevearc/aerial.nvim'
-" Not so sure what all these do. Copy-pasting them from the instructions of Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
-"Plug 'zbirenbaum/copilot-cmp'
-" For vsnip users.
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/vim-vsnip'
-call plug#end()
-]])
+-- Replace your entire vim-plug section with this lazy.nvim setup
+
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- Configure all your plugins with lazy.nvim
+require("lazy").setup({
+  -- Treesitter for syntax highlighting and parsing
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    event = { "BufReadPost", "BufNewFile" },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-textobjects",
+    },
+    config = function()
+      -- Your treesitter config here
+    end,
+  },
+
+  -- LSP configuration
+  {
+    "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      -- Completion plugins
+      "hrsh7th/nvim-cmp",
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "hrsh7th/cmp-vsnip",
+      "hrsh7th/vim-vsnip",
+    },
+    config = function()
+      -- Your LSP config here
+    end,
+  },
+
+  -- Completion engine
+  {
+    "hrsh7th/nvim-cmp",
+    event = "InsertEnter",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "hrsh7th/cmp-vsnip",
+      "hrsh7th/vim-vsnip",
+    },
+    config = function()
+      -- Your completion config here
+    end,
+  },
+
+  -- Trouble for diagnostics
+  {
+    "folke/trouble.nvim",
+    cmd = "Trouble",
+    keys = {
+      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
+      { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
+      { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
+      { "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP Definitions / references / ... (Trouble)" },
+      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
+      { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
+    },
+    opts = {},
+  },
+
+  -- Telescope fuzzy finder
+  {
+    "nvim-telescope/telescope.nvim",
+    cmd = "Telescope",
+    keys = {
+      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
+      { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live Grep" },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
+      { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help Tags" },
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
+      },
+    },
+    config = function()
+      require("telescope").load_extension("fzf")
+      -- Your telescope config here
+    end,
+  },
+
+  -- Status line
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      -- Your lualine config here
+    end,
+  },
+
+  -- Icons
+  { "nvim-tree/nvim-web-devicons", lazy = true },
+
+  -- Mercurial integration
+  { "phleet/vim-mercenary", cmd = { "Hg" } },
+
+  -- Aerial for code outline
+  {
+    "stevearc/aerial.nvim",
+    cmd = { "AerialToggle", "AerialOpen" },
+    keys = {
+      { "<leader>a", "<cmd>AerialToggle<cr>", desc = "Toggle Aerial" },
+    },
+    opts = {},
+  },
+})
 
 -- Don't reload automatically an extenally modified file
 vim.opt.autoread = false
@@ -465,31 +570,6 @@ require('nvim-treesitter.configs').setup {
   },
 }
 
-
---require'nvim-treesitter.configs'.setup{
---    highlight = { enable = true },
---    indent = { enable = true },
---    textobjects = {
---      select = {
---        enable = true,
---        lookahead = true,
---        keymaps = {
---          ["af"] = "@function.outer",
---          ["if"] = "@function.inner",
---          ["ac"] = "@class.outer",
---          ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
---          ["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
---        },
---        selection_modes = {
---          ['@parameter.outer'] = 'v', -- charwise
---          ['@function.outer'] = 'V', -- linewise
---          ['@class.outer'] = '<c-v>', -- blockwise
---        },
---        include_surrounding_whitespace = true,
---      },
---    },
---}
-
 -- Web devicons configuration
 require'nvim-web-devicons'.setup {
    override = {
@@ -704,3 +784,4 @@ end, {
 })
 
 vim.opt.hidden = false
+
