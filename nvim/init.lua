@@ -342,25 +342,25 @@ require("lazy").setup({
           --theme = 'onedark',
           theme = {
             normal = {
-                -- Keep onedark's normal colors for other sections
+                -- Keep onedark's normal colors
                 a = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
                 b = { bg = '#3e4451', fg = '#abb2bf' },
                 c = { bg = '#2c323c', fg = '#abb2bf' },
                 x = { bg = '#2c323c', fg = '#abb2bf' },
                 y = { bg = '#3e4451', fg = '#abb2bf' },
-                z = { bg = '#3e4451', fg = '#abb2bf', gui = 'bold' },  -- Same as y (instead of green)
+                z = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
             },
             insert = {
-                z = { bg = '#3e4451', fg = '#abb2bf' },  -- Same as y
+                z = { bg = '#98c379', fg = '#282c34', gui = 'bold' },  -- Green in all modes
             },
             visual = {
-                z = { bg = '#3e4451', fg = '#abb2bf' },  -- Same as y
+                z = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
             },
             replace = {
-                z = { bg = '#3e4451', fg = '#abb2bf' },  -- Same as y
+                z = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
             },
             command = {
-                z = { bg = '#3e4451', fg = '#abb2bf' },  -- Same as y
+                z = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
             },
           },
           component_separators = { left = '', right = ''},
