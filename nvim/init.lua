@@ -339,11 +339,35 @@ require("lazy").setup({
 
       require("lualine").setup({
         options = {
-          theme = 'onedark',
+          --theme = 'onedark',
+          theme = {
+            normal = {
+                -- Keep onedark's normal colors for other sections
+                a = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
+                b = { bg = '#3e4451', fg = '#abb2bf' },
+                c = { bg = '#2c323c', fg = '#abb2bf' },
+                x = { bg = '#2c323c', fg = '#abb2bf' },
+                y = { bg = '#3e4451', fg = '#abb2bf' },
+                z = { bg = '#3e4451', fg = '#abb2bf', gui = 'bold' },  -- Same as y (instead of green)
+            },
+            insert = {
+                z = { bg = '#3e4451', fg = '#abb2bf' },  -- Same as y
+            },
+            visual = {
+                z = { bg = '#3e4451', fg = '#abb2bf' },  -- Same as y
+            },
+            replace = {
+                z = { bg = '#3e4451', fg = '#abb2bf' },  -- Same as y
+            },
+            command = {
+                z = { bg = '#3e4451', fg = '#abb2bf' },  -- Same as y
+            },
+          },
           component_separators = { left = '', right = ''},
           section_separators = { left = '', right = ''},
         },
         sections = {
+          lualine_a = {},
           lualine_b = {'branch', 'diff', 'diagnostics'},
           lualine_c = { get_filename_with_symlink },
           lualine_x = { "aerial" },
@@ -689,3 +713,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     vim.keymap.set('n', '<CR>', '<CR>', { buffer = true })
   end
 })
+
+vim.opt.guicursor = {
+  "n-v-c:block",                           -- normal, visual, command: steady block
+  "i-ci-ve:ver25-blinkon500-blinkoff500",  -- insert modes: blinking vertical bar
+  "r-cr:hor20",                            -- replace: steady horizontal
+  "o:hor50"                                -- operator-pending: steady horizontal
+}
