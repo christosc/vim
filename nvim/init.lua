@@ -327,19 +327,19 @@ require("lazy").setup({
                 c = { bg = '#2c323c', fg = '#abb2bf' },
                 x = { bg = '#2c323c', fg = '#abb2bf' },
                 y = { bg = '#3e4451', fg = '#abb2bf' },
-                z = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
+                z = { bg = '#3e4451', fg = '#abb2bf' }, -- same as y in all modes
             },
             insert = {
-                z = { bg = '#98c379', fg = '#282c34', gui = 'bold' },  -- Green in all modes
+                z = { bg = '#3e4451', fg = '#abb2bf' },
             },
             visual = {
-                z = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
+                z = { bg = '#3e4451', fg = '#abb2bf' },
             },
             replace = {
-                z = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
+                z = { bg = '#3e4451', fg = '#abb2bf' },
             },
             command = {
-                z = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
+                z = { bg = '#3e4451', fg = '#abb2bf' },
             },
           },
           component_separators = { left = '', right = ''},
