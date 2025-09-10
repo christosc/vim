@@ -415,7 +415,7 @@ require("lazy").setup({
       },
 
       layout = {
-        max_width = 40,
+        max_width = 60,
         min_width = 28,
         win_opts = {},
         default_direction = "prefer_right",
