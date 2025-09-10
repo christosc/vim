@@ -148,6 +148,15 @@ require("lazy").setup({
       "hrsh7th/cmp-nvim-lsp",  -- For enhanced LSP capabilities
     },
     config = function()
+      local caps = vim.lsp.protocol.make_client_capabilities()
+      pcall(function()
+        caps = require("cmp_nvim_lsp").default_capabilities(caps)
+      end)
+      caps.textDocument = caps.textDocument or {}
+      caps.textDocument.documentSymbol = vim.tbl_deep_extend("force",
+        caps.textDocument.documentSymbol or {},
+        { hierarchicalDocumentSymbolSupport = true }
+      )
       -- Configure clangd
       require'lspconfig'.clangd.setup{
         cmd = {
@@ -164,7 +173,7 @@ require("lazy").setup({
         root_dir = function(fname)
           return find_project_root()
         end,
-        capabilities = require('cmp_nvim_lsp').default_capabilities(),
+        capabilities = capabilities,  -- Use the enhanced capabilities
         on_init = function(client)
           print('LSP started:', client.name)
         end,
@@ -387,28 +396,77 @@ require("lazy").setup({
   -- Mercurial integration
   { "phleet/vim-mercenary", cmd = { "Hg" } },
 
-  -- Aerial for code outline
+  -- Aerial with hierarchical support
   {
-    "stevearc/aerial.nvim",
-    cmd = { "AerialToggle", "AerialOpen" },
-    keys = {
-      { "<leader>a", "<cmd>AerialToggle<cr>", desc = "Toggle Aerial" },
+    'stevearc/aerial.nvim',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons',
+      'neovim/nvim-lspconfig', -- Ensure LSP loads first
     },
-    config = function()
-      require('aerial').setup({
-        backend = {"lsp", "treesitter"},
-        show_guides = true,
-        layout = {
-          max_width = 40,
-          min_width = 40,
-          win_opts = {},
-          default_direction = "prefer_right",
-          placement = "window",
-          resize_to_content = true,
-          preserve_equality = false,
-        },
-      })
-    end,
+    opts = {
+      backends = { "lsp", "treesitter", "markdown", "man", "asciidoc" },
+      -- If some filetypes behave better with a different source, override here.
+      backends_by_ft = {
+        -- Example: if Go methods look flat with gopls, try Tree-sitter first.
+        go = { "treesitter", "lsp" },
+        cpp = { "lsp", "treesitter" },
+        c = { "lsp", "treesitter" },
+      },
+
+      layout = {
+        max_width = 40,
+        min_width = 28,
+        win_opts = {},
+        default_direction = "prefer_right",
+        placement = "window",
+        resize_to_content = true,
+        preserve_equality = false,
+      },
+
+      -- Enable proper hierarchy display
+      show_guides = true,
+      manage_folds = true,
+
+      -- Configure symbol filtering for class hierarchy
+      filter_kind = {
+        "Class",
+        "Constructor",
+        "Destructor",
+        "Enum",
+        "Function",
+        "Interface",
+        "Method",
+        "Module",
+        "Namespace",
+        "Struct",
+        "Variable",
+      },
+
+      -- LSP configuration
+      lsp = {
+        diagnostics_trigger_update = false,
+        update_when_errors = true,
+        update_delay = 300,
+      },
+
+      -- Visual improvements for hierarchy
+      guides = {
+        mid_item = "├─",
+        last_item = "└─",
+        nested_top = "│ ",
+        whitespace = "  ",
+      },
+    },
+    keys = {
+      { "<leader>o", "<cmd>AerialToggle!<CR>", desc = "Toggle Outline" },
+      { "<leader>oo", "<cmd>AerialOpen<CR>", desc = "Open Outline" },
+      { "<leader>oc", "<cmd>AerialClose<CR>", desc = "Close Outline" },
+      { "<leader>on", "<cmd>AerialNext<CR>", desc = "Next Symbol" },
+      { "<leader>op", "<cmd>AerialPrev<CR>", desc = "Prev Symbol" },
+      { "[[", "<cmd>AerialPrevUp<CR>", desc = "Prev Symbol Up" },
+      { "]]", "<cmd>AerialNextUp<CR>", desc = "Next Symbol Up" },
+    },
   },
 })
 
@@ -639,8 +697,8 @@ vim.keymap.set('n', '<F3>', ':set hls!<cr>', { silent = true })
 vim.keymap.set('n', '<leader>gf', ':grep! "\\b<cword>\\b" <CR>:botright copen<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>gp', ':grep! "\\b<cword>\\b" <CR>:botright copen<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>g.', ':grep! "\\b<cword>\\b" <CR>:copen<CR>', { noremap = true })
-vim.keymap.set('n', '<leader>o', ':vim /\\<<c-r>=expand(\'<cword>\')<CR>\\>/j %<CR>:botright copen<CR>', { noremap = true })
-vim.keymap.set('n', '<leader>O', ':vim /\\<<c-r>=expand(\'<cword>\')<CR>\\>\\C/j %<CR>:botright copen<CR>', { noremap = true })
+--vim.keymap.set('n', '<leader>o', ':vim /\\<<c-r>=expand(\'<cword>\')<CR>\\>/j %<CR>:botright copen<CR>', { noremap = true })
+--vim.keymap.set('n', '<leader>O', ':vim /\\<<c-r>=expand(\'<cword>\')<CR>\\>\\C/j %<CR>:botright copen<CR>', { noremap = true })
 
 -- LSP keymaps
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'Show diagnostics' })
