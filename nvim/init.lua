@@ -12,6 +12,14 @@
 --
 -- The binary will be installed under /data/chryssoc/bin.
 
+-- This filetype section must be placed before lazy.nvim configuration.
+vim.filetype.add({
+  filename = { ["TODO"] = "text", ["DONE"] = "text" },
+  extension = { todo = "text" },
+  -- Patterns can use Lua patterns; map a whole notes dir to text (could also be markdown):
+  pattern = { [".*/notes/.*%.txt"] = "text" },
+})
+
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -468,7 +476,34 @@ require("lazy").setup({
       { "]]", "<cmd>AerialNextUp<CR>", desc = "Next Symbol Up" },
     },
   },
+  {
+    'dhruvasagar/vim-table-mode',
+    ft = { 'markdown', 'text', 'org', 'rst' },
+    keys = {
+      { '<leader>tm', '<cmd>TableModeToggle<cr>', desc = 'Toggle Table Mode' },
+      { '<leader>tr', '<cmd>TableModeRealign<cr>', desc = 'Realign Table' },
+      { '<leader>tdd', '<cmd>TableModeDeleteRow<cr>', desc = 'Delete Row' },
+      { '<leader>tdc', '<cmd>TableModeDeleteColumn<cr>', desc = 'Delete Column' },
+    },
+    config = function()
+      -- Configuration
+      vim.g.table_mode_corner = '|'
+      vim.g.table_mode_border = 0
+      vim.g.table_mode_fillchar = ' '
+      vim.g.table_mode_header_fillchar = '-'
+
+      -- Auto-commands for better experience
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'markdown', 'text' },
+        callback = function()
+          vim.keymap.set('i', '<Bar><Bar>', '<Bar><Bar><Esc>:TableModeEnable<CR>a', { buffer = true })
+        end,
+      })
+    end,
+  },
 })
+
+vim.cmd('colorscheme habamax')
 
 -- Basic settings
 vim.opt.expandtab = true
