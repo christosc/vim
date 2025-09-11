@@ -491,14 +491,6 @@ require("lazy").setup({
       vim.g.table_mode_border = 0
       vim.g.table_mode_fillchar = ' '
       vim.g.table_mode_header_fillchar = '-'
-
-      -- Auto-commands for better experience
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = { 'markdown', 'text' },
-        callback = function()
-          vim.keymap.set('i', '<Bar><Bar>', '<Bar><Bar><Esc>:TableModeEnable<CR>a', { buffer = true })
-        end,
-      })
     end,
   },
 })
