@@ -402,7 +402,7 @@ require("lazy").setup({
   },
 
   -- Mercurial integration
-  { "phleet/vim-mercenary", cmd = { "Hg" } },
+  { "jlfwong/vim-mercenary" },
 
   -- Aerial with hierarchical support
   {
