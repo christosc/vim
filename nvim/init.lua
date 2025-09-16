@@ -495,7 +495,7 @@ require("lazy").setup({
   },
 })
 
-vim.cmd('colorscheme habamax')
+--vim.cmd('colorscheme habamax')
 
 -- Basic settings
 vim.opt.expandtab = true
