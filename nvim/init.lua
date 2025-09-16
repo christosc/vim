@@ -798,3 +798,10 @@ vim.opt.guicursor = {
   "r-cr:hor20",                            -- replace: steady horizontal
   "o:hor50"                                -- operator-pending: steady horizontal
 }
+
+-- Enable manual folding using Treesitter
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldenable = true
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
