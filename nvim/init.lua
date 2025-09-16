@@ -108,7 +108,7 @@ require("lazy").setup({
     },
     config = function()
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { "yang", "c", "cpp", "json", "python", "bash" },  -- Add Python and Bash parsers
+        ensure_installed = {"c", "cpp", "doxygen", "json", "python", "bash", "yang"},  -- Add Python and Bash parsers
         highlight = { enable = true },
         indent = { enable = true },
         textobjects = {
