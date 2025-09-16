@@ -109,7 +109,10 @@ require("lazy").setup({
     config = function()
       require('nvim-treesitter.configs').setup {
         ensure_installed = {"c", "cpp", "doxygen", "json", "python", "bash", "yang"},  -- Add Python and Bash parsers
-        highlight = { enable = true },
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = false,
+        },
         indent = { enable = true },
         textobjects = {
           move = {
@@ -147,7 +150,27 @@ require("lazy").setup({
       }
     end,
   },
+  {
+    "danymat/neogen",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require('neogen').setup {
+        enabled = true,
+        languages = {
+          cpp = {
+            template = { annotation_convention = "doxygen" },
+          },
+          c = {
+            template = { annotation_convention = "doxygen" },
 
+          },
+        },
+      }
+      -- Optional keymaps:
+      vim.keymap.set("n", "<leader>ng", function() require("neogen").generate() end,
+        { desc = "Generate Doxygen docblock" })
+    end
+  },
   -- LSP configuration
   {
     "neovim/nvim-lspconfig",
