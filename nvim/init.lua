@@ -111,7 +111,7 @@ require("lazy").setup({
         ensure_installed = {"c", "cpp", "doxygen", "json", "python", "bash", "yang"},  -- Add Python and Bash parsers
         highlight = {
           enable = true,
-          additional_vim_regex_highlighting = false,
+          additional_vim_regex_highlighting = true, -- I need this for TODO, FIXME, XXX
         },
         indent = { enable = true },
         textobjects = {
