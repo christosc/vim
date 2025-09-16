@@ -326,30 +326,30 @@ require("lazy").setup({
 
       require("lualine").setup({
         options = {
-          --theme = 'onedark',
-          theme = {
-            normal = {
-                -- Keep onedark's normal colors
-                a = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
-                b = { bg = '#3e4451', fg = '#abb2bf' },
-                c = { bg = '#2c323c', fg = '#abb2bf' },
-                x = { bg = '#2c323c', fg = '#abb2bf' },
-                y = { bg = '#3e4451', fg = '#abb2bf' },
-                z = { bg = '#3e4451', fg = '#abb2bf' }, -- same as y in all modes
-            },
-            insert = {
-                z = { bg = '#3e4451', fg = '#abb2bf' },
-            },
-            visual = {
-                z = { bg = '#3e4451', fg = '#abb2bf' },
-            },
-            replace = {
-                z = { bg = '#3e4451', fg = '#abb2bf' },
-            },
-            command = {
-                z = { bg = '#3e4451', fg = '#abb2bf' },
-            },
-          },
+          theme = 'onedark',
+          --theme = {
+          --  normal = {
+          --      -- Keep onedark's normal colors
+          --      a = { bg = '#98c379', fg = '#282c34', gui = 'bold' },
+          --      b = { bg = '#3e4451', fg = '#abb2bf' },
+          --      c = { bg = '#2c323c', fg = '#abb2bf' },
+          --      x = { bg = '#2c323c', fg = '#abb2bf' },
+          --      y = { bg = '#3e4451', fg = '#abb2bf' },
+          --      z = { bg = '#3e4451', fg = '#abb2bf' }, -- same as y in all modes
+          --  },
+          --  insert = {
+          --      z = { bg = '#3e4451', fg = '#abb2bf' },
+          --  },
+          --  visual = {
+          --      z = { bg = '#3e4451', fg = '#abb2bf' },
+          --  },
+          --  replace = {
+          --      z = { bg = '#3e4451', fg = '#abb2bf' },
+          --  },
+          --  command = {
+          --      z = { bg = '#3e4451', fg = '#abb2bf' },
+          --  },
+          --},
           component_separators = { left = '', right = ''},
           section_separators = { left = '', right = ''},
         },
