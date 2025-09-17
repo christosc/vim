@@ -274,7 +274,7 @@ require("lazy").setup({
       -- Configure clangd
       require'lspconfig'.clangd.setup{
         cmd = {
-          "clangd",
+          vim.fn.stdpath('data') .. '/mason/bin/clangd',
           "--background-index",
           "--clang-tidy",
           "--log=verbose",
