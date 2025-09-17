@@ -12,12 +12,21 @@
 --
 -- The binary will be installed under /data/chryssoc/bin.
 
+vim.keymap.set('n', '<F1>', ':update<cr>')
+
 -- This filetype section must be placed before lazy.nvim configuration.
 vim.filetype.add({
   filename = { ["TODO"] = "text", ["DONE"] = "text" },
   extension = { todo = "text" },
   -- Patterns can use Lua patterns; map a whole notes dir to text (could also be markdown):
-  pattern = { [".*/notes/.*%.txt"] = "text" },
+  pattern = {
+    [".*/notes/.*%.txt"] = "text",
+    -- Common commit message patterns
+    [".*COMMIT_EDITMSG"] = "gitcommit",
+    ["hg%-editor%-.*"] = "hgcommit",
+    ["svn%-commit.*%.tmp"] = "svncommit",
+    ["COMMIT_MSG"] = "gitcommit",
+  },
 })
 
 -- Bootstrap lazy.nvim
@@ -96,8 +105,75 @@ local function get_project_roots()
   return complete_paths
 end
 
+-- Basic settings
+vim.opt.expandtab = true
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftround = true
+vim.opt.smarttab = true
+vim.opt.showcmd = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.signcolumn = "yes"
+vim.opt.completeopt:append("popup")
+vim.opt.autoread = false
+vim.opt.hidden = false
+vim.opt.path = "include/**,src/**,export/**,source/**,../include/**,../export/**,../src/**,../source/**"
+
+-- Complete option settings
+vim.opt.complete:remove("t")
+vim.opt.complete:remove("i")
+
 -- Configure all plugins with lazy.nvim
 require("lazy").setup({
+  {
+    "williamboman/mason.nvim",
+    build = ":MasonUpdate",
+    config = function()
+      require("mason").setup()
+    end,
+  },
+  -- Mason-lspconfig (bridge between Mason and lspconfig)
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = {
+      "williamboman/mason.nvim",
+    },
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          -- Add servers you want auto-installed
+          'clangd',
+        },
+        automatic_installation = true,
+        handlers = {
+          -- This is the default handler that will apply to all servers
+          -- not covered by a more specific handler below.
+          function(server_name)
+            -- Your logic to skip manually configured servers is correct
+            if server_name ~= 'clangd' and server_name ~= 'ltex' then
+              local caps = vim.lsp.protocol.make_client_capabilities()
+              pcall(function()
+                caps = require("cmp_nvim_lsp").default_capabilities(caps)
+              end)
+
+              require('lspconfig')[server_name].setup({
+                capabilities = caps,
+              })
+            end
+          end,
+
+          -- You can also add specific handlers for other servers if needed
+          -- For example:
+          -- ["pyright"] = function()
+          --   require('lspconfig').pyright.setup({ ... custom settings ... })
+          -- end,
+        }
+      })
+    end,
+  },
+
   -- Treesitter for syntax highlighting and parsing
   {
     "nvim-treesitter/nvim-treesitter",
@@ -112,6 +188,10 @@ require("lazy").setup({
         highlight = {
           enable = true,
           additional_vim_regex_highlighting = true, -- I need this for TODO, FIXME, XXX
+        },
+        -- Add this for spell checking in comments
+        incremental_selection = {
+          enable = true,
         },
         indent = { enable = true },
         textobjects = {
@@ -177,6 +257,8 @@ require("lazy").setup({
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",  -- For enhanced LSP capabilities
+      "williamboman/mason-lspconfig.nvim",  -- Add this dependency
+      "williamboman/mason.nvim",  -- Also need mason itself
     },
     config = function()
       local caps = vim.lsp.protocol.make_client_capabilities()
@@ -188,6 +270,7 @@ require("lazy").setup({
         caps.textDocument.documentSymbol or {},
         { hierarchicalDocumentSymbolSupport = true }
       )
+
       -- Configure clangd
       require'lspconfig'.clangd.setup{
         cmd = {
@@ -204,7 +287,7 @@ require("lazy").setup({
         root_dir = function(fname)
           return find_project_root()
         end,
-        capabilities = capabilities,  -- Use the enhanced capabilities
+        capabilities = caps,
         on_init = function(client)
           print('LSP started:', client.name)
         end,
@@ -520,26 +603,6 @@ require("lazy").setup({
 
 --vim.cmd('colorscheme habamax')
 
--- Basic settings
-vim.opt.expandtab = true
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftround = true
-vim.opt.smarttab = true
-vim.opt.showcmd = true
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-vim.opt.signcolumn = "yes"
-vim.opt.completeopt:append("popup")
-vim.opt.autoread = false
-vim.opt.hidden = false
-vim.opt.path = "include/**,src/**,export/**,source/**,../include/**,../export/**,../src/**,../source/**"
-
--- Complete option settings
-vim.opt.complete:remove("t")
-vim.opt.complete:remove("i")
-
 -- Vimscript functions (keeping as-is for now, can be converted to Lua later)
 vim.cmd([[
 " Toggle colorcolumn
@@ -739,7 +802,6 @@ end, {
 })
 
 -- Key mappings
-vim.keymap.set('n', '<F1>', ':update<cr>')
 vim.keymap.set({'n', 'i', 'v'}, '<F1>', '<Esc>:update<cr>')
 vim.keymap.set('n', '<F3>', ':set hls!<cr>', { silent = true })
 
@@ -805,3 +867,28 @@ vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldenable = true
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
+
+vim.opt_local.spelllang = { "en_us" }
+-- Optional: Keymaps for spell checking
+vim.keymap.set('n', '<leader>ss', ':setlocal spell!<CR>', { desc = 'Toggle spell checking' })
+--vim.keymap.set('n', '<leader>sn', ']s', { desc = 'Next misspelled word' })
+--vim.keymap.set('n', '<leader>sp', '[s', { desc = 'Previous misspelled word' })
+--vim.keymap.set('n', '<leader>sa', 'zg', { desc = 'Add word to dictionary' })
+--vim.keymap.set('n', '<leader>s?', 'z=', { desc = 'Suggest corrections' })
+
+-- Auto-enable spell checking for specific filetypes
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown" },
+  callback = function()
+    vim.opt_local.spell = true
+  end,
+})
+
+-- Enable spell for all commit-like files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "gitcommit", "hgcommit", "svncommit" },
+  callback = function()
+    vim.opt_local.spell = true
+    vim.opt_local.textwidth = 72  -- Also helpful for commits
+  end,
+})
