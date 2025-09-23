@@ -876,15 +876,10 @@ vim.keymap.set('n', '<leader>ss', ':setlocal spell!<CR>', { desc = 'Toggle spell
 --vim.keymap.set('n', '<leader>sa', 'zg', { desc = 'Add word to dictionary' })
 --vim.keymap.set('n', '<leader>s?', 'z=', { desc = 'Suggest corrections' })
 
--- Auto-enable spell checking for specific filetypes
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "markdown" },
-  callback = function()
-    vim.opt_local.spell = true
-  end,
-})
-
--- Enable spell for all commit-like files
+-- Enable spell for all commit-like files.
+-- Do not enable it for markdown files, because this filetype seems to be
+-- enabled even when calling the documentation popup windows in C++ code with
+-- shift-k.
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "gitcommit", "hgcommit", "svncommit" },
   callback = function()
