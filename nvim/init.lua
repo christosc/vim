@@ -251,14 +251,14 @@ require("lazy").setup({
         { desc = "Generate Doxygen docblock" })
     end
   },
-  -- LSP configuration
+
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",  -- For enhanced LSP capabilities
-      "williamboman/mason-lspconfig.nvim",  -- Add this dependency
-      "williamboman/mason.nvim",  -- Also need mason itself
+      "hrsh7th/cmp-nvim-lsp",
+      "williamboman/mason-lspconfig.nvim",
+      "williamboman/mason.nvim",
     },
     config = function()
       local caps = vim.lsp.protocol.make_client_capabilities()
@@ -271,8 +271,15 @@ require("lazy").setup({
         { hierarchicalDocumentSymbolSupport = true }
       )
 
-      -- Configure clangd
-      require'lspconfig'.clangd.setup{
+      local on_attach = function(client, bufnr)
+        local opts = { buffer = bufnr, noremap = true, silent = true }
+        vim.keymap.set('n', '<leader>h', '<cmd>ClangdSwitchSourceHeader<CR>',
+          vim.tbl_extend('force', opts, { desc = 'Switch header/source' }))
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+      end
+
+      -- OLD API - works reliably
+      require('lspconfig').clangd.setup{
         cmd = {
           vim.fn.stdpath('data') .. '/mason/bin/clangd',
           "--background-index",
@@ -288,6 +295,7 @@ require("lazy").setup({
           return find_project_root()
         end,
         capabilities = caps,
+        on_attach = on_attach,
         on_init = function(client)
           print('LSP started:', client.name)
         end,
@@ -463,7 +471,8 @@ require("lazy").setup({
           lualine_a = {},
           lualine_b = {'branch', 'diff', 'diagnostics'},
           lualine_c = { get_filename_with_symlink },
-          lualine_x = { "aerial" },
+          --lualine_x = { "aerial" },
+          lualine_x = {  },
           lualine_y = { 'filetype', 'fileformat', 'encoding' },
           lualine_z = { 'progress', 'location' }
         },
@@ -613,7 +622,7 @@ function! ToggleColorColumn()
         let &colorcolumn = g:columnlimit
     endif
 endfunction
-nnoremap <silent> <leader>c :call ToggleColorColumn()<CR>
+" nnoremap <silent> <leader>c :call ToggleColorColumn()<CR>
 
 " Find files and populate the quickfix list
 function! FindFiles(filename)
