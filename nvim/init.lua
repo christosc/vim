@@ -134,42 +134,27 @@ require("lazy").setup({
       require("mason").setup()
     end,
   },
-  -- Mason-lspconfig (bridge between Mason and lspconfig)
+
   {
     "williamboman/mason-lspconfig.nvim",
-    dependencies = {
-      "williamboman/mason.nvim",
-    },
+    dependencies = { "williamboman/mason.nvim" },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = {
-          -- Add servers you want auto-installed
-          'clangd',
-        },
+        ensure_installed = { "clangd" },
         automatic_installation = true,
         handlers = {
-          -- This is the default handler that will apply to all servers
-          -- not covered by a more specific handler below.
           function(server_name)
-            -- Your logic to skip manually configured servers is correct
             if server_name ~= 'clangd' and server_name ~= 'ltex' then
               local caps = vim.lsp.protocol.make_client_capabilities()
               pcall(function()
                 caps = require("cmp_nvim_lsp").default_capabilities(caps)
               end)
-
               require('lspconfig')[server_name].setup({
                 capabilities = caps,
               })
             end
           end,
-
-          -- You can also add specific handlers for other servers if needed
-          -- For example:
-          -- ["pyright"] = function()
-          --   require('lspconfig').pyright.setup({ ... custom settings ... })
-          -- end,
-        }
+        },
       })
     end,
   },
