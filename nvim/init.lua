@@ -14,6 +14,30 @@
 
 vim.keymap.set('n', '<F1>', ':update<cr>')
 
+-- Define diagnostic signs (place this EARLY in your config)
+-- Modern diagnostic configuration (Neovim 0.10+)
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = "E",
+            [vim.diagnostic.severity.WARN] = "W",
+            [vim.diagnostic.severity.INFO] = "I",
+            [vim.diagnostic.severity.HINT] = "H",
+        },
+    },
+    underline = true,
+    update_in_insert = false,
+    severity_sort = true,
+    virtual_text = false,
+    float = {
+        border = 'rounded',
+        source = 'always',
+    },
+})
+
+-- Sign column always visible
+vim.opt.signcolumn = "yes"
+
 -- This filetype section must be placed before lazy.nvim configuration.
 vim.filetype.add({
   filename = { ["TODO"] = "text", ["DONE"] = "text" },
@@ -115,7 +139,6 @@ vim.opt.smarttab = true
 vim.opt.showcmd = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.signcolumn = "yes"
 vim.opt.completeopt:append("popup")
 vim.opt.autoread = false
 vim.opt.hidden = false
