@@ -12,6 +12,18 @@
 --
 -- The binary will be installed under /data/chryssoc/bin.
 
+vim.g.clipboard = {
+  name = 'OSC 52',
+  copy = {
+    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+  },
+  paste = {
+    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+  },
+}
+
 vim.opt.clipboard = "unnamedplus"
 vim.keymap.set('n', '<F1>', ':update<cr>')
 
