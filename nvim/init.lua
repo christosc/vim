@@ -12,6 +12,7 @@
 --
 -- The binary will be installed under /data/chryssoc/bin.
 
+vim.opt.clipboard = "unnamedplus"
 vim.keymap.set('n', '<F1>', ':update<cr>')
 
 -- Define diagnostic signs (place this EARLY in your config)
