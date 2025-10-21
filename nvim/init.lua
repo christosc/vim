@@ -12,6 +12,7 @@
 --
 -- The binary will be installed under /data/chryssoc/bin.
 
+vim.opt.mouse = 'a'
 vim.g.clipboard = {
   name = 'OSC 52',
   copy = {
