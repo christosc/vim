@@ -13,6 +13,7 @@
 -- The binary will be installed under /data/chryssoc/bin.
 
 vim.opt.mouse = 'a'
+vim.opt.clipboard = "unnamedplus"
 vim.g.clipboard = {
   name = 'OSC 52',
   copy = {
@@ -25,8 +26,8 @@ vim.g.clipboard = {
   },
 }
 
-vim.opt.clipboard = "unnamedplus"
 vim.keymap.set('n', '<F1>', ':update<cr>')
+vim.keymap.set('n', '<F5>', ':set spell!<CR>', { noremap = true, silent = true })
 
 -- Define diagnostic signs (place this EARLY in your config)
 -- Modern diagnostic configuration (Neovim 0.10+)
