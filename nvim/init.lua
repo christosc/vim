@@ -902,7 +902,7 @@ vim.opt.foldlevelstart = 99
 
 vim.opt_local.spelllang = { "en_us" }
 -- Optional: Keymaps for spell checking
-vim.keymap.set('n', '<leader>ss', ':setlocal spell!<CR>', { desc = 'Toggle spell checking' })
+vim.keymap.set('n', '<leader>s', ':setlocal spell!<CR>', { desc = 'Toggle spell checking' })
 --vim.keymap.set('n', '<leader>sn', ']s', { desc = 'Next misspelled word' })
 --vim.keymap.set('n', '<leader>sp', '[s', { desc = 'Previous misspelled word' })
 --vim.keymap.set('n', '<leader>sa', 'zg', { desc = 'Add word to dictionary' })
@@ -919,3 +919,19 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.textwidth = 72  -- Also helpful for commits
   end,
 })
+
+local scratch_buf = nil
+
+vim.keymap.set('n', '<leader>x', function()
+  if scratch_buf and vim.api.nvim_buf_is_valid(scratch_buf) then
+    -- Switch to existing scratch buffer
+    vim.api.nvim_set_current_buf(scratch_buf)
+  else
+    -- Create new scratch buffer
+    vim.cmd('enew')
+    vim.bo.buftype = 'nofile'
+    vim.bo.bufhidden = 'hide'
+    vim.bo.swapfile = false
+    scratch_buf = vim.api.nvim_get_current_buf()
+  end
+end, { desc = 'Toggle scratch buffer' })
