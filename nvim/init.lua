@@ -901,7 +901,7 @@ vim.opt.foldenable = true
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 
-vim.opt_local.spelllang = { "en_us" }
+vim.opt.spelllang = { "en_us", "el" }
 -- Optional: Keymaps for spell checking
 vim.keymap.set('n', '<leader>s', ':setlocal spell!<CR>', { desc = 'Toggle spell checking' })
 --vim.keymap.set('n', '<leader>sn', ']s', { desc = 'Next misspelled word' })
