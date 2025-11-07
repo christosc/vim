@@ -301,30 +301,34 @@ require("lazy").setup({
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
       end
 
-      -- OLD API - works reliably
-      require('lspconfig').clangd.setup{
+      -- Configure clangd using new API
+      vim.lsp.config('clangd', {
         cmd = {
           vim.fn.stdpath('data') .. '/mason/bin/clangd',
           "--background-index",
           "--clang-tidy",
-          "--log=verbose",
-          "--pretty",
+          "--log=error",
           "--completion-style=detailed",
-          "--cross-file-rename",
           "--header-insertion=iwyu",
+          "--j=4",
+          "--pch-storage=memory",
         },
-        filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'h', 'hpp' },
-        root_dir = function(fname)
-          return find_project_root()
-        end,
+        filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+        root_markers = { '.clangd', '.clang-tidy', '.clang-format', 'compile_commands.json', '.git' },
         capabilities = caps,
         on_attach = on_attach,
-        on_init = function(client)
-          print('LSP started:', client.name)
+      })
+
+      -- Auto-enable for C/C++ files
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+        callback = function(args)
+          vim.lsp.enable('clangd', args.buf)
         end,
-      }
+      })
     end,
   },
+
 
   -- Completion plugins (for LSP integration only)
   { "hrsh7th/nvim-cmp", lazy = true },
