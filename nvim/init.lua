@@ -159,12 +159,15 @@ vim.opt.autoread = false
 vim.opt.hidden = false
 vim.opt.path = "include/**,src/**,export/**,source/**,../include/**,../export/**,../src/**,../source/**"
 
--- Complete option settings
+-- Complete option settings <-- What do these do?
 vim.opt.complete:remove("t")
 vim.opt.complete:remove("i")
 
+vim.opt.langmap = [[ΑA,ΒB,ΨC,ΔD,ΕE,ΦF,ΓG,ΗH,ΙI,ΞJ,ΚK,ΛL,ΜM,ΝN,ΟO,ΠP,QQ,ΡR,ΣS,ΤT,ΘU,ΩV,WW,ΧX,ΥY,ΖZ,αa,βb,ψc,δd,εe,φf,γg,ηh,ιi,ξj,κk,λl,μm,νn,οo,πp,qq,ρr,σs,τt,θu,ωv,ςw,χx,υy,ζz]]
+
 -- Configure all plugins with lazy.nvim
 require("lazy").setup({
+
   {
     "williamboman/mason.nvim",
     build = ":MasonUpdate",
@@ -769,7 +772,7 @@ vim.api.nvim_create_user_command('EditLinkedCppFile', function()
   end
 end, {})
 
-vim.api.nvim_create_user_command("Lls", function()
+vim.api.nvim_create_user_command("Ls", function()
   local bufs = vim.api.nvim_list_bufs()
   local lines = {}
   for _, buf in ipairs(bufs) do
