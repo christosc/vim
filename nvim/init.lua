@@ -156,7 +156,7 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.completeopt:append("popup")
 vim.opt.autoread = false
-vim.opt.hidden = false
+--vim.opt.hidden = false
 vim.opt.path = "include/**,src/**,export/**,source/**,../include/**,../export/**,../src/**,../source/**"
 
 -- Complete option settings <-- What do these do?
@@ -315,6 +315,9 @@ require("lazy").setup({
           "--header-insertion=iwyu",
           "--j=4",
           "--pch-storage=memory",
+          "--all-scopes-completion",  -- Add this
+          "--limit-references=0",      -- Add this - no limit on references
+          "--limit-results=0",         -- Add this - no limit on results
         },
         filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
         root_markers = { '.clangd', '.clang-tidy', '.clang-format', 'compile_commands.json', '.git' },
@@ -342,20 +345,22 @@ require("lazy").setup({
   { "hrsh7th/cmp-vsnip", lazy = true },
   { "hrsh7th/vim-vsnip", lazy = true },
 
-  -- Trouble for diagnostics
   {
     "folke/trouble.nvim",
     cmd = "Trouble",
-    keys = {},
-    --keys = {
-    --  { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
-    --  { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
-    --  { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
-    --  { "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP Definitions / references / ... (Trouble)" },
-    --  { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
-    --  { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
-    --},
-    opts = {},
+    keys = {
+      { "<leader>tX", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
+      { "<leader>tx", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
+      { "<leader>ts", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
+      { "<leader>tl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP Definitions / references / ... (Trouble)" },
+      { "<leader>tL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
+      { "<leader>tQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
+    },
+    opts = {
+      win = {
+        size = 0.4,
+      },
+    },
   },
 
   -- Telescope fuzzy finder
@@ -626,10 +631,10 @@ require("lazy").setup({
     'dhruvasagar/vim-table-mode',
     ft = { 'markdown', 'text', 'org', 'rst' },
     keys = {
-      { '<leader>tm', '<cmd>TableModeToggle<cr>', desc = 'Toggle Table Mode' },
-      { '<leader>tr', '<cmd>TableModeRealign<cr>', desc = 'Realign Table' },
-      { '<leader>tdd', '<cmd>TableModeDeleteRow<cr>', desc = 'Delete Row' },
-      { '<leader>tdc', '<cmd>TableModeDeleteColumn<cr>', desc = 'Delete Column' },
+      { '<leader>Tm', '<cmd>TableModeToggle<cr>', desc = 'Toggle Table Mode' },
+      { '<leader>Tr', '<cmd>TableModeRealign<cr>', desc = 'Realign Table' },
+      { '<leader>Tdd', '<cmd>TableModeDeleteRow<cr>', desc = 'Delete Row' },
+      { '<leader>Tdc', '<cmd>TableModeDeleteColumn<cr>', desc = 'Delete Column' },
     },
     config = function()
       -- Configuration
@@ -946,3 +951,131 @@ end, { desc = 'Toggle scratch buffer' })
 
 -- Evaluate visual selection
 vim.keymap.set('v', '<leader>=', 'c<C-r>=<C-r>"<CR><Esc>', { desc = 'Calculate expression' })
+
+-- Add a keybinding to show current function
+local function show_document_symbols_with_current()
+  -- Get current position
+  local current_line = vim.fn.line('.')
+  local current_col = vim.fn.col('.')
+
+  local params = vim.lsp.util.make_position_params()
+
+  vim.lsp.buf_request(0, 'textDocument/documentSymbol', params, function(err, result, _, _)
+    if err or not result or vim.tbl_isempty(result) then
+      vim.notify("No symbols found", vim.log.levels.WARN)
+      return
+    end
+
+    -- Flatten symbols into a list with their ranges
+    local items = {}
+    local current_symbol_idx = nil
+
+    local function flatten_symbols(symbols, prefix)
+      prefix = prefix or ""
+
+      for _, symbol in ipairs(symbols) do
+        local range = symbol.range or symbol.location.range
+        local start_line = range.start.line + 1  -- LSP is 0-indexed
+        local end_line = range['end'].line + 1
+
+        local name = prefix .. symbol.name
+
+        table.insert(items, {
+          lnum = start_line,
+          col = range.start.character + 1,
+          text = name,
+          start_line = start_line,
+          end_line = end_line,
+          start_char = range.start.character,
+          end_char = range['end'].character,
+        })
+
+        -- Check if cursor is in this symbol
+        if current_line >= start_line and current_line <= end_line then
+          if not current_symbol_idx or 
+            (items[current_symbol_idx].start_line < start_line) then
+            current_symbol_idx = #items
+          end
+        end
+
+        -- Process children with indentation
+        if symbol.children then
+          flatten_symbols(symbol.children, name .. "::")
+        end
+      end
+    end
+
+    flatten_symbols(result)
+
+    -- Set location list
+    vim.fn.setloclist(0, {}, ' ', {
+      title = 'Document Symbols',
+      items = items,
+    })
+
+    -- Open location list
+    vim.cmd('lopen')
+
+    -- Jump to current symbol if found
+    if current_symbol_idx then
+      vim.cmd('ll ' .. current_symbol_idx)
+    end
+  end)
+end
+
+vim.keymap.set('n', '<leader>cf', show_document_symbols_with_current, { desc = "Show symbols (highlight current)" })
+
+local function show_current_function()
+  local params = vim.lsp.util.make_position_params()
+  vim.lsp.buf_request(0, 'textDocument/documentSymbol', params, function(err, result, _, _)
+    if err or not result or vim.tbl_isempty(result) then
+      print("No symbol information available")
+      return
+    end
+
+    local function find_symbol_at_pos(symbols, line, col)
+      for _, symbol in ipairs(symbols) do
+        local range = symbol.range or symbol.location.range
+        local start_line = range.start.line
+        local end_line = range['end'].line
+        local start_char = range.start.character
+        local end_char = range['end'].character
+
+        -- Check if position is within this symbol
+        if line >= start_line and line <= end_line then
+          if line == start_line and col < start_char then
+            goto continue
+          end
+          if line == end_line and col > end_char then
+            goto continue
+          end
+
+          -- Check children first (more specific)
+          if symbol.children then
+            local child_result = find_symbol_at_pos(symbol.children, line, col)
+            if child_result then
+              return symbol.name .. "::" .. child_result
+            end
+          end
+
+          return symbol.name
+        end
+
+        ::continue::
+      end
+      return nil
+    end
+
+    local line = params.position.line
+    local col = params.position.character
+    local location = find_symbol_at_pos(result, line, col)
+
+    if location then
+      print("📍 " .. location)
+    else
+      print("Not inside any function")
+    end
+  end)
+end
+
+vim.keymap.set('n', '<leader>wf', show_current_function, { desc = "Where am I?" })
