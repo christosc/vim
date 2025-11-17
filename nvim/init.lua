@@ -958,7 +958,16 @@ local function show_document_symbols_with_current()
   local current_line = vim.fn.line('.')
   local current_col = vim.fn.col('.')
 
-  local params = vim.lsp.util.make_position_params()
+
+  -- Get client and its encoding
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
+  if #clients == 0 then
+    vim.notify("No LSP client attached", vim.log.levels.WARN)
+    return
+  end
+  local client = clients[1]
+
+  local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
 
   vim.lsp.buf_request(0, 'textDocument/documentSymbol', params, function(err, result, _, _)
     if err or not result or vim.tbl_isempty(result) then
@@ -1008,17 +1017,25 @@ local function show_document_symbols_with_current()
     flatten_symbols(result)
 
     -- Set location list
-    vim.fn.setloclist(0, {}, ' ', {
+    --vim.fn.setloclist(0, {}, ' ', {
+    -- Set quickfix list
+    vim.fn.setqflist({}, ' ', {
       title = 'Document Symbols',
       items = items,
     })
 
     -- Open location list
-    vim.cmd('lopen')
+    -- vim.cmd('lopen')
+    -- Open quickfix list (changed from lopen)
+    vim.cmd('copen')
 
     -- Jump to current symbol if found
+    --if current_symbol_idx then
+    --  vim.cmd('ll ' .. current_symbol_idx)
+    --end
+    -- Jump to current symbol if found (changed from ll to cc)
     if current_symbol_idx then
-      vim.cmd('ll ' .. current_symbol_idx)
+      vim.cmd('cc ' .. current_symbol_idx)
     end
   end)
 end
@@ -1079,3 +1096,6 @@ local function show_current_function()
 end
 
 vim.keymap.set('n', '<leader>wf', show_current_function, { desc = "Where am I?" })
+
+-- Make cursorline color a bit more visible
+lua vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#3a3a3a', bold = true })
