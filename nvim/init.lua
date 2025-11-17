@@ -671,16 +671,6 @@ function! FindFiles(filename)
 endfunction
 command! -nargs=1 FindFile call FindFiles(<q-args>)
 
-" Toggle quickfix window
-function! ToggleQuickFix()
-    if empty(filter(getwininfo(), 'v:val.quickfix'))
-        botright cwindow
-    else
-        cclose
-    endif
-endfunction
-nnoremap <silent> <F4> :call ToggleQuickFix()<CR>
-
 " Toggle wrap
 let g:wrapenabled = 0
 function! ToggleWrap()
@@ -1098,4 +1088,22 @@ end
 vim.keymap.set('n', '<leader>wf', show_current_function, { desc = "Where am I?" })
 
 -- Make cursorline color a bit more visible
-lua vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#3a3a3a', bold = true })
+vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#3a3a3a', bold = true })
+
+local function toggle_quickfix()
+    local qf_exists = false
+    for _, win in pairs(vim.fn.getwininfo()) do
+        if win.quickfix == 1 then
+            qf_exists = true
+            break
+        end
+    end
+
+    if qf_exists then
+        vim.cmd('cclose')
+    else
+        vim.cmd('botright copen')  -- Forces full-width bottom split
+    end
+end
+
+vim.keymap.set('n', '<F4>', toggle_quickfix, { silent = true, desc = "Toggle quickfix" })
