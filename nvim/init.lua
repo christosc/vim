@@ -12,6 +12,7 @@
 --
 -- The binary will be installed under /data/chryssoc/bin.
 
+vim.opt.scrolloff = 5
 vim.opt.mouse = 'a'
 vim.opt.clipboard = "unnamedplus"
 vim.g.clipboard = {
