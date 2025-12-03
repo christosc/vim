@@ -361,6 +361,11 @@ require("lazy").setup({
       win = {
         size = 0.4,
       },
+      modes = {
+        symbols = {
+          format = "{kind_icon} {symbol.name}: {symbol.detail:Comment} {text:Comment} {pos:LineNr}",
+        },
+      },
     },
   },
 
