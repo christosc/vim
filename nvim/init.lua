@@ -224,12 +224,11 @@ vim.pack.add({
   { src = 'https://github.com/neovim/nvim-lspconfig' },
   'https://github.com/mason-org/mason-lspconfig.nvim',
 
-  -- Treesitter — pin to `master` because we still use the old `configs` API.
-  -- The default `main` branch is a full rewrite with a different API.
-  { src = 'https://github.com/nvim-treesitter/nvim-treesitter',
-    version = 'master' },
-  { src = 'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
-    version = 'master' },
+  -- Treesitter — using the new `main` branch (incompatible rewrite).
+  -- The plugin only manages parsers/queries now; highlight, indent, folding
+  -- are wired up manually below via core Neovim APIs.
+  'https://github.com/nvim-treesitter/nvim-treesitter',
+  'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
 
   -- Doxygen / docblock generation
   'https://github.com/danymat/neogen',
@@ -321,50 +320,96 @@ require('mason-lspconfig').setup({
   automatic_enable = true,
 })
 
--- ---- Treesitter (master branch API) -------------------------------------- --
-require('nvim-treesitter.configs').setup({
-  ensure_installed = { 'c', 'cpp', 'doxygen', 'json', 'python', 'bash', 'yang' },
-  highlight = {
-    enable = true,
-    additional_vim_regex_highlighting = true, -- I need this for TODO, FIXME, XXX
+-- ---- Treesitter (main branch — new API) ---------------------------------- --
+-- The `main` branch only manages parsers and queries. Features like
+-- highlighting, folding, and indentation are now opt-in core Neovim APIs that
+-- we wire up below via a FileType autocommand.
+
+local ts_parsers = { 'c', 'cpp', 'doxygen', 'json', 'python', 'bash', 'yang' }
+
+require('nvim-treesitter').setup({
+  -- Parsers and queries are installed under stdpath('data')/site/parser by
+  -- default; this just makes the location explicit.
+  install_dir = vim.fn.stdpath('data') .. '/site',
+})
+
+-- Install the parsers we want. install() is async; on first run we wait for
+-- it so highlighting works in the very first opened buffer. On later runs
+-- it's effectively a no-op for parsers already on disk.
+do
+  local ok, ts = pcall(require, 'nvim-treesitter')
+  if ok and ts.install then
+    -- :wait() blocks the UI; 5 minutes is generous for a fresh install.
+    pcall(function() ts.install(ts_parsers):wait(300000) end)
+  end
+end
+
+-- Build a list of *filetypes* (not parser names) for which to enable TS
+-- features. Some parsers don't map 1-to-1 to filetypes (e.g. bash → sh,
+-- doxygen → none — it's only used as an injection inside C/C++ comments).
+local ts_filetypes = {}
+do
+  local seen = {}
+  for _, parser in ipairs(ts_parsers) do
+    local fts = vim.treesitter.language.get_filetypes(parser)
+    for _, ft in ipairs(fts) do
+      if not seen[ft] then
+        seen[ft] = true
+        table.insert(ts_filetypes, ft)
+      end
+    end
+  end
+end
+
+-- Enable highlight + folding + indent for the filetypes whose parsers we
+-- installed. We deliberately keep `:syntax on` running in parallel so that
+-- regex-based highlights for TODO/FIXME/XXX in comments still work.
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = ts_filetypes,
+  callback = function(args)
+    -- TS highlighting (will fall back silently if the parser is missing).
+    pcall(vim.treesitter.start, args.buf)
+    -- Keep regex syntax on top — needed for TODO/FIXME/XXX comment highlights.
+    vim.bo[args.buf].syntax = 'ON'
+    -- TS-based folding (window-local, set per buffer).
+    vim.wo[0][0].foldexpr   = 'v:lua.vim.treesitter.foldexpr()'
+    vim.wo[0][0].foldmethod = 'expr'
+    -- TS-based indent (still considered experimental upstream).
+    vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  end,
+})
+
+-- ---- Treesitter textobjects (main branch — new API) ---------------------- --
+require('nvim-treesitter-textobjects').setup({
+  select = {
+    -- Jump forward to text-object if cursor isn't already on one.
+    lookahead = true,
   },
-  -- Add this for spell checking in comments
-  incremental_selection = { enable = true },
-  indent = { enable = true },
-  textobjects = {
-    move = {
-      enable = true,
-      set_jumps = true,
-      goto_next_start = {
-        [']m'] = '@function.outer',
-        [']f'] = '@function.inner',
-        [']]'] = '@class.outer',
-      },
-      goto_next_end = {
-        [']M'] = '@function.outer',
-        [']['] = '@class.outer',
-      },
-      goto_previous_start = {
-        ['[m'] = '@function.outer',
-        ['[f'] = '@function.inner',
-        ['[['] = '@class.outer',
-      },
-      goto_previous_end = {
-        ['[M'] = '@function.outer',
-        ['[]'] = '@class.outer',
-      },
-    },
-    select = {
-      enable = true,
-      keymaps = {
-        ['af'] = '@function.outer',
-        ['if'] = '@function.inner',
-        ['ac'] = '@class.outer',
-        ['ic'] = '@class.inner',
-      },
-    },
+  move = {
+    set_jumps = true, -- record positions in the jumplist
   },
 })
+
+-- Selection mappings (af/if/ac/ic).
+local ts_select = require('nvim-treesitter-textobjects.select')
+vim.keymap.set({ 'x', 'o' }, 'af', function() ts_select.select_textobject('@function.outer', 'textobjects') end, { desc = 'Select around function' })
+vim.keymap.set({ 'x', 'o' }, 'if', function() ts_select.select_textobject('@function.inner', 'textobjects') end, { desc = 'Select inside function' })
+vim.keymap.set({ 'x', 'o' }, 'ac', function() ts_select.select_textobject('@class.outer',    'textobjects') end, { desc = 'Select around class' })
+vim.keymap.set({ 'x', 'o' }, 'ic', function() ts_select.select_textobject('@class.inner',    'textobjects') end, { desc = 'Select inside class' })
+
+-- Movement mappings — same set as before. Note that `]]` and `[[` are
+-- overridden later by Aerial when its outline is open; that's intentional.
+local ts_move = require('nvim-treesitter-textobjects.move')
+vim.keymap.set({ 'n', 'x', 'o' }, ']m', function() ts_move.goto_next_start('@function.outer', 'textobjects') end, { desc = 'Next function start' })
+vim.keymap.set({ 'n', 'x', 'o' }, ']f', function() ts_move.goto_next_start('@function.inner', 'textobjects') end, { desc = 'Next function-body start' })
+vim.keymap.set({ 'n', 'x', 'o' }, ']]', function() ts_move.goto_next_start('@class.outer',    'textobjects') end, { desc = 'Next class start' })
+vim.keymap.set({ 'n', 'x', 'o' }, ']M', function() ts_move.goto_next_end(  '@function.outer', 'textobjects') end, { desc = 'Next function end' })
+vim.keymap.set({ 'n', 'x', 'o' }, '][', function() ts_move.goto_next_end(  '@class.outer',    'textobjects') end, { desc = 'Next class end' })
+vim.keymap.set({ 'n', 'x', 'o' }, '[m', function() ts_move.goto_previous_start('@function.outer', 'textobjects') end, { desc = 'Prev function start' })
+vim.keymap.set({ 'n', 'x', 'o' }, '[f', function() ts_move.goto_previous_start('@function.inner', 'textobjects') end, { desc = 'Prev function-body start' })
+vim.keymap.set({ 'n', 'x', 'o' }, '[[', function() ts_move.goto_previous_start('@class.outer',    'textobjects') end, { desc = 'Prev class start' })
+vim.keymap.set({ 'n', 'x', 'o' }, '[M', function() ts_move.goto_previous_end(  '@function.outer', 'textobjects') end, { desc = 'Prev function end' })
+vim.keymap.set({ 'n', 'x', 'o' }, '[]', function() ts_move.goto_previous_end(  '@class.outer',    'textobjects') end, { desc = 'Prev class end' })
 
 -- ---- Neogen (docblocks) -------------------------------------------------- --
 require('neogen').setup({
@@ -799,9 +844,9 @@ vim.opt.guicursor = {
   'r-cr:hor20',
   'o:hor50',
 }
--- Enable manual folding using Treesitter
-vim.opt.foldmethod     = 'expr'
-vim.opt.foldexpr       = 'v:lua.vim.treesitter.foldexpr()'
+-- Enable manual folding using Treesitter.
+-- NOTE: foldmethod and foldexpr are now set per-buffer in the TS FileType
+-- autocmd above. We keep folds open by default everywhere.
 vim.opt.foldenable     = true
 vim.opt.foldlevel      = 99
 vim.opt.foldlevelstart = 99
