@@ -14,7 +14,7 @@
 
 vim.opt.scrolloff = 5
 vim.opt.mouse = 'a'
-vim.opt.clipboard = "unnamedplus"
+-- vim.opt.clipboard = "unnamedplus"  <-- Too much lag!
 vim.g.clipboard = {
   name = 'OSC 52',
   copy = {
@@ -51,8 +51,25 @@ vim.diagnostic.config({
     },
 })
 
+local function my_keymap()
+  -- Check if keymap is active
+  if vim.bo.iminsert == 1 then
+    -- Try to get b:keymap_name (the "grkmac" in my own keymap). 
+    -- If for some reason this fails, it falls back to the filename (e.g. "greek_mac").
+    return vim.b.keymap_name or vim.bo.keymap
+  end
+  
+  -- If you're not using any keymap, returns the empty string (to save space).
+  -- If you prefer to show something there, use something like return "EN".
+  return ""
+end
+
 -- Sign column always visible
-vim.opt.signcolumn = "yes"
+--vim.opt.signcolumn = "yes"
+-- vim.opt.number = false
+-- vim.opt.signcolumn = "yes:1"
+vim.opt.number = true
+--vim.opt.signcolumn = "number"
 
 -- This filetype section must be placed before lazy.nvim configuration.
 vim.filetype.add({
@@ -163,8 +180,6 @@ vim.opt.path = "include/**,src/**,export/**,source/**,../include/**,../export/**
 -- Complete option settings <-- What do these do?
 vim.opt.complete:remove("t")
 vim.opt.complete:remove("i")
-
-vim.opt.langmap = [[ΑA,ΒB,ΨC,ΔD,ΕE,ΦF,ΓG,ΗH,ΙI,ΞJ,ΚK,ΛL,ΜM,ΝN,ΟO,ΠP,QQ,ΡR,ΣS,ΤT,ΘU,ΩV,WW,ΧX,ΥY,ΖZ,αa,βb,ψc,δd,εe,φf,γg,ηh,ιi,ξj,κk,λl,μm,νn,οo,πp,qq,ρr,σs,τt,θu,ωv,ςw,χx,υy,ζz]]
 
 -- Configure all plugins with lazy.nvim
 require("lazy").setup({
@@ -514,7 +529,7 @@ require("lazy").setup({
           lualine_b = {'branch', 'diff', 'diagnostics'},
           lualine_c = { get_filename_with_symlink },
           --lualine_x = { "aerial" },
-          lualine_x = {  },
+          lualine_x = { my_keymap },
           lualine_y = { 'filetype', 'fileformat', 'encoding' },
           lualine_z = { 'progress', 'location' }
         },
@@ -650,6 +665,16 @@ require("lazy").setup({
       vim.g.table_mode_header_fillchar = '-'
     end,
   },
+
+  -- Zen mode
+  {
+    "folke/zen-mode.nvim",
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    }
+  }
 })
 
 --vim.cmd('colorscheme habamax')
@@ -1115,3 +1140,17 @@ local function toggle_quickfix()
 end
 
 vim.keymap.set('n', '<F4>', toggle_quickfix, { silent = true, desc = "Toggle quickfix" })
+
+-- 2. Set my own input method to use
+vim.opt.keymap = "greek_mac"
+-- Begin with the default input method and switch to my own with Ctrl-^ (i.e. Ctrl-6)
+vim.opt.iminsert = 0 
+vim.opt.imsearch = -1
+
+-- <C-^> does the language switching and <Cmd>... does the UI refresh in the background 
+-- without switching mode!
+vim.keymap.set({'i', 'c'}, '<C-\\>', '<C-^><Cmd>lua require("lualine").refresh()<CR>', { 
+  noremap = true, 
+  silent = true, 
+  desc = "Toggle Keymap & Refresh Lualine" 
+})
