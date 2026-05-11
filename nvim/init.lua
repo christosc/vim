@@ -278,7 +278,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.lsp.inlay_hint.enable(true, { bufnr = buf })
     end
 
-    -- Auto-trigger signature help in '(', ',', ')'
+    -- Continuous signature help inside parentheses
     if client:supports_method('textDocument/signatureHelp') then
       vim.api.nvim_create_autocmd('TextChangedI', {
         buffer = buf,
@@ -287,9 +287,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
         callback = function()
           local line = vim.api.nvim_get_current_line()
           local col  = vim.api.nvim_win_get_cursor(0)[2]
-          local char = line:sub(col, col)
-          if char == '(' or char == ',' or char == ')' then
-            vim.lsp.buf.signature_help()
+          local text_before_cursor = line:sub(1, col)
+
+          -- We count the opening and closing parentheses before the cursor
+          local _, open_parens = text_before_cursor:gsub("%(", "")
+          local _, close_parens = text_before_cursor:gsub("%)", "")
+
+          -- If we've opened more parentheses than we've closed, then we are
+          -- inside a functions parameter list.
+          if open_parens > close_parens then
+            vim.lsp.buf.signature_help({ border = 'rounded' })
           end
         end,
       })
@@ -300,7 +307,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.tbl_extend('force', opts, { desc = 'Switch header/source' }))
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
 
-    -- Manual signature help (except in auto-trigger)
+    -- Manual signature help
     vim.keymap.set({ 'i', 'n' }, '<C-s>', vim.lsp.buf.signature_help,
       vim.tbl_extend('force', opts, { desc = 'Signature help' }))
   end,
