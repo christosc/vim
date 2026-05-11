@@ -250,6 +250,7 @@ vim.pack.add({
   'https://github.com/stevearc/aerial.nvim',
   'https://github.com/dhruvasagar/vim-table-mode',
   'https://github.com/folke/zen-mode.nvim',
+  'https://github.com/ray-x/lsp_signature.nvim',
 })
 
 -- ============================================================================
@@ -258,6 +259,22 @@ vim.pack.add({
 
 -- ---- Mason --------------------------------------------------------------- --
 require('mason').setup()
+
+require('lsp_signature').setup({
+  bind = true,
+  handler_opts = {
+    border = "rounded"
+  },
+
+  -- Disable the panda and the inline hint completely
+  hint_enable = false,
+
+  -- Force the signature window to appear below the current line
+  --floating_window_above_cur_line = false,
+
+  -- Optional: Push the window 1 line down if it overlaps with the text
+  -- floating_window_off_y = 1,
+})
 
 -- ---- LSP per-buffer features (completion, inlay hints, signature help) -- --
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -278,38 +295,39 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.lsp.inlay_hint.enable(true, { bufnr = buf })
     end
 
-    -- Continuous signature help inside parentheses
-    if client:supports_method('textDocument/signatureHelp') then
-      vim.api.nvim_create_autocmd('TextChangedI', {
-        buffer = buf,
-        group  = vim.api.nvim_create_augroup(
-          'user_sig_help_' .. buf, { clear = true }),
-        callback = function()
-          local line = vim.api.nvim_get_current_line()
-          local col  = vim.api.nvim_win_get_cursor(0)[2]
-          local text_before_cursor = line:sub(1, col)
+    ---- Continuous signature help inside parentheses
+    --if client:supports_method('textDocument/signatureHelp') then
+    --  vim.api.nvim_create_autocmd('TextChangedI', {
+    --    buffer = buf,
+    --    group  = vim.api.nvim_create_augroup(
+    --      'user_sig_help_' .. buf, { clear = true }),
+    --    callback = function()
+    --      local line = vim.api.nvim_get_current_line()
+    --      local col  = vim.api.nvim_win_get_cursor(0)[2]
+    --      local text_before_cursor = line:sub(1, col)
 
-          -- We count the opening and closing parentheses before the cursor
-          local _, open_parens = text_before_cursor:gsub("%(", "")
-          local _, close_parens = text_before_cursor:gsub("%)", "")
+    --      -- We count the opening and closing parentheses before the cursor
+    --      local _, open_parens = text_before_cursor:gsub("%(", "")
+    --      local _, close_parens = text_before_cursor:gsub("%)", "")
 
-          -- If we've opened more parentheses than we've closed, then we are
-          -- inside a functions parameter list.
-          if open_parens > close_parens then
-            vim.lsp.buf.signature_help({ border = 'rounded' })
-          end
-        end,
-      })
-    end
+    --      -- If we've opened more parentheses than we've closed, then we are
+    --      -- inside a functions parameter list.
+    --      if open_parens > close_parens then
+    --        vim.lsp.buf.signature_help({ border = 'rounded' })
+    --      end
+    --    end,
+    --  })
+    --end
 
     -- Buffer-local keymaps (was before in on_attach)
     vim.keymap.set('n', '<leader>a', '<cmd>ClangdSwitchSourceHeader<CR>',
       vim.tbl_extend('force', opts, { desc = 'Switch header/source' }))
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
 
-    -- Manual signature help
-    vim.keymap.set({ 'i', 'n' }, '<C-s>', vim.lsp.buf.signature_help,
-      vim.tbl_extend('force', opts, { desc = 'Signature help' }))
+    -- Manual signature help (toggle via lsp_signature)
+    vim.keymap.set({ 'i', 'n' }, '<C-s>', function()
+      require('lsp_signature').toggle_float_win()
+    end, vim.tbl_extend('force', opts, { desc = 'Toggle Signature Help' }))
   end,
 })
 
