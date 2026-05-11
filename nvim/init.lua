@@ -52,8 +52,10 @@ vim.opt.completeopt:append('popup')
 vim.opt.path = 'include/**,src/**,export/**,source/**,'
             .. '../include/**,../export/**,../src/**,../source/**'
 -- Complete option settings <-- What do these do?
-vim.opt.complete:remove('t')
-vim.opt.complete:remove('i')
+vim.opt.complete = 'o,.'
+vim.o.completeopt = "menu,menuone,popup,nearest" -- noselect
+
+--vim.o.autocomplete = true
 
 -- vim.opt.clipboard = "unnamedplus"  <-- Too much lag!
 vim.g.clipboard = {
@@ -83,7 +85,7 @@ vim.diagnostic.config({
   update_in_insert = false,
   severity_sort    = true,
   virtual_text     = false,
-  float = { border = 'rounded', source = 'always' },
+  float = { border = 'rounded', source = true },
 })
 
 -- This filetype section must be placed before vim.pack configuration.
@@ -233,15 +235,6 @@ vim.pack.add({
   -- Doxygen / docblock generation
   'https://github.com/danymat/neogen',
 
-  -- Completion ecosystem (kept for nvim-cmp + cmp-nvim-lsp capabilities)
-  'https://github.com/hrsh7th/nvim-cmp',
-  'https://github.com/hrsh7th/cmp-nvim-lsp',
-  'https://github.com/hrsh7th/cmp-buffer',
-  'https://github.com/hrsh7th/cmp-path',
-  'https://github.com/hrsh7th/cmp-cmdline',
-  'https://github.com/hrsh7th/cmp-vsnip',
-  'https://github.com/hrsh7th/vim-vsnip',
-
   -- Trouble.nvim diagnostics / symbol view
   'https://github.com/folke/trouble.nvim',
 
@@ -266,6 +259,53 @@ vim.pack.add({
 -- ---- Mason --------------------------------------------------------------- --
 require('mason').setup()
 
+-- ---- LSP per-buffer features (completion, inlay hints, signature help) -- --
+vim.api.nvim_create_autocmd('LspAttach', {
+  group    = vim.api.nvim_create_augroup('user_lsp_features', { clear = true }),
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if not client then return end
+    local buf = args.buf
+    local opts = { buffer = buf, noremap = true, silent = true }
+
+    -- LSP-driven autocompletion (auto-trigger in '.', '->', '::')
+    if client:supports_method('textDocument/completion') then
+      vim.lsp.completion.enable(true, client.id, buf, { autotrigger = true })
+    end
+
+    -- Inlay hints
+    if client:supports_method('textDocument/inlayHint') then
+      vim.lsp.inlay_hint.enable(true, { bufnr = buf })
+    end
+
+    -- Auto-trigger signature help in '(', ',', ')'
+    if client:supports_method('textDocument/signatureHelp') then
+      vim.api.nvim_create_autocmd('TextChangedI', {
+        buffer = buf,
+        group  = vim.api.nvim_create_augroup(
+          'user_sig_help_' .. buf, { clear = true }),
+        callback = function()
+          local line = vim.api.nvim_get_current_line()
+          local col  = vim.api.nvim_win_get_cursor(0)[2]
+          local char = line:sub(col, col)
+          if char == '(' or char == ',' or char == ')' then
+            vim.lsp.buf.signature_help()
+          end
+        end,
+      })
+    end
+
+    -- Buffer-local keymaps (was before in on_attach)
+    vim.keymap.set('n', '<leader>a', '<cmd>ClangdSwitchSourceHeader<CR>',
+      vim.tbl_extend('force', opts, { desc = 'Switch header/source' }))
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+
+    -- Manual signature help (except in auto-trigger)
+    vim.keymap.set({ 'i', 'n' }, '<C-s>', vim.lsp.buf.signature_help,
+      vim.tbl_extend('force', opts, { desc = 'Signature help' }))
+  end,
+})
+
 -- ---- LSP (clangd) -------------------------------------------------------- --
 -- IMPORTANT: register the clangd config BEFORE calling mason-lspconfig.setup,
 -- so that when mason-lspconfig auto-enables clangd via vim.lsp.enable(),
@@ -273,22 +313,6 @@ require('mason').setup()
 -- place.
 
 local caps = vim.lsp.protocol.make_client_capabilities()
-pcall(function()
-  caps = require('cmp_nvim_lsp').default_capabilities(caps)
-end)
-caps.textDocument = caps.textDocument or {}
-caps.textDocument.documentSymbol = vim.tbl_deep_extend(
-  'force',
-  caps.textDocument.documentSymbol or {},
-  { hierarchicalDocumentSymbolSupport = true }
-)
-
-local function on_attach(_, bufnr)
-  local opts = { buffer = bufnr, noremap = true, silent = true }
-  vim.keymap.set('n', '<leader>h', '<cmd>ClangdSwitchSourceHeader<CR>',
-    vim.tbl_extend('force', opts, { desc = 'Switch header/source' }))
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-end
 
 vim.lsp.config('clangd', {
   cmd = {
@@ -302,7 +326,6 @@ vim.lsp.config('clangd', {
     '--pch-storage=memory',
     '--all-scopes-completion',
     '--limit-references=0',
-    '--limit-results=0',
   },
   filetypes    = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
   root_markers = {
@@ -310,7 +333,6 @@ vim.lsp.config('clangd', {
     'compile_commands.json', '.git',
   },
   capabilities = caps,
-  on_attach    = on_attach,
 })
 
 -- mason-lspconfig v2: `handlers` and `automatic_installation` are gone.
@@ -756,8 +778,19 @@ vim.api.nvim_create_user_command('Ls', function()
 end, {})
 
 vim.api.nvim_create_user_command('LspStop', function()
-  vim.lsp.stop_client(vim.lsp.get_clients())
-end, {})
+  for _, client in ipairs(vim.lsp.get_clients()) do
+    client:stop()
+  end
+end, { desc = 'Stop all LSP clients' })
+
+vim.api.nvim_create_user_command('LspRestart', function()
+  for _, client in ipairs(vim.lsp.get_clients()) do
+    client:stop()
+  end
+  vim.defer_fn(function()
+    vim.cmd('edit')
+  end, 100)
+end, { desc = 'Stop all LSP clients and reattach' })
 
 vim.api.nvim_create_user_command('LspDiag', function(opts)
   local args = vim.split(opts.args, '%s+')
@@ -805,25 +838,6 @@ vim.keymap.set('n', '<leader>d',  vim.diagnostic.open_float, { noremap = true, s
 vim.keymap.set('n', '<leader>r',  vim.lsp.buf.references,    { noremap = true, silent = true })
 vim.keymap.set('n', '<Leader>ca', vim.lsp.buf.code_action,   { noremap = true, silent = true })
 
--- Switch source/header
-local function switch_source_header()
-  local bufnr  = 0
-  local uri    = vim.uri_from_bufnr(bufnr)
-  local params = { uri = uri }
-  vim.lsp.buf_request(bufnr, 'textDocument/switchSourceHeader', params,
-    function(err, result)
-      if err then
-        print('Error switching file: ' .. err.message)
-        return
-      end
-      if result then
-        vim.cmd('edit ' .. vim.uri_to_fname(result))
-      else
-        print('No corresponding file found')
-      end
-    end)
-end
-vim.keymap.set('n', '<Leader>a',   switch_source_header,         { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>lc', ':EditLinkedCppFile<CR>',      { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>rp', function()
   print(vim.fn.fnamemodify(vim.fn.resolve(vim.fn.expand('%:p')), ':~:.'))
@@ -1050,3 +1064,22 @@ vim.opt.imsearch = -1
 vim.keymap.set({ 'i', 'c' }, '<C-\\>',
   '<C-^><Cmd>lua require("lualine").refresh()<CR>',
   { noremap = true, silent = true, desc = 'Toggle Keymap & Refresh Lualine' })
+
+vim.keymap.set("n", "<leader>ih", function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { desc = "Toggle inlay hints" })
+
+--vim.keymap.set('i', '<Tab>', function()
+--  if vim.fn.pumvisible() == 1 then
+--    if vim.fn.complete_info({ 'selected' }).selected == -1 then
+--      return '<C-n><C-y>'
+--    else
+--      return '<C-y>'
+--    end
+--  end
+--  return '<Tab>'
+--end, { expr = true })
+
+vim.keymap.set('i', '<C-Space>', function()
+  vim.lsp.completion.get()
+end, { desc = 'Trigger completion' })
