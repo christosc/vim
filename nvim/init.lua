@@ -26,6 +26,11 @@
 -- Speed up `require()` calls (recommended first line in init.lua).
 vim.loader.enable()
 
+-- Set Space as the leader key.
+-- This MUST be placed before any plugins or keymaps are loaded.
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
 -- ----------------------------------------------------------------------------
 -- Basic options (set before plugins so they affect plugin behaviour)
 -- ----------------------------------------------------------------------------
@@ -36,6 +41,7 @@ vim.opt.mouse          = 'a'
 -- vim.opt.number = false
 -- vim.opt.signcolumn = "yes:1"
 vim.opt.number         = true
+vim.opt.relativenumber = true
 vim.opt.signcolumn = "number"
 vim.opt.expandtab      = true
 vim.opt.tabstop        = 4
@@ -846,27 +852,54 @@ end, {
 })
 
 -- ---- Top-level keymaps --------------------------------------------------- --
-vim.keymap.set('n',           '<F1>', ':update<cr>')
-vim.keymap.set({'n','i','v'}, '<F1>', '<Esc>:update<cr>')
-vim.keymap.set('n',           '<F3>', ':set hls!<cr>',         { silent = true })
-vim.keymap.set('n',           '<F5>', ':set spell!<CR>',       { noremap = true, silent = true })
+-- Toggle search highlighting
+vim.keymap.set('n', '<F3>', '<cmd>set hls!<CR>', { silent = true, desc = 'Toggle search highlight' })
+
+-- Toggle spell checking
+vim.keymap.set('n', '<F5>', '<cmd>set spell!<CR>', { silent = true, desc = 'Toggle spell check' })
 
 -- Search using quickfix list
-vim.keymap.set('n', '<leader>gf', ':grep! "\\b<cword>\\b" <CR>:botright copen<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>gp', ':grep! "\\b<cword>\\b" <CR>:botright copen<CR>', { noremap = true })
-vim.keymap.set('n', '<leader>g.', ':grep! "\\b<cword>\\b" <CR>:copen<CR>',          { noremap = true })
+-- Search in the directory of the file currently opened in the buffer
+vim.keymap.set('n', '<leader>gf', function()
+  local word = vim.fn.expand('<cword>')
+  local dir  = vim.fn.expand('%:p:h')
+
+  -- Escape the directory path to handle spaces or special characters safely
+  vim.cmd('grep! "\\b' .. word .. '\\b" ' .. vim.fn.fnameescape(dir))
+  vim.cmd('botright copen')
+end, { silent = true, desc = 'Grep word in current file dir' })
+
+-- Search in the parent directory of the file currently opened in the buffer
+vim.keymap.set('n', '<leader>gp', function()
+  local word = vim.fn.expand('<cword>')
+  local dir  = vim.fn.expand('%:p:h:h')
+
+  vim.cmd('grep! "\\b' .. word .. '\\b" ' .. vim.fn.fnameescape(dir))
+  vim.cmd('botright copen')
+end, { silent = true, desc = 'Grep word in parent dir' })
+
+-- Search in the current working directory of Neovim
+vim.keymap.set('n', '<leader>g.', function()
+  local word = vim.fn.expand('<cword>')
+  local dir  = vim.fn.getcwd()
+
+  vim.cmd('grep! "\\b' .. word .. '\\b" ' .. vim.fn.fnameescape(dir))
+  vim.cmd('copen')
+end, { silent = true, desc = 'Grep word in Neovim cwd' })
+
 --vim.keymap.set('n', '<leader>o', ':vim /\\<<c-r>=expand(\'<cword>\')<CR>\\>/j %<CR>:botright copen<CR>', { noremap = true })
 --vim.keymap.set('n', '<leader>O', ':vim /\\<<c-r>=expand(\'<cword>\')<CR>\\>\\C/j %<CR>:botright copen<CR>', { noremap = true })
 
 -- LSP keymaps
-vim.keymap.set('n', '<leader>d',  vim.diagnostic.open_float, { noremap = true, silent = true, desc = 'Show diagnostics' })
-vim.keymap.set('n', '<leader>r',  vim.lsp.buf.references,    { noremap = true, silent = true })
-vim.keymap.set('n', '<Leader>ca', vim.lsp.buf.code_action,   { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>d',  vim.diagnostic.open_float, { silent = true, desc = 'Show diagnostics' })
+vim.keymap.set('n', '<leader>r',  vim.lsp.buf.references, { silent = true, desc = 'Show references'})
+vim.keymap.set('n', '<Leader>ca', vim.lsp.buf.code_action, { silent = true, desc = 'Show code actions' })
 
-vim.keymap.set('n', '<leader>lc', ':EditLinkedCppFile<CR>',      { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>lc', '<cmd>EditLinkedCppFile<CR>', { silent = true })
+-- Print the file path relative to the current working directory
 vim.keymap.set('n', '<leader>rp', function()
   print(vim.fn.fnamemodify(vim.fn.resolve(vim.fn.expand('%:p')), ':~:.'))
-end, { noremap = true })
+end, { desc = 'Print relative path' })
 
 -- Quickfix Enter mapping (used to be quirky; keep an explicit map).
 vim.api.nvim_create_autocmd('BufReadPost', {
@@ -877,12 +910,13 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 })
 
 -- ---- Cursor / folds ------------------------------------------------------ --
-vim.opt.guicursor = {
-  'n-v-c:block',
-  'i-ci-ve:ver25-blinkon500-blinkoff500',
-  'r-cr:hor20',
-  'o:hor50',
-}
+-- This seem to make the editor sluggish...
+--vim.opt.guicursor = {
+--  'n-v-c:block',
+--  'i-ci-ve:ver25-blinkon500-blinkoff500',
+--  'r-cr:hor20',
+--  'o:hor50',
+--}
 -- Enable manual folding using Treesitter.
 -- NOTE: foldmethod and foldexpr are now set per-buffer in the TS FileType
 -- autocmd above. We keep folds open by default everywhere.
@@ -1059,7 +1093,7 @@ local function show_current_function()
       else print('Not inside any function') end
     end)
 end
-vim.keymap.set('n', '<leader>wf', show_current_function,
+vim.keymap.set('n', '<leader>pf', show_current_function,
   { desc = 'Where am I?' })
 
 -- ---- Cursorline / quickfix toggle ---------------------------------------- --
@@ -1094,17 +1128,33 @@ vim.keymap.set("n", "<leader>ih", function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = "Toggle inlay hints" })
 
---vim.keymap.set('i', '<Tab>', function()
---  if vim.fn.pumvisible() == 1 then
---    if vim.fn.complete_info({ 'selected' }).selected == -1 then
---      return '<C-n><C-y>'
---    else
---      return '<C-y>'
---    end
---  end
---  return '<Tab>'
---end, { expr = true })
+-- Tab to go to next option
+vim.keymap.set('i', '<Tab>', function()
+  if vim.fn.pumvisible() == 1 then
+    return '<C-n>'
+  end
+  return '<Tab>'
+end, { expr = true, desc = 'Next completion item' })
+
+-- Shift+Tab to go to previous option
+vim.keymap.set('i', '<S-Tab>', function()
+  if vim.fn.pumvisible() == 1 then
+    return '<C-p>'
+  end
+  return '<S-Tab>'
+end, { expr = true, desc = 'Prev completion item' })
+
+-- Enter to accept selection
+vim.keymap.set('i', '<CR>', function()
+  if vim.fn.pumvisible() == 1 then
+    return '<C-y>'
+  end
+  return '<CR>'
+end, { expr = true, desc = 'Accept completion' })
 
 vim.keymap.set('i', '<C-Space>', function()
   vim.lsp.completion.get()
 end, { desc = 'Trigger completion' })
+
+-- Save the current buffer (only if it has been modified)
+vim.keymap.set('n', '<leader>w', '<cmd>update<CR>', { desc = 'Save buffer' })
