@@ -1158,3 +1158,17 @@ end, { desc = 'Trigger completion' })
 
 -- Save the current buffer (only if it has been modified)
 vim.keymap.set('n', '<leader>w', '<cmd>update<CR>', { desc = 'Save buffer' })
+
+vim.keymap.set({ 'i', 's' }, '<Tab>', function()
+  if vim.snippet.active({ direction = 1 }) then
+    return '<Cmd>lua vim.snippet.jump(1)<CR>'
+  end
+  return '<Tab>'
+end, { expr = true, desc = 'Snippet forward or Tab' })
+
+vim.keymap.set({ 'i', 's' }, '<S-Tab>', function()
+  if vim.snippet.active({ direction = -1 }) then
+    return '<Cmd>lua vim.snippet.jump(-1)<CR>'
+  end
+  return '<S-Tab>'
+end, { expr = true, desc = 'Snippet backward or Shift-Tab' })
