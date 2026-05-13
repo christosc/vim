@@ -258,7 +258,6 @@ vim.pack.add({
   'https://github.com/stevearc/aerial.nvim',
   'https://github.com/dhruvasagar/vim-table-mode',
   'https://github.com/folke/zen-mode.nvim',
-  'https://github.com/ray-x/lsp_signature.nvim',
   "https://github.com/windwp/nvim-autopairs",
 })
 
@@ -268,22 +267,6 @@ vim.pack.add({
 
 -- ---- Mason --------------------------------------------------------------- --
 require('mason').setup()
-
-require('lsp_signature').setup({
-  bind = true,
-  handler_opts = {
-    border = "rounded"
-  },
-
-  -- Disable the panda and the inline hint completely
-  hint_enable = false,
-
-  -- Force the signature window to appear below the current line
-  --floating_window_above_cur_line = false,
-
-  -- Optional: Push the window 1 line down if it overlaps with the text
-  -- floating_window_off_y = 1,
-})
 
 -- ---- LSP per-buffer features (completion, inlay hints, signature help) -- --
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -297,36 +280,18 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- LSP-driven autocompletion (auto-trigger in '.', '->', '::')
     if client:supports_method('textDocument/completion') then
       vim.lsp.completion.enable(true, client.id, buf, { autotrigger = true })
+      vim.keymap.set('i', '<C-Space>', function()
+        vim.lsp.completion.get()
+      end, { desc = 'Trigger completion' })
     end
 
     -- Inlay hints
     if client:supports_method('textDocument/inlayHint') then
       vim.lsp.inlay_hint.enable(true, { bufnr = buf })
+      vim.keymap.set("n", "<leader>ih", function()
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+      end, { desc = "Toggle inlay hints" })
     end
-
-    ---- Continuous signature help inside parentheses
-    --if client:supports_method('textDocument/signatureHelp') then
-    --  vim.api.nvim_create_autocmd('TextChangedI', {
-    --    buffer = buf,
-    --    group  = vim.api.nvim_create_augroup(
-    --      'user_sig_help_' .. buf, { clear = true }),
-    --    callback = function()
-    --      local line = vim.api.nvim_get_current_line()
-    --      local col  = vim.api.nvim_win_get_cursor(0)[2]
-    --      local text_before_cursor = line:sub(1, col)
-
-    --      -- We count the opening and closing parentheses before the cursor
-    --      local _, open_parens = text_before_cursor:gsub("%(", "")
-    --      local _, close_parens = text_before_cursor:gsub("%)", "")
-
-    --      -- If we've opened more parentheses than we've closed, then we are
-    --      -- inside a functions parameter list.
-    --      if open_parens > close_parens then
-    --        vim.lsp.buf.signature_help({ border = 'rounded' })
-    --      end
-    --    end,
-    --  })
-    --end
 
     -- Buffer-local keymaps (was before in on_attach)
     vim.keymap.set('n', '<leader>a', '<cmd>ClangdSwitchSourceHeader<CR>',
@@ -335,8 +300,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- Manual signature help (toggle via lsp_signature)
     vim.keymap.set({ 'i', 'n' }, '<C-s>', function()
-      require('lsp_signature').toggle_float_win()
-    end, vim.tbl_extend('force', opts, { desc = 'Toggle Signature Help' }))
+      vim.lsp.buf.signature_help({ border = 'rounded' })
+    end, vim.tbl_extend('force', opts, { desc = 'Signature help' }))
+
+    -- Hover documentation with rounded borders
+    vim.keymap.set('n', 'K', function()
+      vim.lsp.buf.hover({ border = 'rounded' })
+    end, vim.tbl_extend('force', opts, { desc = 'Hover Documentation' }))
   end,
 })
 
@@ -1126,10 +1096,6 @@ vim.keymap.set({ 'i', 'c' }, '<C-\\>',
   '<C-^><Cmd>lua require("lualine").refresh()<CR>',
   { noremap = true, silent = true, desc = 'Toggle Keymap & Refresh Lualine' })
 
-vim.keymap.set("n", "<leader>ih", function()
-  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-end, { desc = "Toggle inlay hints" })
-
 -- Tab to go to next option
 vim.keymap.set('i', '<Tab>', function()
   if vim.fn.pumvisible() == 1 then
@@ -1153,10 +1119,6 @@ vim.keymap.set('i', '<CR>', function()
   end
   return '<CR>'
 end, { expr = true, desc = 'Accept completion' })
-
-vim.keymap.set('i', '<C-Space>', function()
-  vim.lsp.completion.get()
-end, { desc = 'Trigger completion' })
 
 -- Save the current buffer (only if it has been modified)
 vim.keymap.set('n', '<leader>w', '<cmd>update<CR>', { desc = 'Save buffer' })
@@ -1218,6 +1180,3 @@ end, { desc = 'Refresh compile_commands.json and restart clangd' })
 vim.keymap.set('n', '<leader>bi', '<cmd>BuildIndex<CR>',
   { desc = 'Build compile DB index' })
 
-vim.keymap.set('n', 'K', function()
-  vim.lsp.buf.hover({ border = "rounded" })
-end, { desc = 'Show Hover Information' })
