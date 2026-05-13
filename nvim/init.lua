@@ -206,6 +206,8 @@ vim.api.nvim_create_autocmd('PackChanged', {
               end)
             end)
         end)
+    elseif name == "nvim-treesitter" and kind == "update" then
+      vim.cmd("TSUpdate")
     end
   end,
 })
@@ -257,6 +259,7 @@ vim.pack.add({
   'https://github.com/dhruvasagar/vim-table-mode',
   'https://github.com/folke/zen-mode.nvim',
   'https://github.com/ray-x/lsp_signature.nvim',
+  "https://github.com/windwp/nvim-autopairs",
 })
 
 -- ============================================================================
@@ -670,6 +673,15 @@ require('zen-mode').setup({
   -- your configuration comes here
   -- or leave it empty to use the default settings
   -- refer to the configuration section below
+})
+
+-- ---- nvim-autopairs ------------------------------------------------------ --
+require("nvim-autopairs").setup({
+  check_ts = true,
+  ts_config = {
+    cpp = { "string", "comment" },  -- no pairing inside strings/comments
+    c   = { "string", "comment" },
+  },
 })
 
 --vim.cmd('colorscheme habamax')
@@ -1172,3 +1184,46 @@ vim.keymap.set({ 'i', 's' }, '<S-Tab>', function()
   end
   return '<S-Tab>'
 end, { expr = true, desc = 'Snippet backward or Shift-Tab' })
+
+vim.api.nvim_create_user_command('BuildIndex', function()
+  vim.notify('Building compile DB...', vim.log.levels.INFO)
+  local t0 = vim.uv.hrtime()
+
+  vim.system(
+    { 'build_index' },                    -- or full path if not on Neovim's $PATH
+    { text = true },
+    function(out)
+      vim.schedule(function()
+        local dt = (vim.uv.hrtime() - t0) / 1e9
+        if out.code ~= 0 then
+          vim.notify(
+            ('build_index failed (%.1fs):\n%s'):format(dt, out.stderr or ''),
+            vim.log.levels.ERROR
+          )
+          return
+        end
+
+        -- Restart only the clangd clients
+        local clients = vim.lsp.get_clients({ name = 'clangd' })
+        for _, c in ipairs(clients) do
+          vim.lsp.stop_client(c.id, true)
+        end
+
+        -- Small delay so the server shuts down gracefully,
+        -- then :edit to re-attach LSP to the current buffer.
+        vim.defer_fn(function()
+          local view = vim.fn.winsaveview()
+          vim.cmd('edit')
+          vim.fn.winrestview(view)
+          vim.notify(
+            ('build_index done (%.1fs), clangd restarted'):format(dt),
+            vim.log.levels.INFO
+          )
+        end, 200)
+      end)
+    end
+  )
+end, { desc = 'Refresh compile_commands.json and restart clangd' })
+
+vim.keymap.set('n', '<leader>bi', '<cmd>BuildIndex<CR>',
+  { desc = 'Build compile DB index' })
