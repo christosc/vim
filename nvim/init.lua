@@ -1217,3 +1217,7 @@ end, { desc = 'Refresh compile_commands.json and restart clangd' })
 
 vim.keymap.set('n', '<leader>bi', '<cmd>BuildIndex<CR>',
   { desc = 'Build compile DB index' })
+
+vim.keymap.set('n', 'K', function()
+  vim.lsp.buf.hover({ border = "rounded" })
+end, { desc = 'Show Hover Information' })
