@@ -422,17 +422,7 @@ end
 -- regex-based highlights for TODO/FIXME/XXX in comments still work.
 vim.api.nvim_create_autocmd('FileType', {
   pattern = ts_filetypes,
-  callback = function(args)
-    -- TS highlighting (will fall back silently if the parser is missing).
-    pcall(vim.treesitter.start, args.buf)
-    -- Keep regex syntax on top — needed for TODO/FIXME/XXX comment highlights.
-    vim.bo[args.buf].syntax = 'ON'
-    -- TS-based folding (window-local, set per buffer).
-    vim.wo[0][0].foldexpr   = 'v:lua.vim.treesitter.foldexpr()'
-    vim.wo[0][0].foldmethod = 'expr'
-    -- TS-based indent (still considered experimental upstream).
-    vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-  end,
+  callback = function() vim.treesitter.start() end,
 })
 
 -- ---- Treesitter textobjects (main branch — new API) ---------------------- --
