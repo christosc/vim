@@ -279,7 +279,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- LSP-driven autocompletion (auto-trigger in '.', '->', '::')
     if client:supports_method('textDocument/completion') then
-      vim.lsp.completion.enable(true, client.id, buf, { autotrigger = true })
+      vim.lsp.completion.enable(true, client.id, buf, { autotrigger = false })
       vim.keymap.set('i', '<C-Space>', function()
         vim.lsp.completion.get()
       end, { desc = 'Trigger completion' })
@@ -287,7 +287,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- Inlay hints
     if client:supports_method('textDocument/inlayHint') then
-      vim.lsp.inlay_hint.enable(true, { bufnr = buf })
+      --vim.lsp.inlay_hint.enable(true, { bufnr = buf })
       vim.keymap.set("n", "<leader>ih", function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
       end, { desc = "Toggle inlay hints" })
@@ -1112,13 +1112,13 @@ vim.keymap.set('i', '<S-Tab>', function()
   return '<S-Tab>'
 end, { expr = true, desc = 'Prev completion item' })
 
--- Enter to accept selection
-vim.keymap.set('i', '<CR>', function()
-  if vim.fn.pumvisible() == 1 then
-    return '<C-y>'
-  end
-  return '<CR>'
-end, { expr = true, desc = 'Accept completion' })
+-- Enter to accept selection (This is bad!)
+--vim.keymap.set('i', '<CR>', function()
+--  if vim.fn.pumvisible() == 1 then
+--    return '<C-y>'
+--  end
+--  return '<CR>'
+--end, { expr = true, desc = 'Accept completion' })
 
 -- Save the current buffer (only if it has been modified)
 vim.keymap.set('n', '<leader>w', '<cmd>update<CR>', { desc = 'Save buffer' })
