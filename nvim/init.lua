@@ -268,6 +268,28 @@ vim.pack.add({
 -- ---- Mason --------------------------------------------------------------- --
 require('mason').setup()
 
+-- clangd extension: jump between source and header.
+-- Uses the custom LSP request 'textDocument/switchSourceHeader'.
+local function switch_source_header(bufnr)
+  local client = vim.lsp.get_clients({ bufnr = bufnr, name = 'clangd' })[1]
+  if not client then
+    vim.notify('clangd not attached', vim.log.levels.WARN)
+    return
+  end
+  local params = vim.lsp.util.make_text_document_params(bufnr)
+  client:request('textDocument/switchSourceHeader', params, function(err, result)
+    if err then
+      vim.notify(tostring(err), vim.log.levels.ERROR)
+      return
+    end
+    if not result then
+      vim.notify('Corresponding file not found', vim.log.levels.INFO)
+      return
+    end
+    vim.cmd.edit(vim.uri_to_fname(result))
+  end, bufnr)
+end
+
 -- ---- LSP per-buffer features (completion, inlay hints, signature help) -- --
 vim.api.nvim_create_autocmd('LspAttach', {
   group    = vim.api.nvim_create_augroup('user_lsp_features', { clear = true }),
@@ -294,8 +316,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
 
     -- Buffer-local keymaps (was before in on_attach)
-    vim.keymap.set('n', '<leader>a', '<cmd>ClangdSwitchSourceHeader<CR>',
-      vim.tbl_extend('force', opts, { desc = 'Switch header/source' }))
+    if client.name == 'clangd' then
+      vim.keymap.set('n', '<leader>a', function()
+        switch_source_header(buf)
+      end, vim.tbl_extend('force', opts, { desc = 'Switch header/source' }))
+    end
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
 
     -- Manual signature help (toggle via lsp_signature)
