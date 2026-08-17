@@ -10,7 +10,7 @@
 --   $ cd neovim
 --   $ git tag -l                          # look for the latest version
 --   $ git checkout v0.12.x                # any 0.12+ tag
---   $ make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=/data/chryssoc
+--   $ make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/data/chryssoc
 --   $ make install
 --
 -- Plugins are installed into vim.fn.stdpath('data')/site/pack/core/opt/
@@ -40,8 +40,8 @@ vim.opt.mouse          = 'a'
 --vim.opt.signcolumn = "yes"
 -- vim.opt.number = false
 -- vim.opt.signcolumn = "yes:1"
-vim.opt.number         = true
-vim.opt.relativenumber = true
+vim.opt.number         = false
+vim.opt.relativenumber = false
 vim.opt.signcolumn = "number"
 vim.opt.expandtab      = true
 vim.opt.tabstop        = 4
@@ -1205,3 +1205,25 @@ end, { desc = 'Refresh compile_commands.json and restart clangd' })
 vim.keymap.set('n', '<leader>bi', '<cmd>BuildIndex<CR>',
   { desc = 'Build compile DB index' })
 
+vim.api.nvim_create_user_command("HgDiff", function(opts)
+  local rev = opts.args ~= "" and opts.args or "."
+  local file = vim.api.nvim_buf_get_name(0)
+  local ft = vim.bo.filetype
+  local lines = vim.fn.systemlist({ "hg", "cat", "-r", rev, file })
+  if vim.v.shell_error ~= 0 then
+    vim.notify(table.concat(lines, "\n"), vim.log.levels.ERROR)
+    return
+  end
+  vim.cmd("leftabove vnew")
+  local buf = vim.api.nvim_get_current_buf()
+  vim.bo[buf].buftype = "nofile"
+  vim.bo[buf].bufhidden = "wipe"
+  vim.bo[buf].swapfile = false
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  vim.bo[buf].filetype = ft
+  vim.bo[buf].modifiable = false
+  vim.api.nvim_buf_set_name(buf, "hg:" .. rev .. ":" .. vim.fn.fnamemodify(file, ":t"))
+  vim.cmd("diffthis")
+  vim.cmd("wincmd p")
+  vim.cmd("diffthis")
+end, { nargs = "?" })
