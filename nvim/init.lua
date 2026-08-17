@@ -1214,16 +1214,29 @@ vim.api.nvim_create_user_command("HgDiff", function(opts)
     vim.notify(table.concat(lines, "\n"), vim.log.levels.ERROR)
     return
   end
+  local name = "hg:" .. rev .. ":" .. vim.fn.fnamemodify(file, ":t")
+  local old = vim.fn.bufnr("^" .. vim.fn.fnameescape(name) .. "$")
+  if old ~= -1 then vim.cmd("bwipeout! " .. old) end
+
   vim.cmd("leftabove vnew")
   local buf = vim.api.nvim_get_current_buf()
   vim.bo[buf].buftype = "nofile"
-  vim.bo[buf].bufhidden = "wipe"
+  vim.bo[buf].bufhidden = "hide"          -- ἡ οὐσιώδης ἀλλαγή
   vim.bo[buf].swapfile = false
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].filetype = ft
   vim.bo[buf].modifiable = false
-  vim.api.nvim_buf_set_name(buf, "hg:" .. rev .. ":" .. vim.fn.fnamemodify(file, ":t"))
+  vim.api.nvim_buf_set_name(buf, name)
+  pcall(function() vim.wo.winfixbuf = true end)  -- Neovim ≥ 0.10
   vim.cmd("diffthis")
   vim.cmd("wincmd p")
   vim.cmd("diffthis")
 end, { nargs = "?" })
+
+vim.api.nvim_create_user_command("HgDiffOff", function()
+  vim.cmd("diffoff!")
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    local tail = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(b), ":t")
+    if tail:match("^hg:") then vim.cmd("bwipeout! " .. b) end
+  end
+end, {})
