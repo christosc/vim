@@ -36,13 +36,13 @@ vim.g.maplocalleader = ' '
 -- ----------------------------------------------------------------------------
 vim.opt.scrolloff      = 5
 vim.opt.mouse          = 'a'
--- Sign column always visible
---vim.opt.signcolumn = "yes"
+-- Always reserve the sign column so text doesn't shift when
+-- diagnostics appear and disappear
+vim.opt.signcolumn = "yes"
 -- vim.opt.number = false
 -- vim.opt.signcolumn = "yes:1"
 vim.opt.number         = false
 vim.opt.relativenumber = false
-vim.opt.signcolumn = "number"
 vim.opt.expandtab      = true
 vim.opt.tabstop        = 4
 vim.opt.shiftwidth     = 4
