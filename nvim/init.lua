@@ -332,6 +332,27 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'K', function()
       vim.lsp.buf.hover({ border = 'rounded' })
     end, vim.tbl_extend('force', opts, { desc = 'Hover Documentation' }))
+
+    -- Visual mode: format the selection.
+    -- format() reads the live selection only while still in visual mode ('v' or 'V'),
+    -- so this must be a Lua callback (or <Cmd>), not a ':' mapping that leaves visual mode.
+    vim.keymap.set('x', '<leader>f', function()
+      vim.lsp.buf.format({ bufnr = buf, id = client.id })
+      vim.api.nvim_feedkeys(vim.keycode('<Esc>'), 'n', false)
+    end, { buffer = buf, desc = 'clang-format selection' })
+
+    -- Normal mode: format the current line, or [count] lines starting here.
+    vim.keymap.set('n', '<leader>f', function()
+      local first = vim.api.nvim_win_get_cursor(0)[1]
+      local last = math.min(first + vim.v.count1 - 1, vim.api.nvim_buf_line_count(buf))
+      local len = #vim.api.nvim_buf_get_lines(buf, last - 1, last, true)[1]
+      vim.lsp.buf.format({
+        bufnr = buf,
+        id = client.id,
+        -- (1,0)-indexed; Neovim treats the end column as inclusive
+        range = { start = { first, 0 }, ['end'] = { last, math.max(len - 1, 0) } },
+      })
+    end, { buffer = buf, desc = 'clang-format line(s)' })
   end,
 })
 
