@@ -64,17 +64,18 @@ vim.o.completeopt = "menu,menuone,popup,nearest" -- noselect
 --vim.o.autocomplete = true
 
 -- vim.opt.clipboard = "unnamedplus"  <-- Too much lag!
-vim.g.clipboard = {
-  name = 'OSC 52',
-  copy = {
-    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-  },
-  paste = {
-    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-  },
-}
+-- DO NOT FORCE OSC 52, BECAUSE IT BREAKS COPY-PASTE ON GNOME TERMINAL
+--vim.g.clipboard = {
+--  name = 'OSC 52',
+--  copy = {
+--    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+--    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+--  },
+--  paste = {
+--    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+--    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+--  },
+--}
 
 -- Define diagnostic signs (place this EARLY in your config)
 -- Modern diagnostic configuration (Neovim 0.10+)
